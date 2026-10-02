@@ -286,8 +286,8 @@ const ModuloGerenciadorMod = {
     try {
       const chaveInfo = await ApiCat.obterChaveGemini();
       const inputChave = document.getElementById("input-chave-gemini-modal");
-      if (inputChave && chaveInfo.possui_chave) {
-        inputChave.placeholder = `Chave configurada: ${chaveInfo.mascara}`;
+      if (inputChave) {
+        inputChave.value = chaveInfo.chave_api || "";
       }
 
       const tmStats = await ApiCat.obterEstatisticasMemoriaGlobal();
@@ -302,16 +302,15 @@ const ModuloGerenciadorMod = {
 
   async salvarChaveGemini() {
     const inputChave = document.getElementById("input-chave-gemini-modal");
-    const chave = inputChave?.value?.trim();
-    if (!chave) {
-      window.AppCat?.mostrarToast("Digite uma chave válida do Google Gemini!", "⚠️");
-      return;
-    }
+    const chave = inputChave?.value?.trim() || "";
 
     try {
       await ApiCat.salvarChaveGemini(chave);
-      inputChave.value = "";
-      window.AppCat?.mostrarToast("Chave da API do Gemini salva com sucesso!", "✓");
+      if (chave) {
+        window.AppCat?.mostrarToast("Chave da API do Gemini salva com sucesso!", "✓");
+      } else {
+        window.AppCat?.mostrarToast("Chave da API do Gemini removida com sucesso!", "✓");
+      }
       await this.carregarStatusIa();
     } catch (e) {
       window.AppCat?.mostrarToast("Erro ao salvar chave: " + e.message, "✕");

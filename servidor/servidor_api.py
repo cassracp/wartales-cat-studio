@@ -341,8 +341,7 @@ class ManipuladorRequisicaoCat(SimpleHTTPRequestHandler):
 
             if caminho == "/api/ia/obter_chave":
                 chave = GERENCIADOR_PROJETOS.config.get("chave_api_gemini", "")
-                mascara = (chave[:6] + "..." + chave[-4:]) if len(chave) > 10 else ("Configurada" if chave else "")
-                self._responder_json({"possui_chave": bool(chave), "mascara": mascara})
+                self._responder_json({"possui_chave": bool(chave), "chave_api": chave})
                 return
 
             if caminho == "/api/memoria_global/estatisticas":
