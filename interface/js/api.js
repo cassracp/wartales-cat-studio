@@ -217,6 +217,59 @@ const ApiCat = {
     });
   },
 
+  async obterPoolIa() {
+    return await this.requisicao("/api/ia/pool");
+  },
+
+  async cadastrarChavePoolIa(dadosChave) {
+    return await this.requisicao("/api/ia/pool/chaves", {
+      method: "POST",
+      body: JSON.stringify(dadosChave)
+    });
+  },
+
+  async atualizarChavePoolIa(dadosChave) {
+    return await this.requisicao("/api/ia/pool/chaves/atualizar", {
+      method: "POST",
+      body: JSON.stringify(dadosChave)
+    });
+  },
+
+  async alternarStatusChavePoolIa(id, ativo = null) {
+    return await this.requisicao("/api/ia/pool/chaves/toggle", {
+      method: "POST",
+      body: JSON.stringify({ id, ativo })
+    });
+  },
+
+  async removerChavePoolIa(id) {
+    return await this.requisicao("/api/ia/pool/chaves/remover", {
+      method: "POST",
+      body: JSON.stringify({ id })
+    });
+  },
+
+  async redefinirCooldownChavePoolIa(id) {
+    return await this.requisicao("/api/ia/pool/chaves/redefinir_cooldown", {
+      method: "POST",
+      body: JSON.stringify({ id })
+    });
+  },
+
+  async testarChavePoolIa(dados) {
+    return await this.requisicao("/api/ia/pool/chaves/testar", {
+      method: "POST",
+      body: JSON.stringify(dados)
+    });
+  },
+
+  async salvarConfiguracaoPoolIa(configuracao) {
+    return await this.requisicao("/api/ia/pool/configuracao", {
+      method: "POST",
+      body: JSON.stringify(configuracao)
+    });
+  },
+
   async analisarDeltasIa() {
     return await this.requisicao("/api/ia/analisar_deltas", {
       method: "POST"

@@ -19,11 +19,13 @@ import time
 import json
 import logging
 import threading
+import xml.etree.ElementTree as ET
 from typing import Dict, Any, List, Optional, Callable
 
 from nucleo.normalizador import normalizar_espacos, sanitizar_para_castledb, gerar_hash_conteudo
 from nucleo.memoria_global import MemoriaTraducaoGlobal
 from nucleo.servico_ia import ServicoIA, CHAVE_PADRAO_GEMINI
+from nucleo.gerenciador_pool_ia import GerenciadorPoolIA
 from nucleo.sincronizador import SincronizadorXml
 
 logger = logging.getLogger("cat_wartales.tradutor_lote")
@@ -32,8 +34,13 @@ logger = logging.getLogger("cat_wartales.tradutor_lote")
 class MotorTraducaoLoteIA:
     """Orquestra o pipeline de isolamento de deltas e tradução em lote."""
 
-    def __init__(self, memoria_global: Optional[MemoriaTraducaoGlobal] = None):
+    def __init__(
+        self,
+        memoria_global: Optional[MemoriaTraducaoGlobal] = None,
+        gerenciador_pool: Optional[GerenciadorPoolIA] = None
+    ):
         self.memoria_global = memoria_global or MemoriaTraducaoGlobal()
+        self.gerenciador_pool = gerenciador_pool
         self.estado_execucao: Dict[str, Any] = {
             "ativo": False,
             "concluido": False,
@@ -202,8 +209,13 @@ class MotorTraducaoLoteIA:
         nome_mod: str
     ) -> None:
         try:
-            chave_utilizar = (chave_api or "").strip() or CHAVE_PADRAO_GEMINI
-            servico_ia = ServicoIA(chave_api=chave_utilizar)
+            chave_utilizar = (chave_api or "").strip()
+            if self.gerenciador_pool is not None and self.gerenciador_pool.possui_chaves_cadastradas():
+                servico_ia = ServicoIA(gerenciador_pool=self.gerenciador_pool)
+            elif chave_utilizar:
+                servico_ia = ServicoIA(chave_api=chave_utilizar)
+            else:
+                servico_ia = ServicoIA(gerenciador_pool=self.gerenciador_pool)
             os.makedirs(diretorio_saida_ia, exist_ok=True)
 
             mod_texts_path = os.path.join(diretorio_mod_en, "texts_en.xml")
@@ -379,15 +391,61 @@ class MotorTraducaoLoteIA:
         if not os.path.exists(caminho_template_en):
             return
 
-        # Para export, lemos linha a linha mantendo conformidade Heaps / CastleDB
-        with open(caminho_template_en, "r", encoding="utf-8") as f_in:
-            linhas = f_in.readlines()
+        os.makedirs(os.path.dirname(os.path.abspath(caminho_saida_pt)), exist_ok=True)
+        try:
+            arvore = ET.parse(caminho_template_en)
+            raiz = arvore.getroot()
+            raiz.attrib["lang"] = "pt-BR"
 
-        saida_linhas = []
-        for linha in linhas:
-            if 'lang="en"' in linha:
-                linha = linha.replace('lang="en"', 'lang="pt-BR"')
-            saida_linhas.append(linha)
+            for folha in raiz.findall("sheet"):
+                nome_folha = folha.attrib.get("name", "")
+                contagem_tags_linha: Dict[str, int] = {}
+                for linha in folha:
+                    tag_linha = linha.tag
+                    contagem_tags_linha[tag_linha] = contagem_tags_linha.get(tag_linha, 0) + 1
+                    chave_linha = f"{tag_linha}#{contagem_tags_linha[tag_linha] - 1}" if contagem_tags_linha[tag_linha] > 1 else tag_linha
 
-        with open(caminho_saida_pt, "w", encoding="utf-8") as f_out:
-            f_out.writelines(saida_linhas)
+                    def aplicar_traducao_filhos(elem: ET.Element, caminho_atual: str) -> None:
+                        contagem_filhos: Dict[str, int] = {}
+                        for filho in elem:
+                            tag_f = filho.tag
+                            contagem_filhos[tag_f] = contagem_filhos.get(tag_f, 0) + 1
+                            idx_f = contagem_filhos[tag_f] - 1
+                            chave_f = f"{tag_f}[{idx_f}]" if contagem_filhos[tag_f] > 1 else tag_f
+                            sub_c = f"{caminho_atual}/{chave_f}" if caminho_atual else chave_f
+
+                            tem_filhos_estruturais = any(neto.tag not in ("br", "b", "good", "bad", "skill", "gold") for neto in filho)
+                            if not tem_filhos_estruturais and (filho.text or len(filho) > 0):
+                                loc = f"{nome_folha}/{chave_linha}/{sub_c}"
+                                if loc in mapa_traducoes:
+                                    texto_traduzido = mapa_traducoes[loc]
+                                    texto_limpo = sanitizar_para_castledb(texto_traduzido)
+                                    filho.clear()
+                                    xml_preparado = re.sub(r'<br(?:\s*)>', '<br/>', texto_limpo, flags=re.IGNORECASE)
+                                    xml_preparado = re.sub(r'&(?!(?:amp|lt|gt|quot|apos);)', '&amp;', xml_preparado)
+                                    try:
+                                        fragmento = ET.fromstring(f"<tmp>{xml_preparado}</tmp>")
+                                        filho.text = fragmento.text
+                                        for sub_elem in fragmento:
+                                            filho.append(sub_elem)
+                                    except Exception:
+                                        filho.text = texto_limpo
+                            else:
+                                aplicar_traducao_filhos(filho, sub_c)
+
+                    aplicar_traducao_filhos(linha, "")
+
+            arvore.write(caminho_saida_pt, encoding="utf-8", xml_declaration=True)
+        except Exception as erro_xml:
+            logger.warning(f"Falha ao gravar export_pt-BR.xml via ElementTree: {erro_xml}. Usando fallback de linhas.")
+            with open(caminho_template_en, "r", encoding="utf-8") as f_in:
+                linhas = f_in.readlines()
+
+            saida_linhas = []
+            for linha in linhas:
+                if 'lang="en"' in linha:
+                    linha = linha.replace('lang="en"', 'lang="pt-BR"')
+                saida_linhas.append(linha)
+
+            with open(caminho_saida_pt, "w", encoding="utf-8") as f_out:
+                f_out.writelines(saida_linhas)

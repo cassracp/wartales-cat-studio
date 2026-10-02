@@ -26,6 +26,7 @@ from nucleo.empacotador_pak import EmpacotadorPakHeaps
 from nucleo.gerenciador_projetos import GerenciadorProjetos
 from nucleo.memoria_global import MemoriaTraducaoGlobal
 from nucleo.tradutor_lote_ia import MotorTraducaoLoteIA
+from nucleo.gerenciador_pool_ia import GerenciadorPoolIA, obter_instancia_pool_ia
 from nucleo.servico_ia import ServicoIA, CHAVE_PADRAO_GEMINI
 from exportadores.gerador_distribuicao import GeradorDistribuicao
 from nucleo.servico_relatorio import ServicoRelatorio
@@ -38,11 +39,20 @@ SERVICO_GLOSSARIO = ServicoGlossario(GERENCIADOR_BANCO)
 SERVICO_PROPAGACAO = ServicoAutoPropagacao(GERENCIADOR_BANCO)
 SERVICO_SINCRONIZADOR = SincronizadorXml(GERENCIADOR_BANCO)
 MEMORIA_GLOBAL = MemoriaTraducaoGlobal()
-MOTOR_IA_LOTE = MotorTraducaoLoteIA(MEMORIA_GLOBAL)
+GERENCIADOR_POOL_IA = obter_instancia_pool_ia()
+MOTOR_IA_LOTE = MotorTraducaoLoteIA(MEMORIA_GLOBAL, gerenciador_pool=GERENCIADOR_POOL_IA)
 SERVICO_RELATORIO = ServicoRelatorio()
 
 CHAVE_CONFIGURADA = GERENCIADOR_PROJETOS.config.get("chave_api_gemini", "")
-SERVICO_IA = ServicoIA(chave_api=CHAVE_CONFIGURADA or CHAVE_PADRAO_GEMINI)
+if CHAVE_CONFIGURADA:
+    try:
+        GERENCIADOR_POOL_IA.sincronizar_ou_adicionar_chave(
+            chave=CHAVE_CONFIGURADA,
+            rotulo="Chave Principal Gemini (.env)"
+        )
+    except Exception as _e_sync:
+        print(f"[AVISO] Falha ao sincronizar chave de IA inicial com o pool: {_e_sync}")
+SERVICO_IA = ServicoIA(gerenciador_pool=GERENCIADOR_POOL_IA)
 GERADOR_DISTRIBUICAO = GeradorDistribuicao(GERENCIADOR_BANCO)
 
 # Inicializar glossário padrão caso esteja vazio
@@ -339,9 +349,26 @@ class ManipuladorRequisicaoCat(SimpleHTTPRequestHandler):
                 self._responder_json(status_ia)
                 return
 
+            if caminho == "/api/ia/pool":
+                info_pool = GERENCIADOR_POOL_IA.obter_informacoes_completas()
+                self._responder_json(info_pool)
+                return
+
+            if caminho == "/api/ia/pool/chaves":
+                chaves = GERENCIADOR_POOL_IA.listar_chaves(mascarar=True)
+                self._responder_json({"sucesso": True, "chaves": chaves})
+                return
+
             if caminho == "/api/ia/obter_chave":
                 chave = GERENCIADOR_PROJETOS.config.get("chave_api_gemini", "")
-                self._responder_json({"possui_chave": bool(chave), "chave_api": chave})
+                chaves_pool = GERENCIADOR_POOL_IA.listar_chaves(mascarar=False)
+                if not chave and chaves_pool:
+                    chave = chaves_pool[0]["chave"]
+                self._responder_json({
+                    "possui_chave": bool(chave or chaves_pool),
+                    "chave_api": chave,
+                    "total_chaves_pool": len(chaves_pool)
+                })
                 return
 
             if caminho == "/api/memoria_global/estatisticas":
@@ -492,9 +519,155 @@ class ManipuladorRequisicaoCat(SimpleHTTPRequestHandler):
         if caminho == "/api/ia/salvar_chave":
             nova_chave = payload.get("chave_api", "").strip()
             GERENCIADOR_PROJETOS.atualizar_chave_gemini(nova_chave)
-            global SERVICO_IA
-            SERVICO_IA = ServicoIA(chave_api=nova_chave or CHAVE_PADRAO_GEMINI)
+            if nova_chave:
+                try:
+                    GERENCIADOR_POOL_IA.sincronizar_ou_adicionar_chave(
+                        chave=nova_chave,
+                        rotulo="Chave Principal Gemini (.env)"
+                    )
+                except Exception as _e_sync:
+                    print(f"[AVISO] Falha ao sincronizar chave com o pool: {_e_sync}")
             self._responder_json({"sucesso": True})
+            return
+
+        if caminho == "/api/ia/pool/chaves":
+            chave_str = payload.get("chave", "").strip()
+            rotulo = payload.get("rotulo", "").strip()
+            provedor = payload.get("provedor", "gemini").strip()
+            modelo = payload.get("modelo", "gemini-flash-lite-latest").strip()
+            prioridade = int(payload.get("prioridade", 1))
+            ativo = bool(payload.get("ativo", True))
+
+            if not chave_str:
+                self._responder_json({"erro": "O campo 'chave' é obrigatório."}, 400)
+                return
+            if not rotulo:
+                rotulo = f"Chave {provedor.capitalize()}"
+
+            try:
+                nova_chave = GERENCIADOR_POOL_IA.adicionar_chave(
+                    chave=chave_str,
+                    rotulo=rotulo,
+                    provedor=provedor,
+                    modelo=modelo,
+                    prioridade=prioridade,
+                    ativo=ativo
+                )
+                self._responder_json({
+                    "sucesso": True,
+                    "mensagem": "Chave adicionada com sucesso ao pool.",
+                    "chave": nova_chave.para_dicionario(incluir_chave_completa=False)
+                })
+            except ValueError as erro_val:
+                self._responder_json({"erro": str(erro_val)}, 400)
+            except Exception as erro_cad:
+                self._responder_json({"erro": f"Falha ao cadastrar chave: {str(erro_cad)}"}, 500)
+            return
+
+        if caminho == "/api/ia/pool/chaves/atualizar":
+            id_chave = int(payload.get("id", 0))
+            if id_chave <= 0:
+                self._responder_json({"erro": "ID de chave inválido."}, 400)
+                return
+            rotulo = payload.get("rotulo")
+            modelo = payload.get("modelo")
+            prioridade = payload.get("prioridade")
+            ativo = payload.get("ativo")
+            chave_segredo = payload.get("chave")
+
+            sucesso = GERENCIADOR_POOL_IA.atualizar_chave(
+                id_chave=id_chave,
+                rotulo=rotulo,
+                modelo=modelo,
+                prioridade=int(prioridade) if prioridade is not None else None,
+                ativo=ativo,
+                chave=chave_segredo
+            )
+            if sucesso:
+                chave_atualizada = GERENCIADOR_POOL_IA.obter_chave_por_id(id_chave)
+                dado_chave = chave_atualizada.para_dicionario(incluir_chave_completa=False) if chave_atualizada else {}
+                self._responder_json({"sucesso": True, "chave": dado_chave})
+            else:
+                self._responder_json({"erro": "Chave não encontrada ou nenhum campo alterado."}, 404)
+            return
+
+        if caminho == "/api/ia/pool/chaves/toggle":
+            id_chave = int(payload.get("id", 0))
+            if id_chave <= 0:
+                self._responder_json({"erro": "ID de chave inválido."}, 400)
+                return
+            ativo_param = payload.get("ativo")
+            sucesso = GERENCIADOR_POOL_IA.alternar_status_chave(id_chave, ativo=ativo_param)
+            if sucesso:
+                self._responder_json({"sucesso": True, "id": id_chave})
+            else:
+                self._responder_json({"erro": "Chave não encontrada."}, 404)
+            return
+
+        if caminho == "/api/ia/pool/chaves/remover":
+            id_chave = int(payload.get("id", 0))
+            if id_chave <= 0:
+                self._responder_json({"erro": "ID de chave inválido."}, 400)
+                return
+            sucesso = GERENCIADOR_POOL_IA.remover_chave(id_chave)
+            if sucesso:
+                self._responder_json({"sucesso": True, "id": id_chave, "mensagem": "Chave removida do pool com sucesso."})
+            else:
+                self._responder_json({"erro": "Chave não encontrada."}, 404)
+            return
+
+        if caminho == "/api/ia/pool/chaves/redefinir_cooldown":
+            id_chave = int(payload.get("id", 0))
+            if id_chave <= 0:
+                self._responder_json({"erro": "ID de chave inválido."}, 400)
+                return
+            sucesso = GERENCIADOR_POOL_IA.redefinir_cooldown_chave(id_chave)
+            if sucesso:
+                self._responder_json({"sucesso": True, "id": id_chave, "mensagem": "Cooldown e erros redefinidos com sucesso."})
+            else:
+                self._responder_json({"erro": "Chave não encontrada."}, 404)
+            return
+
+        if caminho == "/api/ia/pool/chaves/testar":
+            id_chave = payload.get("id")
+            chave_avulsa = payload.get("chave", "").strip()
+            provedor = payload.get("provedor", "gemini").strip()
+            modelo = payload.get("modelo", "gemini-flash-lite-latest").strip()
+
+            if id_chave is not None:
+                res_teste = GERENCIADOR_POOL_IA.testar_chave(id_chave=int(id_chave))
+            elif chave_avulsa:
+                res_teste = GERENCIADOR_POOL_IA.testar_chave(chave_direta=chave_avulsa, provedor=provedor, modelo=modelo)
+            else:
+                self._responder_json({"erro": "Informe o 'id' da chave ou o campo 'chave' para teste."}, 400)
+                return
+
+            self._responder_json(res_teste)
+            return
+
+        if caminho == "/api/ia/pool/configuracao":
+            modo = payload.get("modo_selecao")
+            cooldown = payload.get("tempo_cooldown_padrao")
+
+            if modo:
+                try:
+                    GERENCIADOR_POOL_IA.definir_modo_selecao(modo)
+                except ValueError as e_modo:
+                    self._responder_json({"erro": str(e_modo)}, 400)
+                    return
+
+            if cooldown is not None:
+                try:
+                    GERENCIADOR_POOL_IA.definir_tempo_cooldown_padrao(int(cooldown))
+                except ValueError as e_cool:
+                    self._responder_json({"erro": str(e_cool)}, 400)
+                    return
+
+            self._responder_json({
+                "sucesso": True,
+                "modo_selecao": GERENCIADOR_POOL_IA.obter_modo_selecao(),
+                "tempo_cooldown_padrao": GERENCIADOR_POOL_IA.obter_tempo_cooldown_padrao()
+            })
             return
 
         if caminho == "/api/ia/analisar_deltas":
@@ -508,9 +681,9 @@ class ManipuladorRequisicaoCat(SimpleHTTPRequestHandler):
             dir_v = GERENCIADOR_PROJETOS.obter_caminho_absoluto(GERENCIADOR_PROJETOS.config.get("diretorio_referencia_vanilla", "dados/referencia_vanilla"))
             dir_m = GERENCIADOR_PROJETOS.obter_caminho_absoluto(PROJETO_ATIVO["diretorio_mod_en"])
             dir_saida = GERENCIADOR_PROJETOS.obter_caminho_absoluto(PROJETO_ATIVO["diretorio_traducao_ia"])
-            chave = GERENCIADOR_PROJETOS.config.get("chave_api_gemini", "")
+            chave_override = (payload.get("chave_api") or "").strip() or None
             nome = PROJETO_ATIVO.get("nome", "Mod")
-            iniciou = MOTOR_IA_LOTE.iniciar_traducao_assincrona(dir_v, dir_m, dir_saida, chave, nome)
+            iniciou = MOTOR_IA_LOTE.iniciar_traducao_assincrona(dir_v, dir_m, dir_saida, chave_override, nome)
             self._responder_json({
                 "sucesso": iniciou,
                 "mensagem": "Tradução iniciada com sucesso em segundo plano." if iniciou else "Já existe uma tradução em andamento."
@@ -643,6 +816,19 @@ class ManipuladorRequisicaoCat(SimpleHTTPRequestHandler):
                 termo_id = int(caminho.split("/")[-1])
                 sucesso = GERENCIADOR_BANCO.remover_termo_glossario(termo_id)
                 self._responder_json({"sucesso": sucesso})
+                return
+            except ValueError:
+                self._responder_json({"erro": "ID inválido"}, 400)
+                return
+
+        if caminho.startswith("/api/ia/pool/chaves/"):
+            try:
+                id_chave = int(caminho.split("/")[-1])
+                sucesso = GERENCIADOR_POOL_IA.remover_chave(id_chave)
+                if sucesso:
+                    self._responder_json({"sucesso": True, "id": id_chave})
+                else:
+                    self._responder_json({"erro": "Chave não encontrada no pool."}, 404)
                 return
             except ValueError:
                 self._responder_json({"erro": "ID inválido"}, 400)
