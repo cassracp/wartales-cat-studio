@@ -42,8 +42,20 @@ class GerenciadorProjetos:
         return self._normalizar_configuracao({})
 
     def _salvar_configuracao(self) -> None:
+        config_segura = dict(self.config)
+        config_segura.pop("chave_api_gemini", None)
         with open(self.caminho_configuracao, "w", encoding="utf-8") as f:
-            json.dump(self.config, f, indent=2, ensure_ascii=False)
+            json.dump(config_segura, f, indent=2, ensure_ascii=False)
+
+    def _ler_env_chave(self) -> str:
+        caminho_env = os.path.join(self.diretorio_base, ".env")
+        if os.path.exists(caminho_env):
+            with open(caminho_env, "r", encoding="utf-8") as f:
+                for linha in f:
+                    linha = linha.strip()
+                    if linha.startswith("CHAVE_API_GEMINI="):
+                        return linha.split("=", 1)[1].strip()
+        return os.environ.get("CHAVE_API_GEMINI", "")
 
     def _normalizar_configuracao(self, dados: Dict[str, Any]) -> Dict[str, Any]:
         """Garante a presença de todos os campos estruturais na configuração."""
@@ -51,7 +63,7 @@ class GerenciadorProjetos:
             "porta_servidor": 5000,
             "host_servidor": "127.0.0.1",
             "titulo_aplicacao": "Wartales CAT Studio",
-            "chave_api_gemini": dados.get("chave_api_gemini", os.environ.get("CHAVE_API_GEMINI", "")),
+            "chave_api_gemini": self._ler_env_chave(),
             "caminho_steam_wartales": dados.get("caminho_steam_wartales", self.autodetectar_caminho_steam() or ""),
             "projeto_ativo": dados.get("projeto_ativo", "wartales_remastered"),
             "projetos": dados.get("projetos", [
@@ -284,8 +296,29 @@ class GerenciadorProjetos:
         return self.obter_projeto_ativo()
 
     def atualizar_chave_gemini(self, nova_chave: str) -> None:
-        """Atualiza e persiste a chave da API do Gemini nas configurações."""
-        self.config["chave_api_gemini"] = (nova_chave or "").strip()
+        """Atualiza e persiste a chave da API do Gemini no arquivo .env."""
+        nova_chave = (nova_chave or "").strip()
+        self.config["chave_api_gemini"] = nova_chave
+        
+        caminho_env = os.path.join(self.diretorio_base, ".env")
+        linhas = []
+        if os.path.exists(caminho_env):
+            with open(caminho_env, "r", encoding="utf-8") as f:
+                linhas = f.readlines()
+                
+        encontrada = False
+        for i, linha in enumerate(linhas):
+            if linha.startswith("CHAVE_API_GEMINI="):
+                linhas[i] = f"CHAVE_API_GEMINI={nova_chave}\n"
+                encontrada = True
+                break
+                
+        if not encontrada:
+            linhas.append(f"CHAVE_API_GEMINI={nova_chave}\n")
+            
+        with open(caminho_env, "w", encoding="utf-8") as f:
+            f.writelines(linhas)
+            
         self._salvar_configuracao()
 
     def atualizar_caminho_steam(self, novo_caminho: str) -> None:
