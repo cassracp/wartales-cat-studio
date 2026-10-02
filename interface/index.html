@@ -776,11 +776,110 @@
         <!-- Conteúdo Aba 3: Tradução IA & Deep TM -->
         <div id="tab-conteudo-ia" class="painel-tab-setup oculto">
           <p class="modal-descricao">
-            Motor de tradução em lote do Gemini com isolamento de deltas (Deep TM).
+            Motor de tradução em lote e Deep TM com balanceamento de carga, pool dinâmico e circuit breaker tolerante a falhas.
           </p>
 
+          <!-- Resumo de Estatísticas do Pool de IA -->
+          <div class="grade-estatisticas-pool" aria-label="Estatísticas gerais do pool de IA">
+            <div class="card-pool-stat">
+              <span class="pool-stat-icone" aria-hidden="true">🔑</span>
+              <div class="pool-stat-info">
+                <span id="stat-pool-total-chaves" class="pool-stat-valor">0</span>
+                <span class="pool-stat-rotulo">Total de Chaves</span>
+              </div>
+            </div>
+            <div class="card-pool-stat stat-sucesso">
+              <span class="pool-stat-icone" aria-hidden="true">✓</span>
+              <div class="pool-stat-info">
+                <span id="stat-pool-chaves-ativas" class="pool-stat-valor">0</span>
+                <span class="pool-stat-rotulo">Chaves Ativas / Aptas</span>
+              </div>
+            </div>
+            <div class="card-pool-stat stat-alerta">
+              <span class="pool-stat-icone" aria-hidden="true">⏳</span>
+              <div class="pool-stat-info">
+                <span id="stat-pool-chaves-cooldown" class="pool-stat-valor">0</span>
+                <span class="pool-stat-rotulo">Em Cooldown (429)</span>
+              </div>
+            </div>
+            <div class="card-pool-stat">
+              <span class="pool-stat-icone" aria-hidden="true">📊</span>
+              <div class="pool-stat-info">
+                <span id="stat-pool-total-requisicoes" class="pool-stat-valor">0</span>
+                <span class="pool-stat-rotulo">Requisições Feitas</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Configurações de Estratégia do Pool e Circuit Breaker -->
+          <div class="painel-configuracao-pool">
+            <div class="cabecalho-subsecao-pool">
+              <h3 class="titulo-subsecao-pool">⚙️ Estratégia do Pool & Circuit Breaker</h3>
+              <span class="descricao-subsecao-pool">Defina o algoritmo de seleção de chaves e o tempo de recuperação automática</span>
+            </div>
+            <div class="grade-controles-estrategia">
+              <div class="controle-estrategia-item">
+                <label for="select-pool-modo-selecao" class="campo-rotulo">Modo de Seleção:</label>
+                <select id="select-pool-modo-selecao" class="campo-entrada">
+                  <option value="round_robin">🔄 Round-Robin (Balanceamento Circular)</option>
+                  <option value="fallback">🛡️ Fallback em Cascata (Prioridade)</option>
+                </select>
+                <small class="dica-campo" id="dica-modo-selecao">Alterna requisições uniformemente entre todas as chaves ativas.</small>
+              </div>
+
+              <div class="controle-estrategia-item">
+                <label for="input-pool-tempo-cooldown" class="campo-rotulo">Cooldown do Circuit Breaker (segundos):</label>
+                <div class="linha-input-acao">
+                  <input type="number" id="input-pool-tempo-cooldown" class="campo-entrada" min="5" max="3600" value="60" step="5" required>
+                  <button type="button" id="btn-salvar-config-pool" class="btn btn-secundario btn-compacto" title="Salvar configurações de estratégia">💾 Salvar Estratégia</button>
+                </div>
+                <small class="dica-campo">Tempo de isolamento temporário da chave ao receber limite de requisição (HTTP 429).</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gerenciador do Pool de Chaves de IA (Tabela) -->
+          <div class="secao-pool-chaves">
+            <div class="cabecalho-tabela-pool">
+              <div>
+                <h3 class="titulo-subsecao-pool">🔑 Gerenciador do Pool de Chaves de IA</h3>
+                <span class="descricao-subsecao-pool">Cadastre múltiplas credenciais para balanceamento e alta disponibilidade</span>
+              </div>
+              <div class="acoes-cabecalho-pool">
+                <button type="button" id="btn-atualizar-pool-chaves" class="btn btn-secundario btn-compacto" title="Recarregar status das chaves do pool">🔄 Atualizar</button>
+                <button type="button" id="btn-abrir-modal-cadastro-chave" class="btn btn-primario btn-compacto" aria-haspopup="dialog">+ Cadastrar Chave</button>
+              </div>
+            </div>
+
+            <!-- Tabela de Chaves Cadastradas -->
+            <div class="tabela-pool-wrapper">
+              <table class="tabela-pool" aria-label="Tabela de chaves de API do pool">
+                <thead>
+                  <tr>
+                    <th scope="col">Rótulo / Nome</th>
+                    <th scope="col">Provedor & Modelo</th>
+                    <th scope="col">Chave de API</th>
+                    <th scope="col" style="text-align: center;">Prioridade</th>
+                    <th scope="col" style="text-align: center;">Status</th>
+                    <th scope="col" style="text-align: right;">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="corpo-tabela-pool-chaves">
+                  <!-- Linhas geradas dinamicamente via JavaScript -->
+                </tbody>
+              </table>
+
+              <!-- Mensagem de Tabela Vazia -->
+              <div id="pool-tabela-vazia" class="tabela-vazia-mensagem oculto">
+                <span class="icone-vazio" aria-hidden="true">🔑</span>
+                <p>Nenhuma chave cadastrada no pool de IA. Clique em <strong>+ Cadastrar Chave</strong> para adicionar sua primeira credencial.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bloco Rápido .env e Memória Global -->
           <div class="bloco-chave-ia">
-            <label for="input-chave-gemini-modal" class="campo-rotulo">Chave da API do Google Gemini:</label>
+            <label for="input-chave-gemini-modal" class="campo-rotulo">Chave da API do Google Gemini (.env rápido):</label>
             <div class="linha-input-acao">
               <input type="password" id="input-chave-gemini-modal" class="campo-entrada" placeholder="Cole sua chave da API do Gemini aqui...">
               <button type="button" id="btn-salvar-chave-ia" class="btn btn-secundario btn-compacto">💾 Salvar Chave</button>
@@ -1311,6 +1410,92 @@
 
       <footer class="modal-rodape">
         <button type="button" id="btn-fechar-modal-relatorio-rodape" class="btn btn-secundario">Fechar Relatório</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 8: FORMULÁRIO / MODAL DE CADASTRO E EDIÇÃO DE CHAVE DE IA
+       ==================================================================== -->
+  <div id="modal-chave-pool" class="modal-overlay oculto" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-chave-pool">
+    <div class="modal-caixa modal-media">
+      <header class="modal-cabecalho">
+        <h2 id="titulo-modal-chave-pool" class="modal-titulo">🔑 Cadastrar Chave de IA</h2>
+        <button id="btn-fechar-modal-chave-pool" class="btn-fechar-modal" title="Fechar modal (Escape)" aria-label="Fechar modal de chave do pool">✕</button>
+      </header>
+
+      <div class="modal-corpo">
+        <form id="form-chave-pool" class="form-chave-pool-campos">
+          <input type="hidden" id="input-chave-pool-id" value="">
+
+          <div>
+            <label for="input-chave-pool-rotulo" class="campo-rotulo">Rótulo / Nome Identificador *</label>
+            <input type="text" id="input-chave-pool-rotulo" name="rotulo" class="campo-entrada" placeholder="Ex: Gemini Principal, Flash Reserva 1, Conta Pessoal" required>
+            <small class="dica-campo">Nome amigável para identificar a credencial nas auditorias e logs.</small>
+          </div>
+
+          <div class="form-glossario-linha duas-colunas">
+            <div>
+              <label for="select-chave-pool-provedor" class="campo-rotulo">Provedor *</label>
+              <select id="select-chave-pool-provedor" name="provedor" class="campo-entrada">
+                <option value="gemini">Google Gemini</option>
+              </select>
+            </div>
+            <div>
+              <label for="select-chave-pool-modelo" class="campo-rotulo">Modelo *</label>
+              <select id="select-chave-pool-modelo" name="modelo" class="campo-entrada">
+                <option value="gemini-flash-lite-latest">gemini-flash-lite-latest (Rápido & Econômico)</option>
+                <option value="gemini-2.5-flash">gemini-2.5-flash (Alta Velocidade)</option>
+                <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+                <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+                <option value="gemini-1.5-pro">gemini-1.5-pro (Fidelidade Máxima)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="input-chave-pool-segredo" class="campo-rotulo">Chave de API (Secret Key) *</label>
+            <div class="linha-input-acao">
+              <input type="password" id="input-chave-pool-segredo" name="chave" class="campo-entrada" placeholder="Cole sua chave de API (ex: AIzaSy...)" autocomplete="off">
+              <button type="button" id="btn-toggle-ver-chave-pool" class="btn btn-secundario btn-compacto" title="Visualizar ou ocultar chave" aria-label="Visualizar ou ocultar chave de API">👁️</button>
+            </div>
+            <small class="dica-campo" id="dica-chave-pool-segredo">Para nova chave, campo obrigatório. Para edição, deixe em branco para manter a atual.</small>
+          </div>
+
+          <div class="form-glossario-linha duas-colunas">
+            <div>
+              <label for="input-chave-pool-prioridade" class="campo-rotulo">Prioridade (1 a 10) *</label>
+              <input type="number" id="input-chave-pool-prioridade" name="prioridade" class="campo-entrada" min="1" max="10" value="1" required>
+              <small class="dica-campo">1 = Mais prioritária na estratégia Fallback.</small>
+            </div>
+            <div>
+              <label class="campo-rotulo" for="check-chave-pool-ativo">Status Inicial</label>
+              <div class="toggle-switch-wrapper" style="margin-top: 0.4rem;">
+                <label class="toggle-switch-label">
+                  <input type="checkbox" id="check-chave-pool-ativo" name="ativo" checked>
+                  <span class="toggle-switch-slider"></span>
+                  <span id="label-chave-pool-ativo-texto" class="toggle-switch-texto">Chave Ativa</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Caixa de Feedback de Teste em Tempo Real -->
+          <div id="caixa-feedback-teste-chave" class="feedback-teste-chave oculto" role="status" aria-live="polite">
+            <span id="icone-feedback-teste-chave" class="icone-feedback" aria-hidden="true">⏳</span>
+            <div class="feedback-conteudo">
+              <strong id="titulo-feedback-teste-chave">Testando conexão...</strong>
+              <span id="mensagem-feedback-teste-chave" class="mensagem-feedback">Aguardando resposta do provedor de IA...</span>
+              <span id="tempo-feedback-teste-chave" class="tempo-latencia-feedback"></span>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <footer class="modal-rodape">
+        <button type="button" id="btn-testar-conexao-modal" class="btn btn-secundario">⚡ Testar Conexão</button>
+        <button type="button" id="btn-cancelar-modal-chave-pool" class="btn btn-secundario">Cancelar</button>
+        <button type="button" id="btn-salvar-chave-pool" class="btn btn-primario">💾 Salvar Chave</button>
       </footer>
     </div>
   </div>

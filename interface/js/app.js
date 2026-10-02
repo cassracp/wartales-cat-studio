@@ -179,6 +179,7 @@
     modalGerenciadorMod: document.getElementById("modal-gerenciador-mod"),
     btnFecharModalGerenciador: document.getElementById("btn-fechar-modal-gerenciador"),
     btnFecharModalGerenciadorRodape: document.getElementById("btn-fechar-modal-gerenciador-rodape"),
+    modalChavePool: document.getElementById("modal-chave-pool"),
 
     // Modal Filtros Avançados & Compostos (Modo Foco)
     modalFiltrosAvancados: document.getElementById("modal-filtros-avancados"),
@@ -387,7 +388,7 @@
   }
 
   function fecharTodosModais() {
-    [el.modalAtalhos, el.modalCompilacao, el.modalGlossario, el.modalPropagacao, el.modalGerenciadorMod, el.modalFiltrosAvancados].forEach(m => {
+    [el.modalAtalhos, el.modalCompilacao, el.modalGlossario, el.modalPropagacao, el.modalGerenciadorMod, el.modalFiltrosAvancados, el.modalRelatorio, el.modalChavePool].forEach(m => {
       if (m && !m.classList.contains("oculto")) {
         fecharModal(m);
       }
@@ -2286,7 +2287,7 @@
     }
 
     // Fechamento de Modais clicando no fundo escuro (Backdrop)
-    [el.modalAtalhos, el.modalCompilacao, el.modalGlossario, el.modalPropagacao, el.modalGerenciadorMod, el.modalFiltrosAvancados, el.modalRelatorio].forEach(modal => {
+    [el.modalAtalhos, el.modalCompilacao, el.modalGlossario, el.modalPropagacao, el.modalGerenciadorMod, el.modalFiltrosAvancados, el.modalRelatorio, el.modalChavePool].forEach(modal => {
       if (modal) {
         modal.addEventListener("click", (e) => {
           if (e.target === modal) {
@@ -2302,9 +2303,9 @@
 
   function lidarComAtalhosGlobais(e) {
     if (e.key === "Escape") {
-      const modalAberto = document.querySelector(".modal-overlay:not(.oculto)");
-      if (modalAberto) {
-        fecharModal(modalAberto);
+      const modaisAbertos = document.querySelectorAll(".modal-overlay:not(.oculto)");
+      if (modaisAbertos.length > 0) {
+        fecharModal(modaisAbertos[modaisAbertos.length - 1]);
         return;
       }
       if (estado.modoAtual === "foco" && el.campoTraducaoHumana) {

@@ -57,7 +57,8 @@ class TesteIntegridadeInterface(unittest.TestCase):
             "modal-propagacao",
             "modal-gerenciador-mod",
             "modal-filtros-avancados",
-            "modal-relatorio"
+            "modal-relatorio",
+            "modal-chave-pool"
         ]
 
         for modal_id in modais:
@@ -132,6 +133,17 @@ class TesteIntegridadeInterface(unittest.TestCase):
             "extrairPak",
             "salvarCaminhoSteam",
             "salvarChaveGemini",
+            "obterPoolIa",
+            "listarChavesPoolIa",
+            "cadastrarChavePoolIa",
+            "atualizarChavePoolIa",
+            "alternarStatusChavePoolIa",
+            "removerChavePoolIa",
+            "redefinirCooldownChavePoolIa",
+            "revelarChavePoolIa",
+            "testarChavePoolIa",
+            "obterConfigPoolIa",
+            "atualizarConfigPoolIa",
             "analisarDeltasIa",
             "iniciarTraducaoLoteIa",
             "obterStatusLoteIa",
@@ -176,6 +188,7 @@ class TesteIntegridadeInterface(unittest.TestCase):
         self.assertIn('aria-labelledby="titulo-modal-propagacao"', self.conteudo_html)
         self.assertIn('aria-labelledby="titulo-modal-gerenciador"', self.conteudo_html)
         self.assertIn('aria-labelledby="titulo-modal-filtros"', self.conteudo_html)
+        self.assertIn('aria-labelledby="titulo-modal-chave-pool"', self.conteudo_html)
 
     def teste_modulo_glossario_exportado_globalmente(self):
         """glossario.js deve exportar ModuloGlossario para window para ser acessível pelo app.js e eventos DOM."""
@@ -188,6 +201,11 @@ class TesteIntegridadeInterface(unittest.TestCase):
         self.assertIn("window.ModuloGerenciadorMod = ModuloGerenciadorMod", self.conteudo_gerenciador_js)
         self.assertIn("trocarAba", self.conteudo_gerenciador_js)
         self.assertIn("carregarProjetos", self.conteudo_gerenciador_js)
+        self.assertIn("carregarPoolIa", self.conteudo_gerenciador_js)
+        self.assertIn("salvarConfiguracaoPool", self.conteudo_gerenciador_js)
+        self.assertIn("abrirModalChave", self.conteudo_gerenciador_js)
+        self.assertIn("alternarVisualizacaoChaveLinha", self.conteudo_gerenciador_js)
+        self.assertIn("iniciarTickerCooldown", self.conteudo_gerenciador_js)
 
     def teste_elementos_filtros_compostos(self):
         """Valida que todos os controles e classes de filtros compostos estão íntegros e acessíveis."""
@@ -294,6 +312,105 @@ class TesteIntegridadeInterface(unittest.TestCase):
         ]
         for classe_css in classes_css_esperadas:
             self.assertIn(classe_css, self.conteudo_css, f"Classe '{classe_css}' ausente em estilos.css")
+
+    def teste_elementos_gerenciador_pool_ia(self):
+        """Valida que todos os controles, cards de métricas, tabela e modal do Pool de IA estão íntegros e acessíveis."""
+        # 1. Estatísticas do Pool
+        ids_stats = [
+            'id="stat-pool-total-chaves"',
+            'id="stat-pool-chaves-ativas"',
+            'id="stat-pool-chaves-cooldown"',
+            'id="stat-pool-total-requisicoes"'
+        ]
+        for id_el in ids_stats:
+            self.assertIn(id_el, self.conteudo_html, f"Estatística '{id_el}' ausente em index.html")
+
+        # 2. Controles de Estratégia
+        ids_estrategia = [
+            'id="select-pool-modo-selecao"',
+            'id="dica-modo-selecao"',
+            'id="input-pool-tempo-cooldown"',
+            'id="btn-salvar-config-pool"'
+        ]
+        for id_el in ids_estrategia:
+            self.assertIn(id_el, self.conteudo_html, f"Controle de estratégia '{id_el}' ausente em index.html")
+
+        # 3. Tabela e Ações do Pool
+        ids_tabela = [
+            'id="btn-atualizar-pool-chaves"',
+            'id="btn-abrir-modal-cadastro-chave"',
+            'id="corpo-tabela-pool-chaves"',
+            'id="pool-tabela-vazia"'
+        ]
+        for id_el in ids_tabela:
+            self.assertIn(id_el, self.conteudo_html, f"Elemento de tabela do pool '{id_el}' ausente em index.html")
+
+        # 4. Modal de Cadastro/Edição de Chave
+        ids_modal = [
+            'id="modal-chave-pool"',
+            'id="titulo-modal-chave-pool"',
+            'id="btn-fechar-modal-chave-pool"',
+            'id="form-chave-pool"',
+            'id="input-chave-pool-id"',
+            'id="input-chave-pool-rotulo"',
+            'id="select-chave-pool-provedor"',
+            'id="select-chave-pool-modelo"',
+            'id="input-chave-pool-segredo"',
+            'id="btn-toggle-ver-chave-pool"',
+            'id="dica-chave-pool-segredo"',
+            'id="input-chave-pool-prioridade"',
+            'id="check-chave-pool-ativo"',
+            'id="label-chave-pool-ativo-texto"',
+            'id="caixa-feedback-teste-chave"',
+            'id="icone-feedback-teste-chave"',
+            'id="titulo-feedback-teste-chave"',
+            'id="mensagem-feedback-teste-chave"',
+            'id="tempo-feedback-teste-chave"',
+            'id="btn-testar-conexao-modal"',
+            'id="btn-cancelar-modal-chave-pool"',
+            'id="btn-salvar-chave-pool"'
+        ]
+        for id_el in ids_modal:
+            self.assertIn(id_el, self.conteudo_html, f"Elemento do modal do pool '{id_el}' ausente em index.html")
+
+        # 5. Classes CSS do Design System do Pool
+        classes_css_pool = [
+            ".grade-estatisticas-pool",
+            ".card-pool-stat",
+            ".pool-stat-icone",
+            ".pool-stat-valor",
+            ".pool-stat-rotulo",
+            ".painel-configuracao-pool",
+            ".cabecalho-subsecao-pool",
+            ".titulo-subsecao-pool",
+            ".descricao-subsecao-pool",
+            ".grade-controles-estrategia",
+            ".controle-estrategia-item",
+            ".secao-pool-chaves",
+            ".cabecalho-tabela-pool",
+            ".acoes-cabecalho-pool",
+            ".tabela-pool-wrapper",
+            ".tabela-pool",
+            ".badge-status-pool",
+            ".badge-status-pool.status-ativa",
+            ".badge-status-pool.status-cooldown",
+            ".badge-status-pool.status-bloqueada",
+            ".badge-status-pool.status-inativa",
+            ".badge-prioridade-pool",
+            ".chave-mascarada-linha",
+            ".btn-copiar-chave-linha",
+            ".btn-ver-chave-linha",
+            ".btn-icone-pool",
+            ".switch-linha",
+            ".switch-slider",
+            "#modal-chave-pool",
+            ".form-chave-pool-campos",
+            ".toggle-switch-wrapper",
+            ".feedback-teste-chave",
+            ".tabela-vazia-mensagem"
+        ]
+        for classe_css in classes_css_pool:
+            self.assertIn(classe_css, self.conteudo_css, f"Classe CSS do pool '{classe_css}' ausente em estilos.css")
 
 
 if __name__ == "__main__":

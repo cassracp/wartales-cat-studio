@@ -2,7 +2,6 @@
   "porta_servidor": 5000,
   "host_servidor": "127.0.0.1",
   "titulo_aplicacao": "Wartales CAT Studio",
-  "chave_api_gemini": "",
   "caminho_steam_wartales": "D:\\SteamLibrary\\steamapps\\common\\Wartales",
   "projeto_ativo": "wartales_remastered",
   "projetos": [

@@ -5,6 +5,12 @@ venv/
 ENV/
 env/
 .env
+.env.*
+dados/*chaves*
+dados/*pool*
+dados/**/*chaves*
+dados/**/*pool*
+**/chaves_ia.db*
 
 # Caches e Bytecodes Python
 __pycache__/

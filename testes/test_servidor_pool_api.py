@@ -154,6 +154,12 @@ class TesteEndpointsPoolIA(unittest.TestCase):
         self.assertEqual(res_cfg["modo_selecao"], "fallback")
         self.assertEqual(res_cfg["tempo_cooldown_padrao"], 90)
 
+        # 6.1 GET /api/ia/pool/configuracao
+        status, res_get_cfg = simular_requisicao_http("GET", "/api/ia/pool/configuracao")
+        self.assertEqual(status, 200)
+        self.assertEqual(res_get_cfg["modo_selecao"], "fallback")
+        self.assertEqual(res_get_cfg["tempo_cooldown_padrao"], 90)
+
         # 7. POST /api/ia/pool/chaves/testar (com mock)
         def mock_transp(url, payload, headers):
             resp = {"candidates": [{"content": {"parts": [{"text": json.dumps({"pt": "Teste"})}]}}]}
@@ -165,6 +171,22 @@ class TesteEndpointsPoolIA(unittest.TestCase):
         })
         self.assertEqual(status, 200)
         self.assertTrue(res_teste["sucesso"])
+
+        # 7.1 POST /api/ia/pool/chaves/revelar
+        status, res_rev = simular_requisicao_http("POST", "/api/ia/pool/chaves/revelar", {
+            "id": id_chave
+        })
+        self.assertEqual(status, 200)
+        self.assertTrue(res_rev["sucesso"])
+        self.assertEqual(res_rev["chave"], "AIzaSyChaveApiHttpEndpoint123456")
+
+        # 7.2 POST /api/ia/pool/chaves/testar com modelo override
+        status, res_teste_override = simular_requisicao_http("POST", "/api/ia/pool/chaves/testar", {
+            "id": id_chave,
+            "modelo": "gemini-1.5-pro"
+        })
+        self.assertEqual(status, 200)
+        self.assertTrue(res_teste_override["sucesso"])
 
         # 8. POST /api/ia/pool/chaves/atualizar
         status, res_up = simular_requisicao_http("POST", "/api/ia/pool/chaves/atualizar", {
@@ -236,6 +258,18 @@ class TesteEndpointsPoolIA(unittest.TestCase):
 
         # 8. Remover chave com ID inexistente (deve retornar 404)
         status, res_rem = simular_requisicao_http("POST", "/api/ia/pool/chaves/remover", {
+            "id": 999999
+        })
+        self.assertEqual(status, 404)
+
+        # 9. Revelar chave com ID inválido <= 0 (deve retornar 400)
+        status, res_rev_inv = simular_requisicao_http("POST", "/api/ia/pool/chaves/revelar", {
+            "id": 0
+        })
+        self.assertEqual(status, 400)
+
+        # 10. Revelar chave com ID inexistente (deve retornar 404)
+        status, res_rev_inex = simular_requisicao_http("POST", "/api/ia/pool/chaves/revelar", {
             "id": 999999
         })
         self.assertEqual(status, 404)

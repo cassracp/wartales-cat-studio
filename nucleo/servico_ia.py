@@ -3,8 +3,8 @@
 ================================================================================
  Módulo de Serviço de IA (Gemini) - Wartales CAT Studio
 ================================================================================
- Integração direta com a API do Google Gemini Flash Lite para tradução
- contextualizada, respeitando terminologias oficiais e tags CastleDB.
+ Integração direta ou via GerenciadorPoolIA com a API do Google Gemini Flash Lite
+ para tradução contextualizada, respeitando terminologias oficiais e tags CastleDB.
  Nomenclatura 100% em Português do Brasil (pt-BR).
 ================================================================================
 """
@@ -17,46 +17,69 @@ import urllib.error
 import logging
 from typing import Optional, Dict, Any
 
+from nucleo.gerenciador_pool_ia import (
+    GerenciadorPoolIA,
+    obter_instancia_pool_ia,
+    PROMPT_SISTEMA_WARTALES_PADRAO
+)
+
 logger = logging.getLogger("cat_wartales.ia")
 
 CHAVE_PADRAO_GEMINI = os.environ.get("CHAVE_API_GEMINI", "")
 MODELO_PADRAO = "gemini-flash-lite-latest"
-
-PROMPT_SISTEMA_WARTALES = """Você é um tradutor sênior especializado na localização oficial de Wartales para Português do Brasil (pt-BR).
-Traduza o texto em inglês mantendo fidelidade absoluta ao estilo do jogo original da Shiro Games.
-
-REGRAS:
-1. Mantenha TODAS as tags XML, HTML e marcações intactas:
-   - Ex: [DMG], [Fervor], [Bleeding], [Movement], [Willpower], ::value::, $val$, {val}
-   - Ex: <skill>Lone Wolf</skill>, <b>...</b>, <br />, <br/>, &lt;b&gt;...&lt;/b&gt;
-   - NUNCA adicione nem remova tags de quebra de linha ou formatação.
-2. Padrões de terminologia:
-   - "Armour:" -> "Armadura:"
-   - "Helmet:" -> "Capacete:"
-   - "Default Scaling, Levels 1 -> 15:" -> "Escalonamento Padrão, Níveis 1 -> 15:"
-   - "Strength:" -> "Força:", "Dexterity:" -> "Destreza:", "Constitution:" -> "Constituição:"
-   - "Additional abilities, Level -> Skill:" -> "Habilidades adicionais, Nível -> Habilidade:"
-   - "Capture: 1 rope" -> "Captura: 1 corda"
-   - "Light" -> "Leve", "Medium" -> "Média" (ou Médio), "Heavy" -> "Pesada" (ou Pesado), "None" -> "Nenhuma"
-3. Responda ESTRITAMENTE em formato JSON com o schema:
-   {"pt": "texto traduzido"}
-"""
+PROMPT_SISTEMA_WARTALES = PROMPT_SISTEMA_WARTALES_PADRAO
 
 
 class ServicoIA:
-    """Gerencia chamadas diretas à API generativa para tradução assistida."""
+    """Gerencia chamadas diretas ou roteadas via Pool de IA para tradução assistida."""
 
-    def __init__(self, chave_api: str = CHAVE_PADRAO_GEMINI, modelo: str = MODELO_PADRAO):
+    def __init__(
+        self,
+        chave_api: Optional[str] = None,
+        modelo: str = MODELO_PADRAO,
+        gerenciador_pool: Optional[GerenciadorPoolIA] = None
+    ):
         self.chave_api = chave_api
         self.modelo = modelo
+        self.gerenciador_pool = gerenciador_pool
 
     def traduzir_texto(self, texto_en: str) -> Dict[str, Any]:
         """
         Envia um texto individual em inglês para ser traduzido pela IA.
+        Se um GerenciadorPoolIA estiver configurado ou disponível com chaves ativas,
+        utiliza o pool para balanceamento (Round-Robin / Fallback) e Circuit Breaker.
         Retorna dicionário contendo {"sucesso": bool, "traducao": str, "erro": str}.
         """
         if not texto_en or not texto_en.strip():
             return {"sucesso": True, "traducao": "", "erro": ""}
+
+        # 1. Utilizar pool explicitamente injetado
+        if self.gerenciador_pool is not None:
+            return self.gerenciador_pool.executar_traducao(
+                texto_en=texto_en,
+                modelo_override=self.modelo
+            )
+
+        # 2. Se nenhuma chave direta foi especificada, consultar o pool global compartilhado
+        if not self.chave_api:
+            try:
+                pool_global = obter_instancia_pool_ia()
+                if pool_global and pool_global.possui_chaves_cadastradas():
+                    return pool_global.executar_traducao(
+                        texto_en=texto_en,
+                        modelo_override=self.modelo
+                    )
+            except Exception as erro_pool:
+                logger.warning(f"Falha ao consultar pool global de IA: {erro_pool}")
+
+        # 3. Execução direta com chave individual (retrocompatibilidade)
+        chave_utilizar = (self.chave_api or "").strip() or CHAVE_PADRAO_GEMINI
+        if not chave_utilizar:
+            return {
+                "sucesso": False,
+                "traducao": "",
+                "erro": "Nenhuma chave de API configurada para o serviço de IA."
+            }
 
         prompt_usuario = f"Texto a traduzir:\n{texto_en.strip()}"
         prompt_completo = f"{PROMPT_SISTEMA_WARTALES}\n\n{prompt_usuario}"
@@ -66,7 +89,7 @@ class ServicoIA:
             "generationConfig": {"temperature": 0.1, "responseMimeType": "application/json"}
         }).encode("utf-8")
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.modelo}:generateContent?key={self.chave_api}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.modelo}:generateContent?key={chave_utilizar}"
         requisicao = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
 
         tentativas = 0

@@ -2917,6 +2917,556 @@ body.modal-aberto {
   outline: 2px solid var(--cor-foco);
 }
 
+/* ==========================================================================
+   GERENCIADOR DO POOL DE CHAVES DE IA & ESTRATÉGIAS (FASE 2)
+   ========================================================================== */
+
+/* 1. Grade de Estatísticas do Pool */
+.grade-estatisticas-pool {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.card-pool-stat {
+  background-color: var(--cor-fundo-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: border-color 0.15s ease;
+}
+
+.card-pool-stat:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.pool-stat-icone {
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: var(--raio-pequeno);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--cor-primaria-clara);
+}
+
+.pool-stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.pool-stat-valor {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--cor-texto-titulo);
+  line-height: 1.2;
+}
+
+.pool-stat-rotulo {
+  font-size: 0.72rem;
+  color: var(--cor-texto-mutado);
+  margin-top: 0.15rem;
+}
+
+.card-pool-stat.stat-sucesso .pool-stat-valor {
+  color: var(--cor-sucesso);
+}
+
+.card-pool-stat.stat-sucesso .pool-stat-icone {
+  color: var(--cor-sucesso);
+  background-color: rgba(34, 197, 94, 0.1);
+}
+
+.card-pool-stat.stat-alerta .pool-stat-valor {
+  color: var(--cor-alerta);
+}
+
+.card-pool-stat.stat-alerta .pool-stat-icone {
+  color: var(--cor-alerta);
+  background-color: rgba(245, 158, 11, 0.1);
+}
+
+/* 2. Painel de Estratégia do Pool & Circuit Breaker */
+.painel-configuracao-pool {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.cabecalho-subsecao-pool {
+  margin-bottom: 0.75rem;
+}
+
+.titulo-subsecao-pool {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--cor-texto-titulo);
+  margin: 0;
+}
+
+.descricao-subsecao-pool {
+  font-size: 0.78rem;
+  color: var(--cor-texto-mutado);
+  display: block;
+  margin-top: 0.2rem;
+}
+
+.grade-controles-estrategia {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.controle-estrategia-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* 3. Seção da Tabela de Chaves */
+.secao-pool-chaves {
+  margin-bottom: 1.25rem;
+}
+
+.cabecalho-tabela-pool {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.acoes-cabecalho-pool {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tabela-pool-wrapper {
+  background-color: var(--cor-fundo-card);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-medio);
+  overflow-x: auto;
+}
+
+.tabela-pool {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.tabela-pool th {
+  background-color: rgba(0, 0, 0, 0.35);
+  color: var(--cor-texto-mutado);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--cor-borda);
+  white-space: nowrap;
+}
+
+.tabela-pool td {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  vertical-align: middle;
+  color: var(--cor-texto-corpo);
+}
+
+.tabela-pool tr:last-child td {
+  border-bottom: none;
+}
+
+.tabela-pool tr:hover td {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Badges e Identificadores */
+.nome-chave-celula {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.rotulo-chave-texto {
+  font-weight: 600;
+  color: var(--cor-texto-titulo);
+}
+
+.badge-pool-env {
+  display: inline-block;
+  background-color: rgba(56, 189, 248, 0.15);
+  color: var(--cor-primaria-clara);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: var(--raio-pequeno);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  width: fit-content;
+}
+
+.provedor-modelo-celula {
+  display: flex;
+  flex-direction: column;
+}
+
+.provedor-texto {
+  font-weight: 600;
+  color: var(--cor-texto-primario);
+  text-transform: capitalize;
+}
+
+.modelo-texto {
+  font-size: 0.75rem;
+  color: var(--cor-texto-mutado);
+  font-family: ui-monospace, monospace;
+}
+
+.chave-mascarada-linha {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+  color: var(--cor-texto-mutado);
+}
+
+.btn-copiar-chave-linha {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--raio-pequeno);
+  padding: 0.15rem 0.35rem;
+  font-size: 0.75rem;
+  color: var(--cor-texto-mutado);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-copiar-chave-linha:hover {
+  color: var(--cor-primaria-clara);
+  border-color: var(--cor-primaria-clara);
+}
+
+.btn-copiar-chave-linha:focus-visible {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+.btn-ver-chave-linha {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--raio-pequeno);
+  padding: 0.15rem 0.35rem;
+  font-size: 0.75rem;
+  color: var(--cor-texto-mutado);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-ver-chave-linha:hover {
+  color: var(--cor-primaria-clara);
+  border-color: var(--cor-primaria-clara);
+}
+
+.btn-ver-chave-linha:focus-visible {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+.badge-prioridade-pool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.08);
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: var(--cor-texto-titulo);
+}
+
+/* Badges de Status - Acessibilidade WCAG 2.1 AA (Ícone + Texto + Contraste Estrito) */
+.badge-status-pool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--raio-pequeno);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-status-pool.status-ativa {
+  background-color: rgba(34, 197, 94, 0.16);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: #4ade80;
+}
+
+.badge-status-pool.status-cooldown {
+  background-color: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+}
+
+.badge-status-pool.status-bloqueada {
+  background-color: rgba(239, 68, 68, 0.16);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+.badge-status-pool.status-inativa {
+  background-color: rgba(148, 163, 184, 0.16);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: #cbd5e1;
+}
+
+/* Ações da Tabela */
+.celula-acoes-pool {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.btn-icone-pool {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-pequeno);
+  color: var(--cor-texto-primario);
+  padding: 0.3rem 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-icone-pool:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-icone-pool:focus-visible {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+.btn-icone-pool.btn-perigo:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+  border-color: var(--cor-perigo);
+  color: #fca5a5;
+}
+
+/* Toggle Switch Acessível */
+.switch-linha {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 20px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.switch-linha input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--cor-borda);
+  transition: 0.2s ease;
+  border-radius: 20px;
+}
+
+.switch-slider::before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.2s ease;
+  border-radius: 50%;
+}
+
+.switch-linha input:checked + .switch-slider {
+  background-color: var(--cor-sucesso);
+  border-color: var(--cor-sucesso);
+}
+
+.switch-linha input:checked + .switch-slider::before {
+  transform: translateX(18px);
+}
+
+.switch-linha input:focus-visible + .switch-slider {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+/* Modal de Chave do Pool */
+#modal-chave-pool {
+  z-index: 1050;
+}
+
+.form-chave-pool-campos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.toggle-switch-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-switch-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.toggle-switch-label input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch-slider {
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--cor-borda);
+  border-radius: 22px;
+  position: relative;
+  transition: 0.2s ease;
+}
+
+.toggle-switch-slider::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition: 0.2s ease;
+}
+
+.toggle-switch-label input:checked + .toggle-switch-slider {
+  background-color: var(--cor-sucesso);
+  border-color: var(--cor-sucesso);
+}
+
+.toggle-switch-label input:checked + .toggle-switch-slider::before {
+  transform: translateX(18px);
+}
+
+.toggle-switch-label input:focus-visible + .toggle-switch-slider {
+  outline: 2px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+.toggle-switch-texto {
+  font-size: 0.85rem;
+  color: var(--cor-texto-primario);
+  font-weight: 500;
+}
+
+/* Feedback de Teste de Conexão */
+.feedback-teste-chave {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--raio-medio);
+  background-color: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--cor-borda);
+  margin-top: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.feedback-teste-chave.teste-carregando {
+  border-color: rgba(56, 189, 248, 0.4);
+  background-color: rgba(56, 189, 248, 0.08);
+}
+
+.feedback-teste-chave.teste-sucesso {
+  border-color: rgba(34, 197, 94, 0.4);
+  background-color: rgba(34, 197, 94, 0.08);
+}
+
+.feedback-teste-chave.teste-erro {
+  border-color: rgba(239, 68, 68, 0.4);
+  background-color: rgba(239, 68, 68, 0.08);
+}
+
+.icone-feedback {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.feedback-conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.82rem;
+}
+
+.feedback-conteudo strong {
+  color: var(--cor-texto-titulo);
+  font-size: 0.85rem;
+}
+
+.tempo-latencia-feedback {
+  font-size: 0.75rem;
+  color: var(--cor-texto-mutado);
+  font-family: ui-monospace, monospace;
+}
+
+.tabela-vazia-mensagem {
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  color: var(--cor-texto-mutado);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.tabela-vazia-mensagem .icone-vazio {
+  font-size: 2.2rem;
+  opacity: 0.7;
+}
+
+.tabela-vazia-mensagem p {
+  font-size: 0.88rem;
+  margin: 0;
+  max-width: 420px;
+}
+
 .oculto {
   display: none !important;
 }

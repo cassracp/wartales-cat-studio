@@ -1067,7 +1067,7 @@ class GerenciadorPoolIA:
         id_chave: Optional[int] = None,
         chave_direta: Optional[str] = None,
         provedor: str = "gemini",
-        modelo: str = "gemini-flash-lite-latest"
+        modelo: Optional[str] = None
     ) -> Dict[str, Any]:
         """Testa se uma chave cadastrada ou um valor avulso responde corretamente."""
         if id_chave is not None:
@@ -1076,9 +1076,10 @@ class GerenciadorPoolIA:
                 return {"sucesso": False, "erro": f"Chave com ID {id_chave} não encontrada."}
             chave_valor = chave_entidade.chave
             provedor = chave_entidade.provedor
-            modelo = chave_entidade.modelo
+            modelo_usado = modelo if modelo else chave_entidade.modelo
         elif chave_direta:
             chave_valor = chave_direta.strip()
+            modelo_usado = modelo or "gemini-flash-lite-latest"
         else:
             return {"sucesso": False, "erro": "ID da chave ou valor da chave deve ser fornecido."}
 
@@ -1087,7 +1088,7 @@ class GerenciadorPoolIA:
                 provedor,
                 transportador_http=self._transportador_http
             )
-            resultado = adaptador.testar_conexao(chave_valor, modelo)
+            resultado = adaptador.testar_conexao(chave_valor, modelo_usado)
             if id_chave is not None:
                 if resultado.get("sucesso"):
                     self.repositorio.redefinir_cooldown_e_erros(id_chave)

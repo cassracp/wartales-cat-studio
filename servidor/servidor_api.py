@@ -359,6 +359,14 @@ class ManipuladorRequisicaoCat(SimpleHTTPRequestHandler):
                 self._responder_json({"sucesso": True, "chaves": chaves})
                 return
 
+            if caminho == "/api/ia/pool/configuracao":
+                self._responder_json({
+                    "sucesso": True,
+                    "modo_selecao": GERENCIADOR_POOL_IA.obter_modo_selecao(),
+                    "tempo_cooldown_padrao": GERENCIADOR_POOL_IA.obter_tempo_cooldown_padrao()
+                })
+                return
+
             if caminho == "/api/ia/obter_chave":
                 chave = GERENCIADOR_PROJETOS.config.get("chave_api_gemini", "")
                 chaves_pool = GERENCIADOR_POOL_IA.listar_chaves(mascarar=False)
@@ -628,16 +636,34 @@ class ManipuladorRequisicaoCat(SimpleHTTPRequestHandler):
                 self._responder_json({"erro": "Chave não encontrada."}, 404)
             return
 
+        if caminho == "/api/ia/pool/chaves/revelar":
+            id_chave = int(payload.get("id", 0))
+            if id_chave <= 0:
+                self._responder_json({"erro": "ID de chave inválido."}, 400)
+                return
+            chave_entidade = GERENCIADOR_POOL_IA.obter_chave_por_id(id_chave)
+            if not chave_entidade:
+                self._responder_json({"erro": "Chave não encontrada no pool."}, 404)
+                return
+            self._responder_json({
+                "sucesso": True,
+                "id": id_chave,
+                "chave": chave_entidade.chave,
+                "rotulo": chave_entidade.rotulo
+            })
+            return
+
         if caminho == "/api/ia/pool/chaves/testar":
             id_chave = payload.get("id")
             chave_avulsa = payload.get("chave", "").strip()
             provedor = payload.get("provedor", "gemini").strip()
-            modelo = payload.get("modelo", "gemini-flash-lite-latest").strip()
+            modelo_param = payload.get("modelo")
+            modelo = modelo_param.strip() if modelo_param else None
 
             if id_chave is not None:
-                res_teste = GERENCIADOR_POOL_IA.testar_chave(id_chave=int(id_chave))
+                res_teste = GERENCIADOR_POOL_IA.testar_chave(id_chave=int(id_chave), modelo=modelo)
             elif chave_avulsa:
-                res_teste = GERENCIADOR_POOL_IA.testar_chave(chave_direta=chave_avulsa, provedor=provedor, modelo=modelo)
+                res_teste = GERENCIADOR_POOL_IA.testar_chave(chave_direta=chave_avulsa, provedor=provedor, modelo=modelo or "gemini-flash-lite-latest")
             else:
                 self._responder_json({"erro": "Informe o 'id' da chave ou o campo 'chave' para teste."}, 400)
                 return
