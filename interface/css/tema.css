@@ -1,0 +1,75 @@
+/* Wartales CAT Studio - Tema & Acessibilidade (WCAG 2.1 Nível AA) */
+:root {
+  /* Paleta de Cores de Alto Contraste */
+  --cor-fundo-base: #121418;
+  --cor-fundo-superficie: #1c2026;
+  --cor-fundo-painel: #242a33;
+  --cor-fundo-input: #15191e;
+  
+  --cor-borda-suave: #363e4a;
+  --cor-borda-forte: #4d5766;
+  --cor-borda-destaque: #d4af37;
+
+  /* Tipografia & Contraste (mínimo 4.5:1 em relação ao fundo) */
+  --cor-texto-primario: #f4f6f8;     /* Contraste > 12:1 */
+  --cor-texto-secundario: #c5cbd3;   /* Contraste > 7:1 */
+  --cor-texto-esmaecido: #9aa4b2;    /* Contraste > 4.5:1 */
+  
+  /* Cores Semânticas de Estado com Alta Luminância */
+  --cor-dourado: #e6c66e;
+  --cor-dourado-hover: #f3d88b;
+  --cor-sucesso: #2ecc71;
+  --cor-sucesso-fundo: rgba(46, 204, 113, 0.15);
+  --cor-alerta: #f39c12;
+  --cor-alerta-fundo: rgba(243, 156, 18, 0.18);
+  --cor-perigo: #e74c3c;
+  --cor-perigo-fundo: rgba(231, 76, 60, 0.18);
+  --cor-info: #3498db;
+  --cor-info-fundo: rgba(52, 152, 219, 0.15);
+
+  /* Destaque de Foco Acessível (Indicador nítido de teclado) */
+  --cor-foco-visivel: #4dabf7;
+  --sombra-foco: 0 0 0 3px rgba(77, 171, 247, 0.6);
+
+  /* Tipografia */
+  --fonte-padrao: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fonte-codigo: "Cascadia Code", Consolas, "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--cor-fundo-base);
+  color: var(--cor-texto-primario);
+  font-family: var(--fonte-padrao);
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* Indicador de Foco Visível Obrigatório para Teclado */
+:focus-visible {
+  outline: 2px solid var(--cor-foco-visivel) !important;
+  outline-offset: 2px !important;
+  box-shadow: var(--sombra-foco) !important;
+}
+
+/* Scrollbar estilizada */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--cor-fundo-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--cor-borda-forte);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cor-dourado);
+}

@@ -1,0 +1,47 @@
+# Wartales CAT Studio - .gitignore
+# Ambientes Virtuais Python
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Caches e Bytecodes Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Caches de ferramentas e IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Banco de dados e logs SQLite
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+logs/
+*.log
+!dados/banco/.gitkeep
+
+# Arquivos de saída e empacotamento temporários (manter a pasta, ignorar artefatos pesados)
+saida/compilados/*
+!saida/compilados/.gitkeep
+saida/distribuicao_nexus/*.zip
+saida/distribuicao_nexus/*.pak
+!saida/distribuicao_nexus/.gitkeep
+saida/res2_temporario/
+
+# Caches temporários de teste
+scratch/
+temp/
+tmp/
+
+# Ignorando arquivos pesados PAK
+*.pak

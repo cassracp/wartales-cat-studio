@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wartales CAT Studio - Tradução Profissional e Acessível</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1e232d">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+  <!-- Região Acessível para Leitores de Tela -->
+  <div id="regiao-anuncios" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Cabeçalho Principal (Header) -->
+  <header class="cabecalho-principal" role="banner">
+    <div class="cabecalho-esquerda">
+      <div class="logo-container">
+        <span class="logo-icone" aria-hidden="true">⚔️</span>
+        <h1 class="logo-titulo">Wartales CAT Studio</h1>
+        <span class="badge-versao" aria-label="Versão 2.0">v2.0</span>
+      </div>
+
+      <!-- Alternador de Modos -->
+      <nav class="nav-modos" aria-label="Modos de exibição">
+        <button id="btn-modo-foco" class="btn-modo ativo" aria-pressed="true" title="Modo Foco Página a Página (Alt+F)">
+          <span aria-hidden="true">🎯</span>
+          <span>Modo Foco</span>
+          <kbd class="tecla-atalho">Alt+F</kbd>
+        </button>
+        <button id="btn-modo-overview" class="btn-modo" aria-pressed="false" title="Modo Visão Geral e Árvore (Alt+O)">
+          <span aria-hidden="true">🌲</span>
+          <span>Visão Geral & Árvore</span>
+          <kbd class="tecla-atalho">Alt+O</kbd>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Progresso do Projeto e Ações Rápidas -->
+    <div class="cabecalho-direita">
+      <div class="progresso-container progresso-clicavel" id="container-progresso-geral" role="button" tabindex="0" title="Clique para abrir o Relatório Detalhado (Alt+R)" aria-label="Progresso da tradução. Clique para abrir o relatório inteligente">
+        <div class="progresso-rotulos">
+          <span id="rotulo-progresso-titulo">Progresso do Mod</span>
+          <strong id="rotulo-progresso-percentual">0%</strong>
+        </div>
+        <div class="barra-trilho" role="progressbar" id="barra-progresso" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div id="barra-preenchimento" class="barra-preenchimento" style="width: 0%;"></div>
+        </div>
+        <div class="progresso-subrotulo-linha">
+          <span id="rotulo-progresso-subtexto">0 / 0 validados</span>
+        </div>
+      </div>
+
+      <div class="acoes-globais">
+        <button id="btn-abrir-relatorio" class="btn btn-destaque-relatorio" title="Relatório Completo da Tradução e Gerador Nexus (Alt+R)" aria-haspopup="dialog">
+          <span aria-hidden="true">📊</span>
+          <span>Relatório & Nexus</span>
+          <kbd class="tecla-atalho">Alt+R</kbd>
+        </button>
+        <button id="btn-abrir-gerenciador-mod" class="btn btn-secundario" title="Gerenciar Mod e Fontes de Dados (Setup)" aria-haspopup="dialog">
+          <span aria-hidden="true">⚙️</span>
+          <span id="label-mod-ativo-nome">Wartales Remastered</span>
+        </button>
+        <button id="btn-abrir-glossario" class="btn btn-secundario" title="Termbase e Glossário Oficial" aria-haspopup="dialog">
+          <span aria-hidden="true">📖</span>
+          <span>Glossário</span>
+        </button>
+        <button id="btn-abrir-compilacao" class="btn btn-primario" title="Compilar XMLs e empacotar res2.pak" aria-haspopup="dialog">
+          <span aria-hidden="true">📦</span>
+          <span>Compilar Mod</span>
+        </button>
+        <button id="btn-abrir-atalhos" class="btn btn-secundario" title="Ajuda e Teclas de Atalho (?)" aria-haspopup="dialog">
+          <span aria-hidden="true">⌨️</span>
+          <span>Atalhos</span>
+          <kbd class="tecla-atalho">?</kbd>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal Dinâmico -->
+  <main class="conteudo-principal" id="conteudo-principal" role="main">
+
+    <!-- ====================================================================
+         TELA 1: MODO FOCO (Página Única do Segmento)
+         ==================================================================== -->
+    <section id="secao-modo-foco" class="modo-foco-container" aria-label="Área de Tradução Focada">
+      
+      <!-- Barra Superior do Segmento e Filtro de Navegação -->
+      <div class="barra-navegacao-segmento">
+        <div class="grupo-navegacao">
+          <button id="btn-segmento-anterior" class="btn btn-secundario" title="Ir para o segmento anterior (Alt + Seta Esquerda)">
+            <span aria-hidden="true">←</span>
+            <span>Anterior</span>
+            <kbd class="tecla-atalho">Alt+←</kbd>
+          </button>
+
+          <!-- Seletor de Filtro de Navegação no Modo Foco -->
+          <div class="filtro-navegacao-grupo">
+            <label for="select-filtro-foco" class="rotulo-filtro-foco">Navegar por:</label>
+            <select id="select-filtro-foco" class="select-filtro-foco" title="Critério de frases no Modo Foco (Alt+P para alternar Pendentes)">
+              <option value="mod_pendentes">⚔️ Apenas Mod: Pendentes</option>
+              <option value="mod_novos_pendentes">✨ Mod: Novos Pendentes</option>
+              <option value="mod_modificados_pendentes">✏️ Mod: Modificados Pendentes</option>
+              <option value="pendentes">⏳ Todas as Pendentes (Geral)</option>
+              <option value="mod_todos">⚔️ Todas do Mod (Novas + Modif)</option>
+              <option value="aprovados">✓ Aprovados</option>
+              <option value="inconsistencias">⚠️ Inconsistências / QA</option>
+              <option value="sem_ia">🤖 Sem Tradução IA</option>
+              <option value="todos">📋 Todas as Frases</option>
+            </select>
+            <button type="button" id="btn-toggle-filtros-detalhados" class="btn-icone-filtro" title="Personalizar filtros avançados e compostos (Alt+Filtro)" aria-haspopup="dialog" aria-expanded="false" aria-controls="modal-filtros-avancados">
+              <span aria-hidden="true">⚙️</span>
+            </button>
+          </div>
+
+          <div class="indicador-posicao" aria-live="polite">
+            <span>Frase</span>
+            <strong id="texto-posicao-filtrada">#0</strong>
+            <span>de</span>
+            <strong id="texto-total-filtrados">0</strong>
+            <span id="indicador-global" class="indicador-global">(Item #<span id="texto-posicao-segmento">0</span> de <span id="texto-total-segmentos">0</span> global)</span>
+          </div>
+
+          <button id="btn-segmento-proximo" class="btn btn-secundario" title="Ir para o próximo segmento (Alt + Seta Direita)">
+            <span>Próximo</span>
+            <span aria-hidden="true">→</span>
+            <kbd class="tecla-atalho">Alt+→</kbd>
+          </button>
+
+          <div class="salto-direto">
+            <label for="input-salto-segmento" class="sr-only">Pular para número do segmento</label>
+            <input type="number" id="input-salto-segmento" class="input-salto" min="1" placeholder="Ir para ID..." title="Pular direto para ID do segmento (Ctrl+G)">
+          </div>
+        </div>
+
+        <!-- Metadados e Chip de Contexto Ativo -->
+        <div class="metadados-segmento">
+          <div id="chip-filtro-ativo" class="chip-filtro-ativo oculto" title="Filtro de busca ou categoria ativo vindo da Visão Geral">
+            <span id="texto-chip-filtro">Filtro ativo</span>
+            <button id="btn-remover-filtro-contexto" class="btn-fechar-chip" title="Remover filtro de contexto e ver todas as frases">✕</button>
+          </div>
+          <span id="badge-arquivo" class="badge-tag" title="Arquivo de origem">export_pt-BR.xml</span>
+          <span id="badge-chave" class="badge-tag" title="Chave / Tag interna">chave.item</span>
+          <span id="badge-status-segmento" class="badge-status status-pendente" role="button" tabindex="0" title="Clique para alternar o status entre Pendente e Aprovado (Alt+U)">Pendente</span>
+        </div>
+      </div>
+
+      <!-- Grid Comparativo das 4 Versões -->
+      <div class="grid-versoes" aria-label="Versões de referência">
+        
+        <!-- 1. Original em Inglês (Vanilla Shiro Games) -->
+        <article class="card-versao" aria-labelledby="titulo-card-vanilla-en">
+          <header class="card-versao-cabecalho">
+            <h2 id="titulo-card-vanilla-en" class="card-versao-titulo">
+              <span aria-hidden="true">🏛️</span>
+              <span>1. Original Vanilla (EN)</span>
+            </h2>
+            <span class="card-versao-badge" style="background-color: rgba(148, 163, 184, 0.2); color: #cbd5e1;">Shiro Games</span>
+          </header>
+          <div id="conteudo-vanilla-en" class="card-versao-corpo">
+            Carregando texto...
+          </div>
+          <footer class="card-versao-rodape">
+            <button id="btn-copiar-vanilla-en-editor" class="btn btn-secundario btn-compacto" title="Copiar Vanilla EN para o editor humano">
+              <span>Copiar para Tradução</span>
+            </button>
+            <button id="btn-copiar-vanilla-en" class="btn btn-secundario btn-compacto" title="Copiar texto para clipboard">
+              <span>Copiar Clipboard</span>
+            </button>
+          </footer>
+        </article>
+
+        <!-- 2. Tradução Oficial (Vanilla PT-BR) -->
+        <article class="card-versao" aria-labelledby="titulo-card-vanilla-pt">
+          <header class="card-versao-cabecalho">
+            <h2 id="titulo-card-vanilla-pt" class="card-versao-titulo">
+              <span aria-hidden="true">🇧🇷</span>
+              <span>2. Tradução Oficial (PT-BR)</span>
+            </h2>
+            <span class="card-versao-badge" style="background-color: rgba(16, 185, 129, 0.2); color: var(--cor-sucesso);">Oficial</span>
+          </header>
+          <div id="conteudo-vanilla-pt" class="card-versao-corpo">
+            Carregando texto...
+          </div>
+          <footer class="card-versao-rodape">
+            <button id="btn-copiar-vanilla-pt" class="btn btn-secundario btn-compacto">
+              <span>Copiar para Tradução</span>
+              <kbd class="tecla-atalho">Alt+1</kbd>
+            </button>
+          </footer>
+        </article>
+
+        <!-- 3. Versão do Mod (Mod EN) -->
+        <article class="card-versao" aria-labelledby="titulo-card-mod-en">
+          <header class="card-versao-cabecalho">
+            <h2 id="titulo-card-mod-en" class="card-versao-titulo">
+              <span aria-hidden="true">⚔️</span>
+              <span>3. Versão do Mod (EN)</span>
+            </h2>
+            <span class="card-versao-badge" style="background-color: rgba(56, 189, 248, 0.2); color: var(--cor-primaria-clara);">Wartales Remastered</span>
+          </header>
+          <div id="conteudo-mod-en" class="card-versao-corpo">
+            Carregando texto...
+          </div>
+          <footer class="card-versao-rodape">
+            <button id="btn-toggle-diff" class="btn btn-secundario btn-compacto" title="Destacar diferenças em relação ao Vanilla EN (Alt+D)">
+              <span aria-hidden="true">👁️</span>
+              <span>Realçar Diff</span>
+              <kbd class="tecla-atalho">Alt+D</kbd>
+            </button>
+            <button id="btn-copiar-mod-en" class="btn btn-secundario btn-compacto">
+              <span>Copiar para Tradução</span>
+              <kbd class="tecla-atalho">Alt+3</kbd>
+            </button>
+          </footer>
+        </article>
+
+        <!-- 4. Tradução por IA (Gemini / Deep TM) -->
+        <article class="card-versao" aria-labelledby="titulo-card-ia-pt">
+          <header class="card-versao-cabecalho">
+            <h2 id="titulo-card-ia-pt" class="card-versao-titulo">
+              <span aria-hidden="true">✨</span>
+              <span>4. Tradução por IA (Gemini)</span>
+            </h2>
+            <span class="card-versao-badge" style="background-color: rgba(99, 102, 241, 0.2); color: #818cf8;">Deep TM / IA</span>
+          </header>
+          <div id="conteudo-ia-pt" class="card-versao-corpo">
+            Carregando sugestão...
+          </div>
+          <footer class="card-versao-rodape">
+            <button id="btn-gerar-ia-agora" class="btn btn-ia btn-compacto">
+              <span>Traduzir com IA</span>
+              <kbd class="tecla-atalho">Alt+T</kbd>
+            </button>
+            <button id="btn-copiar-ia-pt" class="btn btn-secundario btn-compacto">
+              <span>Copiar para Tradução</span>
+              <kbd class="tecla-atalho">Alt+2</kbd>
+            </button>
+          </footer>
+        </article>
+
+      </div>
+
+      <!-- Card Principal: Campo de Tradução Humana (Editor em Destaque) -->
+      <section class="card-editor-humano" aria-labelledby="titulo-editor-humano">
+        <header class="editor-cabecalho">
+          <div class="editor-titulo-grupo">
+            <span aria-hidden="true" style="font-size: 1.2rem;">✍️</span>
+            <h2 id="titulo-editor-humano" class="editor-titulo">Tradução Humana Definitiva (PT-BR)</h2>
+          </div>
+          <div class="editor-metricas">
+            <span id="badge-repeticoes" class="badge-tag oculto" style="color: var(--cor-alerta); border-color: var(--cor-alerta); cursor: pointer;" title="Clique para gerenciar ou visualizar as repetições desta frase no jogo">🔁 0 repetições</span>
+            <span>Caracteres: <strong id="contador-caracteres">0</strong></span>
+            <span>Palavras: <strong id="contador-palavras">0</strong></span>
+          </div>
+        </header>
+
+        <!-- Barra de Ferramentas CastleDB e Tags Rápidas -->
+        <div class="editor-barra-formatacao" role="toolbar" aria-label="Ferramentas de formatação CastleDB">
+          <div class="grupo-botoes-formatacao">
+            <span class="rotulo-ferramentas">CastleDB:</span>
+            <button type="button" id="btn-inserir-br" class="btn-tag-ferramenta" title="Inserir quebra de linha nativa &lt;br/&gt;">&lt;br/&gt;</button>
+            <button type="button" id="btn-inserir-b" class="btn-tag-ferramenta" title="Envolver seleção com tag de negrito &lt;b&gt;...&lt;/b&gt;">&lt;b&gt;</button>
+            <button type="button" id="btn-inserir-good" class="btn-tag-ferramenta" title="Envolver com tag de atributo positivo &lt;good&gt;...&lt;/good&gt;">&lt;good&gt;</button>
+            <button type="button" id="btn-inserir-bad" class="btn-tag-ferramenta" title="Envolver com tag de atributo negativo &lt;bad&gt;...&lt;/bad&gt;">&lt;bad&gt;</button>
+            <button type="button" id="btn-inserir-todas-tags" class="btn-tag-ferramenta" title="Inserir todas as tags obrigatórias da frase de origem">Copiar Tags</button>
+          </div>
+          <div class="grupo-botoes-acoes-editor">
+            <button type="button" id="btn-restaurar-texto" class="btn-tag-ferramenta" title="Restaurar tradução inicial do segmento (Alt+Z)">↺ Restaurar</button>
+            <button type="button" id="btn-limpar-editor" class="btn-tag-ferramenta" title="Limpar campo de tradução humana">✕ Limpar</button>
+          </div>
+        </div>
+
+        <label for="campo-traducao-humana" class="sr-only">Digite ou revise a tradução humana em português do Brasil</label>
+        <textarea id="campo-traducao-humana" class="editor-area-texto" placeholder="Digite a tradução humana definitiva aqui ou utilize os atalhos de cópia rápida..." rows="4"></textarea>
+
+        <!-- Painel de Validação em Tempo Real de Tags CastleDB e QA -->
+        <div id="painel-validacao-tags" class="painel-validacao-tags">
+          <span style="font-weight: 600; color: var(--cor-texto-mutado);">Conformidade CastleDB & QA:</span>
+          <div id="lista-status-tags" class="tags-lista-status">
+            <span class="tag-badge-ok">✓ Nenhuma inconsistência detectada</span>
+          </div>
+        </div>
+
+        <!-- Barra de Ferramentas e Ações do CAT -->
+        <footer class="editor-barra-ferramentas">
+          <div class="ferramentas-atalhos-copiar">
+            <button id="btn-atalho-copiar-oficial" class="btn btn-secundario" title="Preencher com a versão oficial da Shiro Games (Alt+1)">
+              <span>Oficial</span>
+              <kbd class="tecla-atalho">Alt+1</kbd>
+            </button>
+            <button id="btn-atalho-copiar-ia" class="btn btn-secundario" title="Preencher com a sugestão do Gemini (Alt+2)">
+              <span>IA</span>
+              <kbd class="tecla-atalho">Alt+2</kbd>
+            </button>
+            <button id="btn-atalho-copiar-mod" class="btn btn-secundario" title="Preencher com o original do Mod (Alt+3)">
+              <span>Mod EN</span>
+              <kbd class="tecla-atalho">Alt+3</kbd>
+            </button>
+          </div>
+
+          <div class="ferramentas-acoes-principais">
+            <button id="btn-desfazer-aprovacao" class="btn btn-alerta oculto" title="Desfazer aprovação desta frase e reabri-la como pendente (Alt+U)">
+              <span aria-hidden="true">↩️</span>
+              <span>Desfazer Aprovação</span>
+              <kbd class="tecla-atalho">Alt+U</kbd>
+            </button>
+
+            <button id="btn-salvar-permanecer" class="btn btn-secundario" title="Salvar sem mudar de página (Ctrl+S)">
+              <span aria-hidden="true">💾</span>
+              <span>Salvar</span>
+              <kbd class="tecla-atalho">Ctrl+S</kbd>
+            </button>
+
+            <button id="btn-aprovar-segmento" class="btn btn-sucesso" title="Marcar como aprovado e avançar para a próxima frase pendente (Alt+A)">
+              <span aria-hidden="true">✓</span>
+              <span>Aprovar & Próximo</span>
+              <kbd class="tecla-atalho">Alt+A</kbd>
+            </button>
+
+            <button id="btn-salvar-avancar" class="btn btn-primario" title="Salvar alteração e avançar para a próxima frase filtrada (Ctrl+Enter)">
+              <span aria-hidden="true">⚡</span>
+              <span>Salvar & Avançar</span>
+              <kbd class="tecla-atalho">Ctrl+Enter</kbd>
+            </button>
+          </div>
+        </footer>
+      </section>
+
+    </section>
+
+    <!-- ====================================================================
+         TELA 2: MODO VISÃO GERAL (Árvore Hierárquica e Busca Global)
+         ==================================================================== -->
+    <section id="secao-modo-overview" class="modo-overview-container oculto" aria-label="Visão Geral e Estrutura em Árvore">
+      
+      <!-- Coluna Esquerda: Árvore Hierárquica -->
+      <aside class="painel-arvore" aria-label="Navegador em Árvore">
+        <header class="arvore-cabecalho">
+          <h3>Estrutura do Jogo</h3>
+          <div class="arvore-acoes">
+            <button id="btn-expandir-arvore" class="btn btn-secundario btn-xs" title="Expandir todas as pastas">Expandir</button>
+            <button id="btn-recolher-arvore" class="btn btn-secundario btn-xs" title="Recolher todas as pastas">Recolher</button>
+            <button id="btn-limpar-filtro-arvore" class="btn btn-secundario btn-xs" title="Mostrar todos os arquivos e categorias">Limpar</button>
+          </div>
+        </header>
+
+        <div id="container-arvore" class="arvore-lista" role="tree" aria-label="Árvore de arquivos e categorias">
+          <!-- Nós dinâmicos inseridos via JavaScript -->
+        </div>
+      </aside>
+
+      <!-- Coluna Direita: Mesa de Busca e Lista Filtrada -->
+      <div class="painel-lista">
+        
+        <!-- Controles de Busca e Filtros Compostos -->
+        <div class="lista-controles-topo">
+          <div class="busca-container">
+            <label for="input-busca-global" class="sr-only">Buscar termos no projeto</label>
+            <input type="text" id="input-busca-global" class="input-busca" placeholder="🔍 Buscar por qualquer termo em inglês, português, chave ou tag... (Ctrl+F)" autocomplete="off">
+            <button type="button" id="btn-limpar-busca-overview" class="btn btn-secundario btn-compacto" title="Limpar busca textual">✕</button>
+          </div>
+
+          <!-- Grupos de Filtros Compostos -->
+          <div class="grupos-filtros-compostos">
+            <!-- 1. Escopo / Origem -->
+            <div class="linha-grupo-filtro" role="group" aria-label="Filtrar por escopo do mod">
+              <span class="rotulo-grupo-filtro">Escopo:</span>
+              <div class="filtros-pills-grupo">
+                <button type="button" class="filtro-pill pill-origem ativo" data-origem="apenas_mod" title="Frases novas ou alteradas pelo Mod">⚔️ Apenas Mod</button>
+                <button type="button" class="filtro-pill pill-origem" data-origem="novos" title="Frases inéditas inexistentes no jogo base">✨ Novos</button>
+                <button type="button" class="filtro-pill pill-origem" data-origem="modificados" title="Frases alteradas em relação ao original">✏️ Modificados</button>
+                <button type="button" class="filtro-pill pill-origem" data-origem="todos" title="Todas as frases do projeto">📋 Todos</button>
+              </div>
+            </div>
+
+            <!-- 2. Status de Revisão -->
+            <div class="linha-grupo-filtro" role="group" aria-label="Filtrar por status de revisão">
+              <span class="rotulo-grupo-filtro">Status:</span>
+              <div class="filtros-pills-grupo">
+                <button type="button" class="filtro-pill pill-status ativo" data-status="pendentes" title="Frases ainda pendentes de revisão">⏳ Pendentes</button>
+                <button type="button" class="filtro-pill pill-status" data-status="aprovados" title="Frases já revisadas e aprovadas">✓ Aprovados</button>
+                <button type="button" class="filtro-pill pill-status" data-status="todos" title="Todos os status">Todos</button>
+              </div>
+            </div>
+
+            <!-- 3. Especiais (QA / IA) -->
+            <div class="linha-grupo-filtro" role="group" aria-label="Filtros especiais de QA e IA">
+              <span class="rotulo-grupo-filtro">Especial:</span>
+              <div class="filtros-pills-grupo">
+                <button type="button" class="filtro-pill pill-especial ativo" data-especial="todos" title="Sem filtro especial">Nenhum</button>
+                <button type="button" class="filtro-pill pill-especial" data-especial="inconsistencias" title="Apenas frases com inconsistências detectadas pelo QA">⚠️ Inconsistências QA</button>
+                <button type="button" class="filtro-pill pill-especial" data-especial="sem_ia" title="Apenas frases sem tradução IA gerada">🤖 Sem IA</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barra de Resumo do Filtro Composto Ativo -->
+          <div class="barra-resumo-filtros">
+            <span id="badge-resumo-filtros-overview" class="badge-resumo-filtros">Filtro Ativo: <strong>⚔️ Apenas Mod + ⏳ Pendentes</strong></span>
+            <button type="button" id="btn-limpar-filtros-overview" class="btn btn-secundario btn-xs" title="Redefinir para todas as frases">↺ Redefinir Filtros</button>
+          </div>
+        </div>
+
+        <!-- Tabela / Lista de Segmentos -->
+        <div id="tabela-segmentos" class="lista-segmentos-tabela" role="feed" aria-label="Lista de segmentos">
+          <!-- Linhas geradas dinamicamente via JavaScript -->
+        </div>
+
+        <!-- Paginação da Lista -->
+        <footer class="lista-paginacao">
+          <button id="btn-pagina-anterior" class="btn btn-secundario" title="Página anterior">← Anterior</button>
+          <span id="texto-paginacao-info" class="paginacao-info">Página 1 de 1</span>
+          <button id="btn-pagina-proxima" class="btn btn-secundario" title="Próxima página">Próxima →</button>
+        </footer>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ====================================================================
+       MODAL 1: TECLAS DE ATALHO E AJUDA
+       ==================================================================== -->
+  <div id="modal-atalhos" class="modal-overlay oculto" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-atalhos">
+    <div class="modal-caixa">
+      <header class="modal-cabecalho">
+        <h2 id="titulo-modal-atalhos" class="modal-titulo">⌨️ Teclas de Atalho de Alta Produtividade</h2>
+        <button id="btn-fechar-modal-atalhos" class="btn-fechar-modal" title="Fechar modal (Escape)">✕</button>
+      </header>
+
+      <div class="modal-corpo">
+        <table class="tabela-atalhos">
+          <thead>
+            <tr>
+              <th>Atalho</th>
+              <th>Ação</th>
+              <th>Finalidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="tabela-secao-titulo">
+              <td colspan="3">⚡ Edição & Salvar</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Ctrl + Enter</kbd></td>
+              <td><strong>Salvar & Avançar</strong></td>
+              <td>Salva a tradução humana e carrega a próxima frase filtrada</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + A</kbd></td>
+              <td><strong>Aprovar & Próximo</strong></td>
+              <td>Marca o segmento como aprovado e avança para a próxima pendência</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + U</kbd></td>
+              <td><strong>Desfazer Aprovação</strong></td>
+              <td>Reabre o segmento como pendente de revisão</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Ctrl + S</kbd></td>
+              <td><strong>Salvar</strong></td>
+              <td>Salva a tradução mantendo o foco no editor</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + Z</kbd></td>
+              <td><strong>Restaurar</strong></td>
+              <td>Restaura o texto original da frase no editor</td>
+            </tr>
+
+            <tr class="tabela-secao-titulo">
+              <td colspan="3">🧭 Navegação & Filtros</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + →</kbd></td>
+              <td><strong>Próxima Frase</strong></td>
+              <td>Navega para a próxima frase dentro do filtro ativo</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + ←</kbd></td>
+              <td><strong>Frase Anterior</strong></td>
+              <td>Navega para a frase anterior dentro do filtro ativo</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Ctrl + G</kbd></td>
+              <td><strong>Salto Direto</strong></td>
+              <td>Foca no campo para digitar o ID do segmento</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + P</kbd></td>
+              <td><strong>Alternar Pendentes</strong></td>
+              <td>Alterna entre filtrar apenas Pendentes ou Todas as frases do Mod</td>
+            </tr>
+
+            <tr class="tabela-secao-titulo">
+              <td colspan="3">📋 Cópias Rápidas & IA</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + 1</kbd></td>
+              <td><strong>Copiar Oficial</strong></td>
+              <td>Preenche o editor com a tradução oficial PT-BR da Shiro Games</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + 2</kbd></td>
+              <td><strong>Copiar IA</strong></td>
+              <td>Preenche o editor com a sugestão gerada pela IA / TM</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + 3</kbd></td>
+              <td><strong>Copiar Mod EN</strong></td>
+              <td>Preenche o editor com a versão em inglês do mod</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + T</kbd></td>
+              <td><strong>Traduzir com IA</strong></td>
+              <td>Dispara geração em tempo real via Gemini Flash Lite</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + D</kbd></td>
+              <td><strong>Realçar Diff</strong></td>
+              <td>Destaca diferenças entre o Vanilla EN e o Mod EN</td>
+            </tr>
+
+            <tr class="tabela-secao-titulo">
+              <td colspan="3">🖥️ Modos de Exibição & Geral</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + F</kbd></td>
+              <td><strong>Modo Foco</strong></td>
+              <td>Visualização limpa frase a frase</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Alt + O</kbd></td>
+              <td><strong>Visão Geral & Árvore</strong></td>
+              <td>Visualização estruturada do projeto e categorias</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Ctrl + F</kbd></td>
+              <td><strong>Busca Global</strong></td>
+              <td>Abre a Visão Geral e foca no campo de busca</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">?</kbd></td>
+              <td><strong>Ajuda de Atalhos</strong></td>
+              <td>Abre ou fecha este modal de atalhos</td>
+            </tr>
+            <tr>
+              <td><kbd class="tecla-atalho">Escape</kbd></td>
+              <td><strong>Fechar</strong></td>
+              <td>Fecha qualquer modal aberto e retorna ao editor</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="modal-rodape">
+        <button id="btn-ok-modal-atalhos" class="btn btn-primario">Entendido (Esc)</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 2: COMPILAÇÃO E EMPACOTAMENTO NEXUS
+       ==================================================================== -->
+  <div id="modal-compilacao" class="modal-overlay oculto" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-compilacao">
+    <div class="modal-caixa">
+      <header class="modal-cabecalho">
+        <h2 id="titulo-modal-compilacao" class="modal-titulo">📦 Compilador & Empacotador Heaps.io (.PAK)</h2>
+        <button id="btn-fechar-modal-compilacao" class="btn-fechar-modal" title="Fechar modal (Escape)" aria-label="Fechar modal de compilação">✕</button>
+      </header>
+
+      <div class="modal-corpo">
+        <p class="modal-descricao">
+          A compilação aplicará as traduções humanas revisadas nos arquivos XML (com sanitização contra crashes do CastleDB) e gerará o pacote modular <code>res2.pak</code> pronto para instalação ou publicação no Nexus Mods.
+        </p>
+
+        <div id="status-compilacao-log" class="compilacao-log" aria-live="polite">
+          Pronto para compilar. Clique no botão abaixo para iniciar.
+        </div>
+      </div>
+
+      <footer class="modal-rodape">
+        <button id="btn-fechar-modal-compilacao-rodape" class="btn btn-secundario">Fechar</button>
+        <button id="btn-iniciar-compilacao-exec" class="btn btn-primario">
+          <span>🚀 Executar Compilação</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 3: TERMBASE / GLOSSÁRIO OFICIAL
+       ==================================================================== -->
+  <div id="modal-glossario" class="modal-overlay oculto" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-glossario">
+    <div class="modal-caixa modal-ampla">
+      <header class="modal-cabecalho">
+        <h2 id="titulo-modal-glossario" class="modal-titulo">📖 Termbase Oficial & Auditoria de Sinônimos</h2>
+        <button id="btn-fechar-modal-glossario" class="btn-fechar-modal" title="Fechar modal (Escape)" aria-label="Fechar modal do glossário">✕</button>
+      </header>
+
+      <div class="modal-corpo">
+        <p class="modal-descricao">
+          Cadastre os termos padronizados do jogo com seus respectivos <strong>sinônimos proibidos</strong> para garantir consistência terminológica absoluta em todo o projeto.
+        </p>
+
+        <!-- Formulário de Cadastro de Termo -->
+        <form id="form-novo-termo-glossario" class="form-glossario">
+          <div class="form-glossario-linha duas-colunas">
+            <div>
+              <label for="input-termo-en" class="campo-rotulo">Termo em Inglês (EN) *</label>
+              <input type="text" id="input-termo-en" name="termo_en" class="campo-entrada" placeholder="ex: Troop, Willpower, Crowns" required>
+            </div>
+            <div>
+              <label for="input-termo-pt" class="campo-rotulo">Tradução Padrão (PT-BR) *</label>
+              <input type="text" id="input-termo-pt" name="termo_pt_padrao" class="campo-entrada" placeholder="ex: Tropa, Bravura, Koroas" required>
+            </div>
+          </div>
+          <div class="form-glossario-linha dois-um">
+            <div>
+              <label for="input-sinonimos" class="campo-rotulo">Sinônimos Proibidos (separados por vírgula)</label>
+              <input type="text" id="input-sinonimos" name="sinonimos_proibidos" class="campo-entrada" placeholder="ex: Bando, Grupo">
+            </div>
+            <div>
+              <label for="input-categoria-termo" class="campo-rotulo">Categoria</label>
+              <input type="text" id="input-categoria-termo" name="categoria" class="campo-entrada" placeholder="ex: Atributo, Mecânica, Lore">
+            </div>
+          </div>
+          <div class="form-glossario-acoes">
+            <button type="submit" class="btn btn-primario btn-compacto">+ Cadastrar Termo</button>
+          </div>
+        </form>
+
+        <!-- Filtro Rápido do Glossário -->
+        <div class="glossario-busca-linha">
+          <label for="input-filtro-glossario" class="sr-only">Filtrar termos no glossário</label>
+          <input type="text" id="input-filtro-glossario" class="campo-entrada" placeholder="🔍 Filtrar termos cadastrados por inglês, português ou sinônimo...">
+        </div>
+
+        <!-- Tabela de Termos -->
+        <div class="tabela-glossario-wrapper">
+          <table class="tabela-glossario">
+            <thead>
+              <tr>
+                <th>Inglês (EN)</th>
+                <th>Padrão PT-BR</th>
+                <th>Sinônimos Proibidos</th>
+                <th>Categoria</th>
+                <th style="text-align: right;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="corpoTabelaGlossario">
+              <!-- Preenchido dinamicamente via ModuloGlossario -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <footer class="modal-rodape">
+        <button id="btn-auditar-sinonimos-geral" class="btn btn-secundario">🔍 Auditar Sinônimos no Jogo</button>
+        <button id="btn-fechar-modal-glossario-rodape" class="btn btn-primario">Fechar</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 4: AUTO-PROPAGAÇÃO DE REPETIÇÕES
+       ==================================================================== -->
+  <div id="modal-propagacao" class="modal-overlay oculto" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-propagacao">
+    <div class="modal-caixa modal-media">
+      <header class="modal-cabecalho">
+        <h2 id="titulo-modal-propagacao" class="modal-titulo">🔁 Auto-Propagação de Repetições</h2>
+        <button id="btn-fechar-modal-propagacao" class="btn-fechar-modal" title="Fechar modal (Escape)" aria-label="Fechar modal de propagação">✕</button>
+      </header>
+
+      <div class="modal-corpo">
+        <p class="propagacao-texto-principal">
+          Esta frase foi encontrada em <b><span id="spanContagemRepeticoes" class="destaque-repeticoes">0</span></b> outro(s) nó(s) no jogo.
+        </p>
+        <p class="propagacao-texto-secundario">
+          Nova tradução a ser aplicada:
+          <strong id="spanNovaTraducaoPropagar" class="propagacao-nova-traducao"></strong>
+        </p>
+        <div class="propagacao-subtitulo">Exemplos de nós repetidos afetados:</div>
+        <div id="listaPreviaRepeticoes" class="lista-previa-repeticoes"></div>
+      </div>
+
+      <footer class="modal-rodape">
+        <button id="btn-salvar-somente-este" class="btn btn-secundario">Salvar Somente Este</button>
+        <button id="btn-confirmar-propagar-todos" class="btn btn-primario">Propagar em Todas as Repetições</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 5: GERENCIADOR DE MOD & FONTES DE DADOS (SETUP MOD-AGNOSTIC)
+       ==================================================================== -->
+  <div id="modal-gerenciador-mod" class="modal-overlay oculto" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-gerenciador">
+    <div class="modal-caixa modal-ampla">
+      <header class="modal-cabecalho">
+        <h2 id="titulo-modal-gerenciador" class="modal-titulo">⚙️ Gerenciador de Mod & Fontes de Dados</h2>
+        <button id="btn-fechar-modal-gerenciador" class="btn-fechar-modal" title="Fechar modal (Escape)" aria-label="Fechar modal do gerenciador">✕</button>
+      </header>
+
+      <div class="modal-corpo">
+        <!-- Navegação de Abas do Wizard -->
+        <nav class="tabs-nav-setup" role="tablist" aria-label="Etapas de configuração do Mod">
+          <button type="button" class="tab-botao-setup ativo" data-tab="vanilla" role="tab">1. Jogo Base (Vanilla)</button>
+          <button type="button" class="tab-botao-setup" data-tab="mod" role="tab">2. Mod Selecionado</button>
+          <button type="button" class="tab-botao-setup" data-tab="ia" role="tab">3. Tradução IA & Deep TM</button>
+          <button type="button" class="tab-botao-setup" data-tab="sincronizacao" role="tab">4. Ativação no CAT Studio</button>
+        </nav>
+
+        <!-- Conteúdo Aba 1: Vanilla -->
+        <div id="tab-conteudo-vanilla" class="painel-tab-setup">
+          <p class="modal-descricao">
+            Arquivos originais da Shiro Games necessários para as referências Vanilla EN e PT-BR (Colunas 1 e 2).
+          </p>
+          <div id="status-arquivos-vanilla" class="status-grid-vanilla"></div>
+
+          <div class="bloco-extracao-pak">
+            <label for="input-caminho-steam" class="campo-rotulo">Caminho da Instalação da Steam / Arquivo res.pak:</label>
+            <div class="linha-input-acao">
+              <input type="text" id="input-caminho-steam" class="campo-entrada" placeholder="D:\SteamLibrary\steamapps\common\Wartales">
+              <button type="button" id="btn-detectar-steam" class="btn btn-secundario btn-compacto">🔍 Detectar</button>
+              <button type="button" id="btn-extrair-vanilla" class="btn btn-primario btn-compacto">📦 Extrair Textos</button>
+            </div>
+            <small class="dica-campo">Extrai seletivamente apenas os XMLs de idioma em menos de 1 segundo.</small>
+          </div>
+        </div>
+
+        <!-- Conteúdo Aba 2: Mod Selecionado -->
+        <div id="tab-conteudo-mod" class="painel-tab-setup oculto">
+          <p class="modal-descricao">
+            Selecione um projeto de Mod existente ou cadastre um novo mod para traduzir.
+          </p>
+          <div class="linha-selecao-projeto">
+            <label for="select-projetos-mod" class="campo-rotulo">Mod Ativo:</label>
+            <select id="select-projetos-mod" class="campo-entrada"></select>
+          </div>
+
+          <!-- Formulário Criar Novo Mod -->
+          <details class="detalhes-novo-mod">
+            <summary class="sumario-novo-mod">+ Criar Novo Projeto de Mod</summary>
+            <form id="form-criar-novo-mod" class="form-novo-mod-campos">
+              <div class="form-glossario-linha duas-colunas">
+                <div>
+                  <label for="input-nome-novo-mod" class="campo-rotulo">Nome do Mod *</label>
+                  <input type="text" id="input-nome-novo-mod" name="nome_mod" class="campo-entrada" placeholder="ex: Wartales Remastered, Pirate Overhaul" required>
+                </div>
+                <div>
+                  <label for="input-versao-novo-mod" class="campo-rotulo">Versão</label>
+                  <input type="text" id="input-versao-novo-mod" name="versao_mod" class="campo-entrada" placeholder="ex: 1.0, 7.40">
+                </div>
+              </div>
+              <div>
+                <label for="input-desc-novo-mod" class="campo-rotulo">Descrição / Notas</label>
+                <input type="text" id="input-desc-novo-mod" name="descricao_mod" class="campo-entrada" placeholder="Breve descrição do mod">
+              </div>
+              <button type="submit" class="btn btn-sucesso btn-compacto">+ Salvar e Criar Projeto</button>
+            </form>
+          </details>
+
+          <!-- Extrair res1.pak do Mod -->
+          <div class="bloco-extracao-pak" style="margin-top: 1rem;">
+            <label for="input-caminho-mod-pak" class="campo-rotulo">Extrair de um pacote .PAK do Mod (ex: res1.pak):</label>
+            <div class="linha-input-acao">
+              <input type="text" id="input-caminho-mod-pak" class="campo-entrada" placeholder="C:\Downloads\res1.pak">
+              <button type="button" id="btn-extrair-mod-pak" class="btn btn-primario btn-compacto">📦 Extrair para o Mod</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conteúdo Aba 3: Tradução IA & Deep TM -->
+        <div id="tab-conteudo-ia" class="painel-tab-setup oculto">
+          <p class="modal-descricao">
+            Motor de tradução em lote do Gemini com isolamento de deltas (Deep TM).
+          </p>
+
+          <div class="bloco-chave-ia">
+            <label for="input-chave-gemini-modal" class="campo-rotulo">Chave da API do Google Gemini:</label>
+            <div class="linha-input-acao">
+              <input type="password" id="input-chave-gemini-modal" class="campo-entrada" placeholder="Cole sua chave da API do Gemini aqui...">
+              <button type="button" id="btn-salvar-chave-ia" class="btn btn-secundario btn-compacto">💾 Salvar Chave</button>
+            </div>
+            <div class="info-tm-global">
+              Memória de Tradução Global (Cross-Mod): <strong id="span-total-tm-global">0 pares</strong>
+            </div>
+          </div>
+
+          <div class="acoes-ia-lote">
+            <button type="button" id="btn-analisar-deltas-ia" class="btn btn-secundario">🔍 Analisar Deltas do Mod</button>
+            <button type="button" id="btn-iniciar-ia-lote" class="btn btn-ia">✨ Iniciar Tradução em Lote por IA</button>
+          </div>
+
+          <!-- Resultado da Análise de Deltas -->
+          <div id="resultado-analise-deltas" class="resultado-deltas-caixa oculto"></div>
+
+          <!-- Barra de Progresso em Tempo Real -->
+          <div id="container-progresso-ia-lote" class="progresso-ia-caixa oculto">
+            <div class="progresso-ia-info">
+              <span id="label-progresso-ia-lote">0% - Processando...</span>
+            </div>
+            <div class="barra-trilho">
+              <div id="barra-progresso-ia-lote" class="barra-preenchimento" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conteúdo Aba 4: Sincronização & CAT Studio -->
+        <div id="tab-conteudo-sincronizacao" class="painel-tab-setup oculto">
+          <p class="modal-descricao">
+            Resumo das 4 vias comparativas antes de carregar o projeto no banco do estúdio:
+          </p>
+          <div class="resumo-quatro-vias">
+            <div class="via-item">
+              <span class="via-rotulo">1. Vanilla EN:</span>
+              <code id="resumo-caminho-vanilla-en">dados/referencia_vanilla/</code>
+            </div>
+            <div class="via-item">
+              <span class="via-rotulo">2. Oficial PT-BR:</span>
+              <code id="resumo-caminho-vanilla-pt">dados/referencia_vanilla/</code>
+            </div>
+            <div class="via-item">
+              <span class="via-rotulo">3. Mod EN:</span>
+              <code id="resumo-caminho-mod-en">dados/mod_atual/</code>
+            </div>
+            <div class="via-item">
+              <span class="via-rotulo">4. Tradução IA / Mod PT:</span>
+              <code id="resumo-caminho-ia-pt">dados/mod_atual/</code>
+            </div>
+            <div class="via-item">
+              <span class="via-rotulo">Banco SQLite do Mod:</span>
+              <code id="resumo-caminho-banco">dados/banco/wartales_cat.db</code>
+            </div>
+          </div>
+
+          <div class="acoes-sincronizacao-final">
+            <button type="button" id="btn-sincronizar-banco-mod" class="btn btn-primario btn-amplo">
+              ⚡ Sincronizar e Abrir no CAT Studio
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="modal-rodape">
+        <button id="btn-fechar-modal-gerenciador-rodape" class="btn btn-secundario">Fechar</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 6: FILTROS AVANÇADOS & COMPOSTOS (MODO FOCO)
+       ==================================================================== -->
+  <div id="modal-filtros-avancados" class="modal-overlay oculto" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-filtros">
+    <div class="modal-caixa modal-media">
+      <header class="modal-cabecalho">
+        <h2 id="titulo-modal-filtros" class="modal-titulo">⚙️ Filtros Avançados & Compostos</h2>
+        <button id="btn-fechar-modal-filtros" class="btn-fechar-modal" title="Fechar modal (Escape)" aria-label="Fechar modal de filtros">✕</button>
+      </header>
+
+      <div class="modal-corpo">
+        <p class="modal-descricao">
+          Combine múltiplos critérios para navegar com precisão cirúrgica pelas frases em que deseja focar:
+        </p>
+
+        <div id="painel-filtros-detalhados" class="painel-filtros-compostos" role="region" aria-label="Filtros Compostos Granulares">
+          <div class="grade-filtros-compostos">
+            <div class="item-filtro-composto">
+              <label for="select-composto-origem" class="rotulo-filtro-composto">1. Escopo / Origem do Mod:</label>
+              <select id="select-composto-origem" class="campo-select-composto">
+                <option value="apenas_mod">⚔️ Apenas Mod (Novos + Modificados)</option>
+                <option value="novos">✨ Somente Novos Inéditos</option>
+                <option value="modificados">✏️ Somente Modificados pelo Mod</option>
+                <option value="todos">📋 Todas as Frases (Vanilla + Mod)</option>
+                <option value="vanilla">🏛️ Idênticos ao Vanilla</option>
+              </select>
+            </div>
+
+            <div class="item-filtro-composto">
+              <label for="select-composto-status" class="rotulo-filtro-composto">2. Status de Revisão:</label>
+              <select id="select-composto-status" class="campo-select-composto">
+                <option value="pendentes">⏳ Apenas Pendentes</option>
+                <option value="aprovados">✓ Apenas Aprovados</option>
+                <option value="todos">📋 Todos os Status</option>
+              </select>
+            </div>
+
+            <div class="item-filtro-composto">
+              <label for="select-composto-especial" class="rotulo-filtro-composto">3. Filtro Especial / Auditoria:</label>
+              <select id="select-composto-especial" class="campo-select-composto">
+                <option value="todos">Nenhum (Todos)</option>
+                <option value="inconsistencias">⚠️ Inconsistências / QA</option>
+                <option value="sem_ia">🤖 Sem Tradução IA</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="dica-filtros-compostos">
+            <span class="icone-dica" aria-hidden="true">💡</span>
+            <span>Você também pode alternar presets rápidos direto no seletor da barra superior (ex.: <em>⚔️ Apenas Mod: Pendentes</em>).</span>
+          </div>
+        </div>
+      </div>
+
+      <footer class="modal-rodape">
+        <button type="button" id="btn-resetar-filtros-compostos" class="btn btn-secundario">Restaurar Padrão</button>
+        <button type="button" id="btn-fechar-modal-filtros-rodape" class="btn btn-secundario">Cancelar</button>
+        <button type="button" id="btn-aplicar-filtros-compostos" class="btn btn-primario">Aplicar Filtros</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 7: RELATÓRIO INTELIGENTE & GERADOR NEXUS MODS
+       ==================================================================== -->
+  <div id="modal-relatorio" class="modal-overlay oculto" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="titulo-modal-relatorio">
+    <div class="modal-caixa modal-extra-largo">
+      <header class="modal-cabecalho">
+        <div>
+          <h2 id="titulo-modal-relatorio" class="modal-titulo"><span aria-hidden="true">📊</span> Relatório Inteligente & Status Nexus</h2>
+          <p class="modal-subtitulo-cabecalho">Métricas reais por escopo do mod, diagnóstico de termos faltantes e publicação formatada.</p>
+        </div>
+        <button id="btn-fechar-modal-relatorio" class="btn-fechar-modal" title="Fechar modal (Escape)" aria-label="Fechar relatório de tradução">✕</button>
+      </header>
+
+      <div class="modal-corpo relatorio-modal-corpo">
+        <!-- Navegação por Abas -->
+        <nav class="relatorio-abas-nav" role="tablist" aria-label="Abas do Relatório">
+          <div class="grupo-abas-esquerda">
+            <button type="button" id="btn-aba-relatorio-metricas" class="aba-botao ativo" role="tab" aria-selected="true" aria-controls="painel-aba-relatorio-metricas">
+              <span aria-hidden="true">📊</span> Visão Geral & Escopo
+            </button>
+            <button type="button" id="btn-aba-relatorio-faltantes" class="aba-botao" role="tab" aria-selected="false" aria-controls="painel-aba-relatorio-faltantes">
+              <span aria-hidden="true">🔍</span> O Que Falta Revisar
+            </button>
+            <button type="button" id="btn-aba-relatorio-nexus" class="aba-botao" role="tab" aria-selected="false" aria-controls="painel-aba-relatorio-nexus">
+              <span aria-hidden="true">🚀</span> Publicar no Nexus Mods
+            </button>
+          </div>
+          <div class="grupo-abas-direita">
+            <button type="button" id="btn-atualizar-relatorio" class="btn btn-compacto btn-secundario" title="Recarregar estatísticas do banco de dados">
+              <span aria-hidden="true">🔄</span> Atualizar
+            </button>
+          </div>
+        </nav>
+
+        <!-- ABA 1: Métricas & Escopo Real -->
+        <section id="painel-aba-relatorio-metricas" class="painel-aba-relatorio" role="tabpanel" aria-labelledby="btn-aba-relatorio-metricas">
+          <div class="banner-escopo-explicativo">
+            <span class="icone-destaque-banner" aria-hidden="true">💡</span>
+            <div>
+              <strong>Diagnóstico de Escopo:</strong>
+              O Wartales possui <span id="relatorio-banner-total-geral">~32 mil</span> frases no jogo base. O seu mod possui <strong id="relatorio-banner-total-mod">0</strong> termos exclusivos/alterados.
+              O progresso de <strong><span id="relatorio-banner-pct-geral">0%</span></strong> representava todo o jogo, enquanto o seu <strong>Progresso Real no Mod é de <span id="relatorio-banner-pct-mod" class="cor-sucesso">0%</span></strong>!
+            </div>
+          </div>
+
+          <!-- Grade de Cards de Métricas -->
+          <div class="grade-cards-relatorio">
+            <!-- Card Principal: Escopo do Mod -->
+            <div class="card-relatorio card-relatorio-destaque">
+              <div class="card-relatorio-cabecalho">
+                <span class="card-relatorio-icone" aria-hidden="true">⚔️</span>
+                <span class="card-relatorio-titulo">Escopo Real do Mod</span>
+                <span class="badge badge-delta-novo">Novos + Alterados</span>
+              </div>
+              <div class="card-relatorio-valor-principal">
+                <strong id="relatorio-mod-pct-revisao" class="porcentagem-gigante">0%</strong>
+                <span class="rotulo-sub-valor">validado por humano</span>
+              </div>
+              <div class="barra-trilho-relatorio" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div id="relatorio-mod-barra-revisao" class="barra-preenchimento-relatorio preenchimento-sucesso" style="width: 0%;"></div>
+              </div>
+              <div class="card-relatorio-metricas-linha">
+                <span id="relatorio-mod-contagem-revisao">0 de 0 revisados</span>
+                <span id="relatorio-mod-pendentes-texto" class="texto-alerta">0 pendentes</span>
+              </div>
+              <div class="card-relatorio-divisor"></div>
+              <div class="card-relatorio-subsecao">
+                <div class="subsecao-linha">
+                  <span>Tradução Pronta (IA / TM):</span>
+                  <strong id="relatorio-mod-pct-traducao">0%</strong>
+                </div>
+                <div class="barra-trilho-relatorio trilho-compacto" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                  <div id="relatorio-mod-barra-traducao" class="barra-preenchimento-relatorio preenchimento-info" style="width: 0%;"></div>
+                </div>
+                <span id="relatorio-mod-contagem-traducao" class="texto-mutado-sm">0 de 0 prontos para gameplay</span>
+              </div>
+            </div>
+
+            <!-- Card 2: Termos Novos Exclusivos -->
+            <div class="card-relatorio">
+              <div class="card-relatorio-cabecalho">
+                <span class="card-relatorio-icone" aria-hidden="true">✨</span>
+                <span class="card-relatorio-titulo">Termos Novos (Inéditos)</span>
+                <span class="badge badge-delta-novo">Inéditos</span>
+              </div>
+              <div class="card-relatorio-valor-principal">
+                <strong id="relatorio-novos-pct" class="porcentagem-media">0%</strong>
+                <span class="rotulo-sub-valor">revisados</span>
+              </div>
+              <div class="barra-trilho-relatorio" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div id="relatorio-novos-barra" class="barra-preenchimento-relatorio preenchimento-azul" style="width: 0%;"></div>
+              </div>
+              <div class="card-relatorio-metricas-linha">
+                <span id="relatorio-novos-contagem">0 de 0 termos</span>
+                <span id="relatorio-novos-pendentes" class="texto-alerta">0 a revisar</span>
+              </div>
+              <div class="card-relatorio-subinfo">
+                <span>Traduzidos (IA/Cache): <strong id="relatorio-novos-traduzidos-pct">0%</strong></span>
+              </div>
+            </div>
+
+            <!-- Card 3: Termos Modificados -->
+            <div class="card-relatorio">
+              <div class="card-relatorio-cabecalho">
+                <span class="card-relatorio-icone" aria-hidden="true">✏️</span>
+                <span class="card-relatorio-titulo">Termos Modificados</span>
+                <span class="badge badge-delta-modificado">Vanilla Alterado</span>
+              </div>
+              <div class="card-relatorio-valor-principal">
+                <strong id="relatorio-modificados-pct" class="porcentagem-media">0%</strong>
+                <span class="rotulo-sub-valor">revisados</span>
+              </div>
+              <div class="barra-trilho-relatorio" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div id="relatorio-modificados-barra" class="barra-preenchimento-relatorio preenchimento-amarelo" style="width: 0%;"></div>
+              </div>
+              <div class="card-relatorio-metricas-linha">
+                <span id="relatorio-modificados-contagem">0 de 0 termos</span>
+                <span id="relatorio-modificados-pendentes" class="texto-alerta">0 a revisar</span>
+              </div>
+              <div class="card-relatorio-subinfo">
+                <span>Traduzidos (IA/Cache): <strong id="relatorio-modificados-traduzidos-pct">0%</strong></span>
+              </div>
+            </div>
+
+            <!-- Card 4: Base Vanilla Original -->
+            <div class="card-relatorio card-relatorio-sucesso">
+              <div class="card-relatorio-cabecalho">
+                <span class="card-relatorio-icone" aria-hidden="true">🏛️</span>
+                <span class="card-relatorio-titulo">Jogo Base (Vanilla)</span>
+                <span class="badge badge-delta-vanilla">Oficial Shiro</span>
+              </div>
+              <div class="card-relatorio-valor-principal">
+                <strong id="relatorio-vanilla-oficial-pct" class="porcentagem-media">100%</strong>
+                <span class="rotulo-sub-valor">oficial Shiro Games</span>
+              </div>
+              <div class="barra-trilho-relatorio" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                <div class="barra-preenchimento-relatorio preenchimento-sucesso" style="width: 100%;"></div>
+              </div>
+              <div class="card-relatorio-metricas-linha">
+                <span id="relatorio-vanilla-total">26.228 termos</span>
+                <span class="texto-sucesso">Preservados sem conflito</span>
+              </div>
+              <div class="card-relatorio-subinfo">
+                <span>Tradução oficial embutida diretamente.</span>
+              </div>
+            </div>
+
+            <!-- Card 5: Banco Total (Contexto) -->
+            <div class="card-relatorio card-relatorio-info">
+              <div class="card-relatorio-cabecalho">
+                <span class="card-relatorio-icone" aria-hidden="true">🌐</span>
+                <span class="card-relatorio-titulo">Banco Total Geral</span>
+                <span class="badge">Contexto Completo</span>
+              </div>
+              <div class="card-relatorio-valor-principal">
+                <strong id="relatorio-geral-pct" class="porcentagem-media">0%</strong>
+                <span class="rotulo-sub-valor">validação total</span>
+              </div>
+              <div class="barra-trilho-relatorio" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <div id="relatorio-geral-barra" class="barra-preenchimento-relatorio preenchimento-mutado" style="width: 0%;"></div>
+              </div>
+              <div class="card-relatorio-metricas-linha">
+                <span id="relatorio-geral-contagem">0 de 0 termos</span>
+                <span id="relatorio-geral-inconsistencias">0 avisos QA</span>
+              </div>
+              <div class="card-relatorio-subinfo">
+                <span>Inclui todos os 32k textos do jogo base + mod.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detalhamento por Arquivo de Dados -->
+          <div class="secao-relatorio-bloco">
+            <h3 class="secao-relatorio-titulo"><span aria-hidden="true">📁</span> Detalhamento por Arquivo de Dados</h3>
+            <div class="tabela-container-relatorio">
+              <table class="tabela-relatorio" aria-label="Detalhamento por Arquivo">
+                <thead>
+                  <tr>
+                    <th>Arquivo</th>
+                    <th>Tipo de Conteúdo</th>
+                    <th>Escopo Mod</th>
+                    <th>Traduzidos (IA/TM)</th>
+                    <th>Validados (Humano)</th>
+                    <th>% Mod</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tabela-relatorio-arquivos-corpo">
+                  <tr>
+                    <td colspan="7" class="tabela-vazia">Carregando métricas dos arquivos...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Top Categorias com Pendências -->
+          <div class="secao-relatorio-bloco">
+            <h3 class="secao-relatorio-titulo"><span aria-hidden="true">🏷️</span> Top Categorias com Pendências no Mod</h3>
+            <div id="container-relatorio-top-categorias" class="grade-categorias-relatorio">
+              <div class="carregando-texto">Carregando categorias...</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ABA 2: O Que Falta Revisar (Filtros & Lista) -->
+        <section id="painel-aba-relatorio-faltantes" class="painel-aba-relatorio oculto" role="tabpanel" aria-labelledby="btn-aba-relatorio-faltantes">
+          <!-- Barra de Filtros da Lista de Faltantes -->
+          <div class="painel-filtros-faltantes">
+            <div class="linha-filtros-faltantes">
+              <div class="campo-filtro-grupo">
+                <label for="select-relatorio-filtro-escopo" class="rotulo-filtro-sm">1. Escopo:</label>
+                <select id="select-relatorio-filtro-escopo" class="select-filtro-sm">
+                  <option value="apenas_mod">⚔️ Todos do Mod (Novos + Modif)</option>
+                  <option value="novos">✨ Somente Novos Inéditos</option>
+                  <option value="modificados">✏️ Somente Modificados</option>
+                  <option value="inconsistencias">⚠️ Com Avisos de QA / Tags</option>
+                  <option value="sem_ia">🤖 Sem Tradução (Vazios)</option>
+                  <option value="vanilla">🏛️ Jogo Base (Vanilla)</option>
+                  <option value="todos">🌐 Todas as Frases</option>
+                </select>
+              </div>
+
+              <div class="campo-filtro-grupo">
+                <label for="select-relatorio-filtro-status" class="rotulo-filtro-sm">2. Status:</label>
+                <select id="select-relatorio-filtro-status" class="select-filtro-sm">
+                  <option value="pendentes">⏳ Apenas Pendentes (O que falta!)</option>
+                  <option value="aprovados">✓ Apenas Revisados / Validados</option>
+                  <option value="todos">📋 Todos os Status</option>
+                </select>
+              </div>
+
+              <div class="campo-filtro-grupo">
+                <label for="select-relatorio-filtro-arquivo" class="rotulo-filtro-sm">3. Arquivo:</label>
+                <select id="select-relatorio-filtro-arquivo" class="select-filtro-sm">
+                  <option value="">📁 Todos os Arquivos</option>
+                  <option value="export_pt-BR.xml">export_pt-BR.xml (CastleDB)</option>
+                  <option value="texts_pt-BR.xml">texts_pt-BR.xml (Diálogos/UI)</option>
+                </select>
+              </div>
+
+              <div class="campo-filtro-grupo">
+                <label for="select-relatorio-filtro-categoria" class="rotulo-filtro-sm">4. Categoria:</label>
+                <select id="select-relatorio-filtro-categoria" class="select-filtro-sm">
+                  <option value="">🏷️ Todas as Categorias</option>
+                </select>
+              </div>
+
+              <div class="campo-filtro-grupo campo-busca-grupo">
+                <label for="input-relatorio-busca-faltantes" class="rotulo-filtro-sm">5. Busca rápida:</label>
+                <div class="caixa-busca-com-limpar">
+                  <input type="text" id="input-relatorio-busca-faltantes" class="input-filtro-sm" placeholder="Buscar texto ou chave..." aria-label="Buscar nas frases do relatório">
+                  <button type="button" id="btn-limpar-busca-relatorio" class="btn-limpar-input" title="Limpar busca" aria-label="Limpar termo de busca">✕</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="linha-acoes-filtros-faltantes">
+              <div class="resumo-contador-faltantes">
+                <span id="relatorio-faltantes-resumo-contador">Carregando itens...</span>
+              </div>
+              <div class="botoes-acoes-faltantes">
+                <button type="button" id="btn-relatorio-limpar-filtros" class="btn btn-compacto btn-secundario">
+                  Restaurar Filtros
+                </button>
+                <button type="button" id="btn-relatorio-aplicar-modo-foco" class="btn btn-compacto btn-primario" title="Carregar este conjunto filtrado no editor do Modo Foco">
+                  🎯 Abrir no Modo Foco
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabela de Itens Faltantes -->
+          <div class="tabela-container-faltantes">
+            <table class="tabela-relatorio tabela-faltantes-dados" aria-label="Lista de Frases Faltantes">
+              <thead>
+                <tr>
+                  <th style="width: 110px;">Origem</th>
+                  <th style="width: 180px;">Arquivo / Chave</th>
+                  <th>Texto em Inglês (Mod EN)</th>
+                  <th>Tradução Atual (IA / TM)</th>
+                  <th style="width: 140px;">Status / QA</th>
+                  <th style="width: 110px; text-align: center;">Ação</th>
+                </tr>
+              </thead>
+              <tbody id="tabela-relatorio-faltantes-corpo">
+                <tr>
+                  <td colspan="6" class="tabela-vazia">Carregando lista de pendências...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Paginação da Tabela de Faltantes -->
+          <div class="paginacao-relatorio-barra">
+            <button type="button" id="btn-relatorio-pag-anterior" class="btn btn-compacto btn-secundario" disabled>
+              ← Anterior
+            </button>
+            <span id="relatorio-faltantes-paginacao-info" class="paginacao-texto-info">Página 1 de 1</span>
+            <button type="button" id="btn-relatorio-pag-proxima" class="btn btn-compacto btn-secundario" disabled>
+              Próxima →
+            </button>
+          </div>
+        </section>
+
+        <!-- ABA 3: Publicar no Nexus Mods (BBCode & Visual Preview) -->
+        <section id="painel-aba-relatorio-nexus" class="painel-aba-relatorio oculto" role="tabpanel" aria-labelledby="btn-aba-relatorio-nexus">
+          <div class="configuracao-nexus-painel">
+            <div class="linha-config-nexus">
+              <div class="item-config-nexus">
+                <label for="select-nexus-modelo" class="rotulo-config-nexus">Modelo de Postagem:</label>
+                <select id="select-nexus-modelo" class="select-config-nexus">
+                  <option value="atualizacao">📝 Post de Atualização / Devlog de Andamento</option>
+                  <option value="descricao">📖 Descrição Completa para a Página do Mod</option>
+                  <option value="compacto">🏷️ Resumo Compacto com Badge e Barra</option>
+                </select>
+              </div>
+
+              <div class="item-config-nexus">
+                <label for="input-nexus-nome-mod" class="rotulo-config-nexus">Nome do Mod:</label>
+                <input type="text" id="input-nexus-nome-mod" class="input-config-nexus" value="Wartales Remastered">
+              </div>
+
+              <div class="item-config-nexus">
+                <label for="input-nexus-versao-mod" class="rotulo-config-nexus">Versão:</label>
+                <input type="text" id="input-nexus-versao-mod" class="input-config-nexus" value="v7.40">
+              </div>
+
+              <div class="item-config-nexus">
+                <label for="input-nexus-autor" class="rotulo-config-nexus">Tradutor / Autor:</label>
+                <input type="text" id="input-nexus-autor" class="input-config-nexus" value="Cassr">
+              </div>
+            </div>
+
+            <!-- Toggles de Elementos Visuais do Nexus -->
+            <div class="grade-toggles-nexus" role="group" aria-label="Elementos Visuais para incluir no post">
+              <label class="toggle-nexus-item">
+                <input type="checkbox" id="check-nexus-barras" checked>
+                <span>Barra Visual de Progresso BBCode (████░░░░)</span>
+              </label>
+              <label class="toggle-nexus-item">
+                <input type="checkbox" id="check-nexus-escopo" checked>
+                <span>Detalhamento Real do Mod (Novos vs Modificados)</span>
+              </label>
+              <label class="toggle-nexus-item">
+                <input type="checkbox" id="check-nexus-arquivos" checked>
+                <span>Progresso por Arquivo (CastleDB e Diálogos)</span>
+              </label>
+              <label class="toggle-nexus-item">
+                <input type="checkbox" id="check-nexus-castledb" checked>
+                <span>Aviso de Integridade CastleDB (0 Crashes)</span>
+              </label>
+              <label class="toggle-nexus-item">
+                <input type="checkbox" id="check-nexus-instalacao" checked>
+                <span>Instruções de Instalação (res2.pak modular)</span>
+              </label>
+              <label class="toggle-nexus-item">
+                <input type="checkbox" id="check-nexus-feedback" checked>
+                <span>Chamada para Feedback da Comunidade</span>
+              </label>
+            </div>
+
+            <!-- Barra de Ações Rápidas do Nexus -->
+            <div class="acoes-nexus-barra">
+              <button type="button" id="btn-copiar-nexus-bbcode" class="btn btn-primario btn-amplo">
+                <span aria-hidden="true">📋</span> Copiar Código BBCode para o Nexus Mods
+              </button>
+              <button type="button" id="btn-salvar-nexus-arquivo" class="btn btn-secundario" title="Salvar arquivo STATUS_TRADUCAO_NEXUS.txt na pasta de distribuição">
+                <span aria-hidden="true">💾</span> Salvar TXT no Pacote de Distribuição
+              </button>
+            </div>
+          </div>
+
+          <!-- Divisão em 2 Painéis: Preview Visual e BBCode Puro -->
+          <div class="grade-visualizacao-nexus">
+            <div class="coluna-nexus-preview">
+              <div class="cabecalho-coluna-nexus">
+                <span>👁️ Prévia Visual (Estilo Nexus Mods Dark)</span>
+                <span class="badge-nexus-tema">Tema Nexus Dark</span>
+              </div>
+              <div id="container-nexus-preview" class="nexus-preview-caixa" tabindex="0" role="region" aria-label="Prévia da postagem no Nexus Mods">
+                Carregando prévia...
+              </div>
+            </div>
+
+            <div class="coluna-nexus-bbcode">
+              <div class="cabecalho-coluna-nexus">
+                <span>📄 Código BBCode Puro (Pronto para Colar)</span>
+                <button type="button" id="btn-copiar-bbcode-rapido" class="btn btn-compacto btn-secundario" title="Copiar este código">Copiar</button>
+              </div>
+              <textarea id="textarea-nexus-bbcode" class="nexus-bbcode-textarea" readonly aria-label="Código BBCode para Nexus Mods"></textarea>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="modal-rodape">
+        <button type="button" id="btn-fechar-modal-relatorio-rodape" class="btn btn-secundario">Fechar Relatório</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Toast de Notificação Rápida -->
+  <div id="toast-notificacao" class="toast-notificacao oculto" role="status" aria-live="polite">
+    <span id="toast-icone" aria-hidden="true">✓</span>
+    <span id="toast-mensagem">Operação realizada com sucesso!</span>
+  </div>
+
+  <!-- Scripts Modulares -->
+  <script src="js/api.js"></script>
+  <script src="js/glossario.js"></script>
+  <script src="js/gerenciador_mod.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

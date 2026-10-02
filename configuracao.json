@@ -1,0 +1,26 @@
+{
+  "porta_servidor": 5000,
+  "host_servidor": "127.0.0.1",
+  "titulo_aplicacao": "Wartales CAT Studio",
+  "chave_api_gemini": "",
+  "caminho_steam_wartales": "D:\\SteamLibrary\\steamapps\\common\\Wartales",
+  "projeto_ativo": "wartales_remastered",
+  "projetos": [
+    {
+      "slug": "wartales_remastered",
+      "nome": "Wartales Remastered",
+      "versao": "7.40",
+      "descricao": "Overhaul oficial da comunidade com balanceamento e novas mecânicas.",
+      "diretorio_mod_en": "dados/mod_atual",
+      "diretorio_traducao_ia": "dados/mod_atual",
+      "caminho_banco": "dados/banco/wartales_cat.db"
+    }
+  ],
+  "diretorio_referencia_vanilla": "dados/referencia_vanilla",
+  "diretorio_memoria_global": "dados/memoria_traducao",
+  "caminho_banco_dados": "dados/banco/wartales_cat.db",
+  "diretorio_mod_atual": "dados/mod_atual",
+  "diretorio_saida_compilados": "saida/compilados",
+  "diretorio_distribuicao_nexus": "saida/distribuicao_nexus",
+  "versao_mod": "7.40"
+}

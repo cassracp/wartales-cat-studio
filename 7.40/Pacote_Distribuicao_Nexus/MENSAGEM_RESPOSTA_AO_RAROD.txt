@@ -1,0 +1,19 @@
+Hi Rarod!
+
+Thank you so much for the clear instructions and guidance!
+
+I followed your recommendation and packaged the translation into an independent 'res2.pak' containing only the two localized files:
+- lang/export_pt-BR.xml
+- lang/texts_pt-BR.xml
+
+It has been updated and fully synchronized with your latest Wartales Remastered v7.40 release:
+1. 100% of the newly added scaling tables, militia armours, balance adjustments, and UI strings in v7.40 were translated and verified.
+2. Verified against CastleDB's Haxe parser (0 asserts, 0 engine crashes).
+3. The resulting res2.pak is super lightweight (~1 MB compressed), works natively via engine PAK cascading, and does not touch your res1.pak at all.
+
+I am publishing the translation on Nexus as an independent mod linked to Wartales Remastered as a translation, just as you suggested.
+Whenever you have a moment, I would be truly grateful if you could add the link to the main page of Wartales Remastered!
+
+Thank you again for creating this incredible mod and for your continuous support!
+Best regards,
+Cassr

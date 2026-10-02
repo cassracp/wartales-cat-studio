@@ -1,0 +1,33 @@
+============================================================
+ TRADUÇÃO PARA PORTUGUÊS DO BRASIL (pt-BR)
+ WARTALES REMASTERED (v7.40) - PACOTE MODULAR RES2.PAK
+============================================================
+
+Tradução completa e atualizada para a versão 7.40 do mod Wartales Remastered (criado por Rarod).
+
+REQUISITOS:
+1. Jogo base Wartales atualizado na Steam (v1.0.48274 ou superior).
+2. Mod Wartales Remastered v7.40 instalado (res1.pak na pasta do jogo).
+
+COMO INSTALAR (SUPER FÁCIL):
+1. Copie o arquivo 'res2.pak' fornecido neste download.
+2. Abra a pasta onde o seu Wartales está instalado:
+   Exemplo: C:\Program Files (x86)\Steam\steamapps\common\Wartales\
+   (ou onde estiver sua biblioteca da Steam)
+3. Cole o 'res2.pak' nessa pasta, EXATAMENTE no mesmo local onde já estão o 'res.pak' e o 'res1.pak'.
+   ATENÇÃO: Você NÃO precisa substituir o res1.pak! O res2.pak funciona em conjunto.
+4. Abra o jogo normalmente pela Steam com o idioma Português (Brasil) selecionado nas configurações.
+5. Pronto! Bom jogo!
+
+NOTA SOBRE A TRADUÇÃO:
+- Os textos originais do jogo são derivados diretamente da tradução oficial da Shiro Games.
+- As novidades, habilidades e modificações exclusivas do mod foram traduzidas com o apoio de Inteligência Artificial (Gemini) tendo a base oficial como referência de estilo.
+- Por se tratar de termos novos, podem ocorrer variações de sinônimos ou pequenas inconsistências contextuais. A tradução está em processo de revisão e refinamento contínuo com o tempo!
+- Caso encontre qualquer erro, termo inconsistente ou sugestão de melhoria, deixe seu comentário na aba Posts do mod no Nexus Mods para corrigirmos nas próximas atualizações.
+
+COMO DESINSTALAR:
+Basta deletar o arquivo 'res2.pak' da pasta do jogo. O mod voltará ao idioma original em inglês.
+
+CRÉDITOS:
+- Mod Original: Wartales Remastered (por Rarod)
+- Tradução PT-BR: Comunidade Brasileira / Cassr

@@ -1,0 +1,4 @@
+# Wartales CAT Studio - Dependências Python
+# O sistema foi arquitetado para funcionar 100% de forma autônoma utilizando
+# a biblioteca padrão do Python 3 (sqlite3, http.server, xml.etree, zlib, struct).
+# Nenhuma dependência externa é estritamente necessária para execução local!

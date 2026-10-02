@@ -1,0 +1,14 @@
+========================================================================
+WARTALES REMASTERED - TRADUÇÃO PT-BR (PACOTE MODULAR RES2.PAK)
+========================================================================
+
+Instalação Simples e Rápida:
+1. Certifique-se de que o mod Wartales Remastered já está instalado na pasta do jogo.
+2. Copie o arquivo 'res2.pak' desta pasta para o diretório raiz do seu Wartales:
+   Exemplo: D:\SteamLibrary\steamapps\common\Wartales\
+3. Ao iniciar o jogo, selecione o idioma Português (Brasil) nas opções.
+4. Bom jogo!
+
+Compatibilidade:
+- Formato modular oficial Heaps.io (res2.pak).
+- 100% compatível com as atualizações do mod sem sobrescrever arquivos originais.

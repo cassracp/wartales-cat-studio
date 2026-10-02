@@ -1,0 +1,24 @@
+[size=5][b]Wartales Remastered - Tradução em Português do Brasil (pt-BR)[/b][/size]
+[b]Compatível com Wartales Remastered v7.40[/b]
+
+Esta é a localização em Português do Brasil para o mod de overhaul [b]Wartales Remastered[/b], criado pelo modder [b]Rarod[/b].
+
+[size=4][b]Destaques da Tradução:[/b][/size]
+- [b]100% dos Textos Traduzidos:[/b] Cobre todas as novas classes, habilidades, itens, armas, capacetes, reformas de balanceamento e interface da versão 7.40.
+- [b]Base Oficial do Jogo Base:[/b] Todos os textos originais do Wartales foram mantidos diretamente da tradução oficial da Shiro Games.
+- [b]Conteúdo do Mod Traduzido por IA (Em Validação Contínua):[/b] As novidades e modificações exclusivas do mod foram traduzidas com o auxílio de IA (Gemini), utilizando a terminologia oficial do jogo como referência. Por se tratar de um volume expressivo de novos termos gerados por IA, podem ocorrer variações em sinônimos ou pequenas inconsistências pontuais de contexto. A tradução está em constante revisão e validação em gameplay para ser aprimorada a cada versão!
+- [b]0 Crashes (CastleDB Validado):[/b] Estrutura interna rigorosamente testada contra erros de assert da engine Haxe.
+- [b]Instalação Modular (res2.pak):[/b] Não altera o res1.pak original! Pesa apenas ~1 MB no download.
+
+[size=4][b]Feedback da Comunidade:[/b][/size]
+Se você notar algum termo com tradução estranha, sinônimo divergente ou erro de digitação durante sua jogatina, por favor, deixe seu relato na aba [b]Posts[/b]! O feedback da comunidade brasileira é fundamental para refinarmos e padronizarmos a localização nas próximas atualizações.
+
+[size=4][b]Instalação:[/b][/size]
+1. Baixe o mod e extraia o arquivo [b]res2.pak[/b].
+2. Cole o [b]res2.pak[/b] dentro da pasta raiz do seu Wartales (onde já ficam o [i]res.pak[/i] e o [i]res1.pak[/i]).
+   Exemplo: [i]SteamLibrary\steamapps\common\Wartales\[/i]
+3. Inicie o jogo em Português (Brasil).
+
+[size=4][b]Créditos:[/b][/size]
+- Mod original por [b]Rarod[/b] ([url=https://www.nexusmods.com/wartales/mods/79]Wartales Remastered[/url]).
+- Tradução e adaptação por [b]Cassr[/b] com apoio de IA.

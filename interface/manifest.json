@@ -1,0 +1,17 @@
+{
+  "name": "Wartales CAT Studio",
+  "short_name": "CAT Studio",
+  "description": "Estúdio Profissional de Tradução e Localização para Mods de Wartales",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#12151b",
+  "theme_color": "#1e232d",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

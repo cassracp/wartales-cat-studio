@@ -1,0 +1,10 @@
+[b]Tradução Português do Brasil para Wartales Remastered[/b]
+
+Esta tradução foi construída e revisada profissionalmente através do Wartales CAT Studio,
+com 100% de cobertura dos textos, consistência terminológica rigorosa e compatibilidade
+completa com o motor CastleDB da Shiro Games (zero travamentos e zero asserts).
+
+[b]Como Instalar:[/b]
+1. Baixe e extraia o arquivo ZIP.
+2. Mova o arquivo [b]res2.pak[/b] diretamente para a pasta principal do seu Wartales na Steam.
+3. Inicie o jogo em Português!

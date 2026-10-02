@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0c05a"/>
+      <stop offset="100%" stop-color="#9d7422"/>
+    </linearGradient>
+    <linearGradient id="shieldBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2a2825"/>
+      <stop offset="100%" stop-color="#141312"/>
+    </linearGradient>
+  </defs>
+  <!-- Escudo Medieval -->
+  <path d="M32 4 L54 12 C54 36 32 58 32 58 C32 58 10 36 10 12 Z" fill="url(#shieldBg)" stroke="url(#gold)" stroke-width="3"/>
+  <!-- Espadas Cruzadas -->
+  <path d="M22 22 L42 42 M42 22 L22 42" stroke="url(#gold)" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="32" cy="32" r="3" fill="#f0c05a"/>
+</svg>
