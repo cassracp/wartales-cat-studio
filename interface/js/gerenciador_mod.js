@@ -77,6 +77,16 @@ const ModuloGerenciadorMod = {
       btnIniciarIaLote.addEventListener("click", () => this.iniciarIaLote());
     }
 
+    const selectProvedorPool = document.getElementById("select-chave-pool-provedor");
+    if (selectProvedorPool) {
+      selectProvedorPool.addEventListener("change", () => this.popularModelosProvedor(selectProvedorPool.value));
+    }
+    document.getElementById("select-chave-pool-modelo")?.addEventListener("change", () => this.tratarEscolhaModeloOutro());
+    document.getElementById("input-chave-pool-segredo")?.addEventListener("change", () => {
+      const provedor = document.getElementById("select-chave-pool-provedor")?.value || "gemini";
+      this.atualizarModelosDinamicos(provedor);
+    });
+
     // Pool de Chaves de IA
     const btnSalvarConfigPool = document.getElementById("btn-salvar-config-pool");
     if (btnSalvarConfigPool) {
@@ -672,6 +682,100 @@ const ModuloGerenciadorMod = {
     }, 1000);
   },
 
+  // Lista de reserva: usada apenas quando a consulta dinâmica ao provedor falha.
+  CATALOGO_PROVEDORES_IA: {
+    gemini: { placeholder: "AIzaSy...", modelos: ["gemini-flash-lite-latest", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"] },
+    groq: { placeholder: "gsk_...", modelos: ["llama-3.3-70b-versatile", "llama-3.1-8b-instant", "openai/gpt-oss-120b", "openai/gpt-oss-20b"] },
+    openrouter: { placeholder: "sk-or-...", modelos: ["openrouter/free"] },
+    cerebras: { placeholder: "csk-...", modelos: ["llama-3.3-70b", "llama3.1-8b"] },
+    mistral: { placeholder: "Chave Mistral", modelos: ["mistral-small-latest", "mistral-large-latest"] },
+    deepseek: { placeholder: "sk-...", modelos: ["deepseek-chat", "deepseek-reasoner"] },
+    openai: { placeholder: "sk-...", modelos: ["gpt-4o-mini", "gpt-4.1-mini", "gpt-4o"] },
+    together: { placeholder: "Chave Together AI", modelos: ["meta-llama/Llama-3.3-70B-Instruct-Turbo"] },
+    xai: { placeholder: "xai-...", modelos: ["grok-3-mini", "grok-3"] },
+  },
+
+  preencherSelectModelos(modelos, modeloSelecionado = null) {
+    const selectModelo = document.getElementById("select-chave-pool-modelo");
+    if (!selectModelo) return;
+    const ids = modelos.map(m => m.id);
+    selectModelo.innerHTML = "";
+    modelos.forEach(m => {
+      const opcao = document.createElement("option");
+      opcao.value = m.id;
+      opcao.textContent = m.gratuito ? `${m.id} (Gratuito)` : m.id;
+      selectModelo.appendChild(opcao);
+    });
+    if (modeloSelecionado && !ids.includes(modeloSelecionado)) {
+      const opcao = document.createElement("option");
+      opcao.value = modeloSelecionado;
+      opcao.textContent = `${modeloSelecionado} (Customizado)`;
+      selectModelo.appendChild(opcao);
+    }
+    const opcaoOutro = document.createElement("option");
+    opcaoOutro.value = "__outro__";
+    opcaoOutro.textContent = "✏️ Outro modelo (digitar)...";
+    selectModelo.appendChild(opcaoOutro);
+    selectModelo.value = modeloSelecionado || ids[0] || "__outro__";
+    this.ultimoModeloValido = selectModelo.value;
+  },
+
+  popularModelosProvedor(provedor, modeloSelecionado = null) {
+    const inputSegredo = document.getElementById("input-chave-pool-segredo");
+    const catalogo = this.CATALOGO_PROVEDORES_IA[provedor] || this.CATALOGO_PROVEDORES_IA.gemini;
+    this.preencherSelectModelos(catalogo.modelos.map(id => ({ id, gratuito: null })), modeloSelecionado);
+    if (inputSegredo && !document.getElementById("input-chave-pool-id")?.value) {
+      inputSegredo.placeholder = `Cole sua chave de API (ex: ${catalogo.placeholder})`;
+    }
+    this.atualizarModelosDinamicos(provedor, modeloSelecionado);
+  },
+
+  async atualizarModelosDinamicos(provedor, modeloSelecionado = null) {
+    const inputSegredo = document.getElementById("input-chave-pool-segredo");
+    const idChave = document.getElementById("input-chave-pool-id")?.value;
+    const chave = inputSegredo?.value.trim() || "";
+    if (provedor !== "openrouter" && !chave && !idChave) return;
+
+    const dica = document.getElementById("dica-chave-pool-modelos");
+    const token = (this.tokenConsultaModelos = (this.tokenConsultaModelos || 0) + 1);
+    if (dica) dica.textContent = "⏳ Buscando modelos atualizados no provedor...";
+    try {
+      const res = await ApiCat.listarModelosPoolIa({ provedor, chave, id: idChave ? Number(idChave) : null });
+      if (token !== this.tokenConsultaModelos) return;
+      if (res.sucesso && res.modelos?.length) {
+        const atual = document.getElementById("select-chave-pool-modelo")?.value;
+        const preservar = modeloSelecionado || (atual && atual !== "__outro__" ? atual : null);
+        this.preencherSelectModelos(res.modelos, res.modelos.some(m => m.id === preservar) ? preservar : modeloSelecionado);
+        if (dica) dica.textContent = `✓ ${res.modelos.length} modelos carregados do provedor.`;
+      }
+    } catch (e) {
+      if (token === this.tokenConsultaModelos && dica) {
+        dica.textContent = "Não foi possível consultar o provedor; exibindo lista de reserva.";
+      }
+    }
+  },
+
+  tratarEscolhaModeloOutro() {
+    const selectModelo = document.getElementById("select-chave-pool-modelo");
+    if (!selectModelo || selectModelo.value !== "__outro__") {
+      this.ultimoModeloValido = selectModelo?.value;
+      return;
+    }
+    const digitado = (window.prompt("Informe o identificador exato do modelo:") || "").trim();
+    if (!digitado) {
+      selectModelo.value = this.ultimoModeloValido || selectModelo.options[0]?.value;
+      return;
+    }
+    if (!Array.from(selectModelo.options).some(o => o.value === digitado)) {
+      const opcao = document.createElement("option");
+      opcao.value = digitado;
+      opcao.textContent = `${digitado} (Customizado)`;
+      selectModelo.insertBefore(opcao, selectModelo.lastElementChild);
+    }
+    selectModelo.value = digitado;
+    this.ultimoModeloValido = digitado;
+  },
+
   abrirModalChave(idChave = null) {
     this.ultimoElementoFocado = document.activeElement;
     const modal = document.getElementById("modal-chave-pool");
@@ -701,16 +805,7 @@ const ModuloGerenciadorMod = {
         selectProvedor.value = chaveExistente?.provedor || "gemini";
         selectProvedor.disabled = true;
       }
-      if (selectModelo && chaveExistente?.modelo) {
-        const opcaoExiste = Array.from(selectModelo.options).some(o => o.value === chaveExistente.modelo);
-        if (!opcaoExiste) {
-          const novaOpcao = document.createElement("option");
-          novaOpcao.value = chaveExistente.modelo;
-          novaOpcao.textContent = `${chaveExistente.modelo} (Customizado)`;
-          selectModelo.appendChild(novaOpcao);
-        }
-        selectModelo.value = chaveExistente.modelo;
-      }
+      this.popularModelosProvedor(chaveExistente?.provedor || "gemini", chaveExistente?.modelo || null);
       if (inputSegredo) {
         inputSegredo.value = "";
         inputSegredo.placeholder = "(Mantendo chave mascarada atual)";
@@ -729,12 +824,7 @@ const ModuloGerenciadorMod = {
         selectProvedor.value = "gemini";
         selectProvedor.disabled = false;
       }
-      if (selectModelo) {
-        Array.from(selectModelo.options).forEach(o => {
-          if (o.textContent.includes("(Customizado)")) o.remove();
-        });
-        selectModelo.value = "gemini-flash-lite-latest";
-      }
+      this.popularModelosProvedor("gemini");
       if (inputSegredo) {
         inputSegredo.value = "";
         inputSegredo.placeholder = "Cole sua chave de API (ex: AIzaSy...)";
@@ -1083,21 +1173,33 @@ const ModuloGerenciadorMod = {
 
   iniciarMonitoramentoIa() {
     clearInterval(this.timerPollingIa);
-    const barra = document.getElementById("barra-progresso-ia-lote");
-    const label = document.getElementById("label-progresso-ia-lote");
     const containerProg = document.getElementById("container-progresso-ia-lote");
     if (containerProg) containerProg.classList.remove("oculto");
+    this.ultimoIdLogIa = 0;
+    const elLog = document.getElementById("lote-ia-log");
+    if (elLog) elLog.innerHTML = "";
+
+    const filtro = document.getElementById("lote-ia-somente-problemas");
+    if (filtro && !filtro.dataset.vinculado) {
+      filtro.dataset.vinculado = "1";
+      filtro.addEventListener("change", () => {
+        this.ultimoIdLogIa = 0;
+        if (elLog) elLog.innerHTML = "";
+        if (this.ultimoStatusIa) this.renderizarLogLoteIa(this.ultimoStatusIa.log || []);
+      });
+    }
 
     this.timerPollingIa = setInterval(async () => {
       try {
         const status = await ApiCat.obterStatusLoteIa();
-        if (barra) barra.style.width = `${status.porcentagem}%`;
-        if (label) label.textContent = `${status.porcentagem}% - ${status.mensagem}`;
+        this.ultimoStatusIa = status;
+        this.renderizarStatusLoteIa(status);
 
         if (!status.ativo) {
           clearInterval(this.timerPollingIa);
           if (status.concluido) {
-            window.AppCat?.mostrarToast("Tradução em lote por IA concluída com sucesso!", "✓");
+            const aviso = status.falhas_ia > 0 ? ` (${status.falhas_ia} falha(s), veja o log)` : "";
+            window.AppCat?.mostrarToast("Tradução em lote por IA concluída" + aviso, status.falhas_ia > 0 ? "⚠️" : "✓");
           } else if (status.erro) {
             window.AppCat?.mostrarToast("Erro na IA: " + status.erro, "✕");
           }
@@ -1106,6 +1208,78 @@ const ModuloGerenciadorMod = {
         console.warn("Erro ao consultar progresso IA:", e);
       }
     }, 1500);
+  },
+
+  formatarDuracaoIa(segundos) {
+    const total = Math.max(0, Math.round(segundos || 0));
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    return h > 0 ? `${h}h ${m}m` : m > 0 ? `${m}m ${s}s` : `${s}s`;
+  },
+
+  escaparHtmlIa(texto) {
+    return String(texto ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  },
+
+  renderizarStatusLoteIa(status) {
+    const definir = (id, valor) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = valor;
+    };
+    const fmt = (n) => (n || 0).toLocaleString("pt-BR");
+
+    const barra = document.getElementById("barra-progresso-ia-lote");
+    if (barra) barra.style.width = `${status.porcentagem}%`;
+    definir("label-progresso-ia-lote", `${status.porcentagem}% - ${status.mensagem}`);
+    definir("lote-ia-reaproveitados", fmt(status.reaproveitados));
+    definir("lote-ia-traduzidas", `${fmt(status.frases_ia_traduzidas)}/${fmt(status.total_para_ia)}`);
+    definir("lote-ia-falhas", fmt(status.falhas_ia));
+    definir("lote-ia-glossario", fmt(status.fora_do_glossario));
+    definir("lote-ia-tempo", this.formatarDuracaoIa(status.tempo_decorrido_segundos));
+    definir(
+      "lote-ia-estimativa",
+      status.estimativa_restante_segundos ? `Decorrido · resta ~${this.formatarDuracaoIa(status.estimativa_restante_segundos)}` : "Decorrido"
+    );
+    document.getElementById("lote-ia-falhas")?.parentElement.classList.toggle("com-alerta", (status.falhas_ia || 0) > 0);
+
+    const elProv = document.getElementById("lote-ia-provedores");
+    if (elProv) {
+      elProv.innerHTML = Object.entries(status.provedores || {})
+        .map(([nome, qtd]) => `<span>${this.escaparHtmlIa(nome)}: ${fmt(qtd)}</span>`)
+        .join("");
+    }
+
+    const elEspera = document.getElementById("lote-ia-aguardando");
+    if (elEspera) {
+      const espera = status.ativo ? status.aguardando_segundos : 0;
+      elEspera.classList.toggle("oculto", !espera);
+      if (espera) elEspera.textContent = `⏳ Todas as chaves em cooldown (429). Retomando em ${espera}s...`;
+    }
+
+    this.renderizarLogLoteIa(status.log || []);
+  },
+
+  renderizarLogLoteIa(entradas) {
+    const elLog = document.getElementById("lote-ia-log");
+    if (!elLog) return;
+    const somenteProblemas = document.getElementById("lote-ia-somente-problemas")?.checked;
+    const novas = entradas.filter((e) => e.id > (this.ultimoIdLogIa || 0));
+    if (!novas.length) return;
+
+    const naBase = elLog.scrollHeight - elLog.scrollTop - elLog.clientHeight < 40;
+    const fragmento = document.createDocumentFragment();
+    novas.forEach((entrada) => {
+      this.ultimoIdLogIa = entrada.id;
+      if (somenteProblemas && (entrada.nivel === "ok" || entrada.nivel === "info")) return;
+      const linha = document.createElement("div");
+      linha.className = `log-${entrada.nivel}`;
+      linha.innerHTML = `<span class="log-hora">${entrada.hora}</span>${this.escaparHtmlIa(entrada.mensagem)}`;
+      fragmento.appendChild(linha);
+    });
+    elLog.appendChild(fragmento);
+    while (elLog.childElementCount > 400) elLog.firstElementChild.remove();
+    if (naBase) elLog.scrollTop = elLog.scrollHeight;
   },
 
   // --------------------------------------------------------------------------

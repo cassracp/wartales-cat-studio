@@ -19,16 +19,23 @@ import time
 import json
 import logging
 import threading
+from collections import deque
 import xml.etree.ElementTree as ET
 from typing import Dict, Any, List, Optional, Callable
 
 from nucleo.normalizador import normalizar_espacos, sanitizar_para_castledb, gerar_hash_conteudo
 from nucleo.memoria_global import MemoriaTraducaoGlobal
 from nucleo.servico_ia import ServicoIA, CHAVE_PADRAO_GEMINI
+from nucleo.aplicador_glossario_ia import AplicadorGlossarioIA
 from nucleo.gerenciador_pool_ia import GerenciadorPoolIA
 from nucleo.sincronizador import SincronizadorXml
 
 logger = logging.getLogger("cat_wartales.tradutor_lote")
+
+LIMITE_LOG_LOTE = 300
+TENTATIVAS_POR_FRASE = 3
+ESPERAS_COOLDOWN_MAXIMAS = 6
+PREVIA_TEXTO_LOG = 60
 
 
 class MotorTraducaoLoteIA:
@@ -37,33 +44,160 @@ class MotorTraducaoLoteIA:
     def __init__(
         self,
         memoria_global: Optional[MemoriaTraducaoGlobal] = None,
-        gerenciador_pool: Optional[GerenciadorPoolIA] = None
+        gerenciador_pool: Optional[GerenciadorPoolIA] = None,
+        aplicador_glossario: Optional[AplicadorGlossarioIA] = None
     ):
+        self.aplicador_glossario = aplicador_glossario
         self.memoria_global = memoria_global or MemoriaTraducaoGlobal()
         self.gerenciador_pool = gerenciador_pool
-        self.estado_execucao: Dict[str, Any] = {
+        self._lock = threading.Lock()
+        self._log: deque = deque(maxlen=LIMITE_LOG_LOTE)
+        self._proximo_id_log = 1
+        self.estado_execucao: Dict[str, Any] = self._criar_estado_inicial()
+
+    def _congelar_glossario(self) -> Optional[AplicadorGlossarioIA]:
+        """Retrato do glossário no início do lote, evitando uma consulta ao banco por frase."""
+        if self.aplicador_glossario is None:
+            return None
+        try:
+            return AplicadorGlossarioIA.de_lista(self.aplicador_glossario._fonte_termos())
+        except Exception as erro:
+            logger.error(f"Falha ao carregar glossário para o lote: {erro}")
+            return None
+
+    @staticmethod
+    def _criar_estado_inicial() -> Dict[str, Any]:
+        return {
             "ativo": False,
             "concluido": False,
             "erro": None,
             "porcentagem": 0.0,
             "segmentos_processados": 0,
             "total_segmentos": 0,
+            "reaproveitados": 0,
             "frases_ia_traduzidas": 0,
+            "falhas_ia": 0,
+            "fora_do_glossario": 0,
             "total_para_ia": 0,
+            "aguardando_segundos": 0,
+            "provedores": {},
             "mensagem": "Pronto para iniciar.",
             "data_inicio": None,
-            "tempo_decorrido_segundos": 0
+            "tempo_decorrido_segundos": 0,
         }
-        self._lock = threading.Lock()
+
+    def _registrar_log_sem_lock(self, nivel: str, mensagem: str) -> None:
+        self._log.append({
+            "id": self._proximo_id_log,
+            "hora": time.strftime("%H:%M:%S"),
+            "nivel": nivel,
+            "mensagem": mensagem,
+        })
+        self._proximo_id_log += 1
+
+    def _registrar_log(self, nivel: str, mensagem: str) -> None:
+        with self._lock:
+            self._registrar_log_sem_lock(nivel, mensagem)
 
     def obter_status(self) -> Dict[str, Any]:
-        """Retorna uma cópia do estado atual da tradução em lote."""
+        """Retorna uma cópia do estado atual da tradução em lote, incluindo o log de eventos."""
         with self._lock:
             res = dict(self.estado_execucao)
+            res["provedores"] = dict(res["provedores"])
             if res["ativo"] and res["data_inicio"]:
                 res["tempo_decorrido_segundos"] = round(time.time() - res["data_inicio"], 1)
+                feitas = res["frases_ia_traduzidas"] + res["falhas_ia"]
+                restantes = res["total_para_ia"] - feitas
+                if feitas > 0 and restantes > 0:
+                    res["estimativa_restante_segundos"] = int(res["tempo_decorrido_segundos"] / feitas * restantes)
+            res["log"] = list(self._log)
             return res
 
+    @staticmethod
+    def _previa(texto: str) -> str:
+        limpo = " ".join((texto or "").split())
+        return limpo if len(limpo) <= PREVIA_TEXTO_LOG else limpo[:PREVIA_TEXTO_LOG] + "…"
+
+    def _traduzir_com_retentativas(self, servico_ia: ServicoIA, chave: str, texto_en: str) -> Optional[str]:
+        """
+        Traduz uma frase tolerando falhas: aguarda cooldown (429) do pool e retenta.
+        Retorna a tradução ou None se esgotar as tentativas (nunca devolve o texto em inglês).
+        """
+        previa = self._previa(texto_en)
+        esperas = 0
+        tentativa = 0
+        while tentativa < TENTATIVAS_POR_FRASE:
+            tentativa += 1
+            resultado = servico_ia.traduzir_texto(texto_en)
+
+            if resultado.get("sucesso") and (resultado.get("traducao") or "").strip():
+                provedor = resultado.get("rotulo_chave") or resultado.get("provedor") or "chave direta"
+                with self._lock:
+                    provs = self.estado_execucao["provedores"]
+                    provs[provedor] = provs.get(provedor, 0) + 1
+                glossario = resultado.get("glossario")
+                if glossario and not glossario.get("conforme", True):
+                    with self._lock:
+                        self.estado_execucao["fora_do_glossario"] += 1
+                    self._registrar_log("aviso", f"[{chave}] fora do glossário ({'; '.join(glossario.get('violacoes', []))}): {previa}")
+                else:
+                    tempo = resultado.get("tempo_segundos")
+                    sufixo = f" ({tempo}s)" if tempo else ""
+                    self._registrar_log("ok", f"[{chave}] traduzido via {provedor}{sufixo}: {previa}")
+                return resultado["traducao"]
+
+            erro = resultado.get("erro") or "resposta vazia da IA"
+            if resultado.get("em_cooldown") and esperas < ESPERAS_COOLDOWN_MAXIMAS:
+                esperas += 1
+                tentativa -= 1
+                segundos = int(resultado.get("segundos_espera") or 5) + 1
+                self._registrar_log("aviso", f"Todas as chaves em cooldown (429). Aguardando {segundos}s ({esperas}/{ESPERAS_COOLDOWN_MAXIMAS})...")
+                self._aguardar(segundos)
+                continue
+
+            self._registrar_log("erro", f"[{chave}] tentativa {tentativa}/{TENTATIVAS_POR_FRASE} falhou: {self._previa(erro)[:160]}")
+
+        return None
+
+    def _aguardar(self, segundos: int) -> None:
+        """Espera atualizando o contador exibido na interface."""
+        for restante in range(segundos, 0, -1):
+            with self._lock:
+                self.estado_execucao["aguardando_segundos"] = restante
+            time.sleep(1)
+        with self._lock:
+            self.estado_execucao["aguardando_segundos"] = 0
+
+    def _traduzir_pendencias(
+        self,
+        pendencias: List[Dict[str, str]],
+        destino: Dict[str, str],
+        servico_ia: ServicoIA,
+        novos_pares_tm: List[Dict[str, str]],
+        total_itens: int,
+        total_pendencias: int,
+    ) -> None:
+        """Traduz as pendências de um arquivo. Falhas mantêm o inglês no arquivo, mas não poluem a memória."""
+        for item in pendencias:
+            traducao = self._traduzir_com_retentativas(servico_ia, item["chave"], item["en"])
+            if traducao is None:
+                destino[item["chave"]] = item["en"]
+                with self._lock:
+                    self.estado_execucao["falhas_ia"] += 1
+                self._registrar_log("erro", f"[{item['chave']}] FALHOU: mantido em inglês e fora da Memória de Tradução.")
+            else:
+                pt_sanitizado = sanitizar_para_castledb(traducao)
+                destino[item["chave"]] = pt_sanitizado
+                novos_pares_tm.append({"en": item["en"], "pt": pt_sanitizado})
+                with self._lock:
+                    self.estado_execucao["frases_ia_traduzidas"] += 1
+
+            with self._lock:
+                self.estado_execucao["segmentos_processados"] += 1
+                proc = self.estado_execucao["segmentos_processados"]
+                self.estado_execucao["porcentagem"] = round(proc / total_itens * 100, 1) if total_itens else 100.0
+                feitas = self.estado_execucao["frases_ia_traduzidas"] + self.estado_execucao["falhas_ia"]
+                self.estado_execucao["mensagem"] = f"Traduzindo com IA: {feitas}/{total_pendencias}..."
     def analisar_deltas(
         self,
         diretorio_vanilla: str,
@@ -178,19 +312,15 @@ class MotorTraducaoLoteIA:
             if self.estado_execucao["ativo"]:
                 return False  # Já está em execução
 
-            self.estado_execucao = {
+            self.estado_execucao = self._criar_estado_inicial()
+            self.estado_execucao.update({
                 "ativo": True,
-                "concluido": False,
-                "erro": None,
-                "porcentagem": 0.0,
-                "segmentos_processados": 0,
-                "total_segmentos": 0,
-                "frases_ia_traduzidas": 0,
-                "total_para_ia": 0,
                 "mensagem": "Iniciando análise e pipeline de tradução...",
                 "data_inicio": time.time(),
-                "tempo_decorrido_segundos": 0
-            }
+            })
+            self._log.clear()
+            self._proximo_id_log = 1
+            self._registrar_log_sem_lock("info", "Lote iniciado.")
 
         thread = threading.Thread(
             target=self._executar_pipeline_completo,
@@ -216,6 +346,7 @@ class MotorTraducaoLoteIA:
                 servico_ia = ServicoIA(chave_api=chave_utilizar)
             else:
                 servico_ia = ServicoIA(gerenciador_pool=self.gerenciador_pool)
+            servico_ia.aplicador_glossario = self._congelar_glossario()
             os.makedirs(diretorio_saida_ia, exist_ok=True)
 
             mod_texts_path = os.path.join(diretorio_mod_en, "texts_en.xml")
@@ -281,45 +412,18 @@ class MotorTraducaoLoteIA:
             total_pendencias = len(pendencias_ia_texts) + len(pendencias_ia_export)
             with self._lock:
                 self.estado_execucao["total_para_ia"] = total_pendencias
+                self.estado_execucao["reaproveitados"] = total_itens - total_pendencias
+                self._registrar_log_sem_lock("info", f"Isolamento: {total_itens - total_pendencias:,} reaproveitados (0 tokens), {total_pendencias:,} irão para a IA.")
                 self.estado_execucao["segmentos_processados"] = total_itens - total_pendencias
                 if total_itens > 0:
                     self.estado_execucao["porcentagem"] = round((total_itens - total_pendencias) / total_itens * 100, 1)
 
             logger.info(f"Isolamento concluído: {total_itens - total_pendencias} reaproveitados (0 tokens), {total_pendencias} para a IA.")
 
-            # 3. Traduzir pendências de texts via Gemini
-            novos_pares_tm = []
-            for item in pendencias_ia_texts:
-                trad = servico_ia.traduzir_texto(item["en"])
-                pt_trad = trad.get("traducao") or item["en"]
-                pt_sanitizado = sanitizar_para_castledb(pt_trad)
-                resultado_texts_pt[item["chave"]] = pt_sanitizado
-
-                novos_pares_tm.append({"en": item["en"], "pt": pt_sanitizado})
-
-                with self._lock:
-                    self.estado_execucao["segmentos_processados"] += 1
-                    self.estado_execucao["frases_ia_traduzidas"] += 1
-                    proc = self.estado_execucao["segmentos_processados"]
-                    self.estado_execucao["porcentagem"] = round((proc / total_itens * 100), 1)
-                    self.estado_execucao["mensagem"] = f"Traduzindo com IA: {self.estado_execucao['frases_ia_traduzidas']}/{total_pendencias}..."
-
-            # 4. Traduzir pendências de export via Gemini
-            for item in pendencias_ia_export:
-                trad = servico_ia.traduzir_texto(item["en"])
-                pt_trad = trad.get("traducao") or item["en"]
-                pt_sanitizado = sanitizar_para_castledb(pt_trad)
-                resultado_export_pt[item["chave"]] = pt_sanitizado
-
-                novos_pares_tm.append({"en": item["en"], "pt": pt_sanitizado})
-
-                with self._lock:
-                    self.estado_execucao["segmentos_processados"] += 1
-                    self.estado_execucao["frases_ia_traduzidas"] += 1
-                    proc = self.estado_execucao["segmentos_processados"]
-                    self.estado_execucao["porcentagem"] = round((proc / total_itens * 100), 1)
-                    self.estado_execucao["mensagem"] = f"Traduzindo com IA: {self.estado_execucao['frases_ia_traduzidas']}/{total_pendencias}..."
-
+            # 3 e 4. Traduzir pendências de texts e export via IA
+            novos_pares_tm: List[Dict[str, str]] = []
+            self._traduzir_pendencias(pendencias_ia_texts, resultado_texts_pt, servico_ia, novos_pares_tm, total_itens, total_pendencias)
+            self._traduzir_pendencias(pendencias_ia_export, resultado_export_pt, servico_ia, novos_pares_tm, total_itens, total_pendencias)
             # Salvar novos pares na Memória Global
             if novos_pares_tm:
                 self.memoria_global.salvar_lote(novos_pares_tm, origem_mod=nome_mod, autor="ia_gemini")
@@ -335,7 +439,9 @@ class MotorTraducaoLoteIA:
                 self.estado_execucao["ativo"] = False
                 self.estado_execucao["concluido"] = True
                 self.estado_execucao["porcentagem"] = 100.0
-                self.estado_execucao["mensagem"] = f"Tradução concluída! Arquivos texts_pt-BR.xml e export_pt-BR.xml gerados."
+                falhas = self.estado_execucao["falhas_ia"]
+                self.estado_execucao["mensagem"] = "Tradução concluída! Arquivos texts_pt-BR.xml e export_pt-BR.xml gerados." + (f" {falhas} frase(s) falharam e permaneceram em inglês." if falhas else "")
+                self._registrar_log_sem_lock("ok" if not falhas else "aviso", self.estado_execucao["mensagem"])
 
         except Exception as erro:
             logger.exception("Falha na tradução em lote por IA:")
@@ -344,6 +450,7 @@ class MotorTraducaoLoteIA:
                 self.estado_execucao["concluido"] = False
                 self.estado_execucao["erro"] = str(erro)
                 self.estado_execucao["mensagem"] = f"Erro: {str(erro)}"
+                self._registrar_log_sem_lock("erro", f"Pipeline interrompido: {erro}")
 
     @staticmethod
     def _gravar_arquivo_texts(caminho_template_en: str, caminho_saida_pt: str, mapa_traducoes: Dict[str, str]) -> None:
@@ -449,3 +556,4 @@ class MotorTraducaoLoteIA:
 
             with open(caminho_saida_pt, "w", encoding="utf-8") as f_out:
                 f_out.writelines(saida_linhas)
+

@@ -1,4 +1,4 @@
-<texts lang="pt-BR">
+<texts>
     <t id="fmt_dmg"><b>::value::</b> de dano</t>
     <t id="list_name">::names:: <default>e</default> ::last::</t>
 	<t id="list_name_or">::names:: ou ::last::</t>
@@ -66,10 +66,10 @@
     <g id="happy_bonus">
         <t id="campfire">Acompanhantes atribuídos à Fogueira.</t>
         <t id="comfortable_fur">Acompanhantes perto de ::unit::</t>
-        <t id="starvation">Os Companheiros estão famintos!</t>
-        <t id="starvation2">Os Companheiros estão morrendo de fome!</t>
-        <t id="salaries_late">Os Companheiros não estão felizes com os atrasos nos salários!</t>
-        <t id="salaries_late2">Os Companheiros estão furiosos com os atrasos nos salários!</t>
+        <t id="starvation">Os Acompanhantes estão com fome!</t>
+        <t id="starvation2">Os Acompanhantes estão famintos!</t>
+        <t id="salaries_late">Os Acompanhantes não estão felizes com os atrasos nos soldos!</t>
+        <t id="salaries_late2">Os Acompanhantes estão furiosos com os atrasos nos soldos!</t>
         <t id="bad_diet">Requisitos de comida não atendidos</t>
         <t id="rest_forest">Descansar na floresta</t>
         <t id="food_bonus">Comida</t>
@@ -116,10 +116,10 @@
         <t id="timeline_enemy_unit">O adversário pode usar qualquer unidade que ainda não participou desta rodada.</t>
         <t id="timeline_unit">::name:: usará seu turno.</t>
         <t id="timeline_end_round">Fim da rodada</t>
-        <t id="morale">Mate unidades inimigas para aumentar o medidor de Moral e reivindicar a vitória mais rápido.</t>
+        <t id="morale">Mate unidades inimigas para aumentar o medidor de Moral e vencer rapidamente.</t>
         <t id="cancelPendingSkill">Clique para lançar "::skill::" e iniciar o turno desta unidade.</t>
         <t id="cancelReactionSkill">Clique para encerrar "::skill::" e iniciar o turno desta unidade.</t>
-        <t id="bonus_ap_desc">Há <apt>::count::</apt> <b>Pontos de Bravura bônus</b> para gastar apenas nesta batalha.</t>
+        <t id="bonus_ap_desc">Há <apt>::count::</apt> <b>Pontos de Valor bônus</b> para gastar apenas nesta batalha.</t>
         <t id="pending_skill_delay">Esta unidade preparou uma habilidade que será ativada no começo do turno.</t>
         <t id="pending_skill_reaction">Esta unidade tem uma habilidade que aciona no turno de outras unidades.</t>
         <t id="notify_enemy_renfort">Reforços inimigos se aproximando!</t>
@@ -172,7 +172,7 @@
             <t id="confirmStartChampion">Desafiar o Campeão?</t>
             <t id="confirmActionEmpty"><bad>Algumas unidades não têm um bônus selecionado.</bad></t>
             <t id="confirmLeaveArena">Perder todo o progresso nesta arena?</t>
-            <t id="cantFight">A Tropa deve registrar quatro companheiros para participar desta competição.</t>
+            <t id="cantFight">A Tropa deve registrar quatro acompanhantes para participar desta competição.</t>
             <t id="unitAlreadyRegister">Esta unidade já está inscrita.</t>
             <t id="arenaFightSelectorTitle">Seleção de Prova</t>
             <g id="arenaLegendsNames">
@@ -202,16 +202,16 @@
             <t id="RatSpawn">Ratos estão surgindo dos buracos!</t>
             <t id="DayNotification">O sol está nascendo. Os ratos estão se acalmando.</t>
             <t id="NightNotification">O sol está se pondo. Os ratos estão ficando agressivos!</t>
-            <t id="debrief">Os Companheiros mataram ::rat:: ratos e destruíram ::nest:: crescimentos infestados pela praga.</t>
+            <t id="debrief">Os Acompanhantes mataram ::rat:: ratos e destruíram ::nest:: antros infestados pela peste.</t>
         </g>
         <g id="ghostpack">
             <t id="notify_nightmare_renfort">Um Pesadelo apareceu!</t>
-            <t id="unit_terror">::name:: está fugindo com medo, abandonando covardemente a Tropa!</t>
+            <t id="unit_terror">::name:: abandonou a Tropa, correndo com o rabo entre as pernas!</t>
             <t id="enemy_terror">::name:: está morrendo de medo!</t>
         </g>
         <g id="reach">
             <t id="notify_plagueridden_renfort">Mais Empesteados estão se aproximando!</t>
-            <t id="reach_objective">Alcance a área de fuga e faça os Companheiros fugirem.</t>
+            <t id="reach_objective">Alcance a zona de fuga para que os Acompanhantes fujam.</t>
         </g>
         <g id="forsakenvillage">
             <t id="new_wave">Monstros Empesteados estão tentando entrar na construção!</t>
@@ -235,13 +235,13 @@
             <t id="noRules">Sem Regras Regionais</t>
             <t id="choosePlayerTeam">Monte a equipe</t>
             <t id="playerTeam">A equipe</t>
-            <t id="cantFight">A Tropa deve registrar 6 Companheiros para participar desta partida.</t>
+            <t id="cantFight">A Tropa deve registrar seis Acompanhantes para participar desta partida.</t>
             <t id="noRole">Cada acompanhante deve ficar em uma posição.</t>
-            <t id="noTeamLeader">Escolha um Capitão de Equipe.</t>
+            <t id="noTeamLeader">Escolha um Capitão da Equipe.</t>
             <t id="rounds">Rodada ::current::/::total::</t>
             <g id="sport_objective">
                 <t _id="portezunballondanslazonedembutadversepourmarquer2points">- Leve uma bola até a área do oponente para marcar 2 pontos.</t>
-                <t _id="possdezle2emeballonlorsdelamarquepour1pointadditionel">- Tenha a outra bola quando a equipe marcar para ganhar 1 ponto adicional.</t>
+                <t _id="possdezle2emeballonlorsdelamarquepour1pointadditionel">- Esteja com a posse da outra bola quando a equipe marcar para ganhar 1 ponto adicional.</t>
                 <t _id="lquipequipossdeleplusdepointslafindu8emeroundremportelapartie">- Vence o time com mais pontos no final da oitava rodada.</t>
             </g>
             <t id="sport_objective_hard">- A equipe DEVE marcar pelo menos 5 pontos para vencer.</t>
@@ -253,29 +253,19 @@
  ::action2::</t>
         </g>
         <g id="boat">
-            <t id="duel_objective">Cada uma das tiradas do capitão inimigo está associada a uma das 3 ações a seguir: Atacar, Aparar, Provocar.
- Responda corretamente escolhendo a ação apropriada:
-
- - Se um Companheiro usar Atacar e o inimigo usar Provocar, o Companheiro irá atingi-lo.
- - Se um Companheiro usar Aparar e o inimigo usar Atacar, o Companheiro evitará o golpe.
- - Se um Companheiro usar Provocar e o inimigo usar Aparar, o Companheiro ganhará a Vantagem.
-
- Se ambos os duelistas atacarem ao mesmo tempo, aquele com a vantagem ganha o ponto.
- Se um duelista aparar com sucesso enquanto tem a vantagem, ele contra-ataca.
-
- Um Companheiro não pode usar a mesma ação duas vezes seguidas.</t>
+            <t id="duel_objective">Cada uma das frases do capitão inimigo está associada a uma das 3 ações a seguir: Atacar, Aparar, Provocar. Responda corretamente escolhendo a ação apropriada: - Se um Acompanhante usar Atacar e o inimigo usar Provocar, o Acompanhante irá atingi-lo. - Se um Acompanhante usar Aparar e o inimigo usar Atacar, o Acompanhante evitará o golpe. - Se um Acompanhante usar Provocar e o inimigo usar Aparar, o Acompanhante ganhará a Vantagem. Se ambos os duelistas atacarem ao mesmo tempo, aquele com a vantagem ganha o ponto. Se um duelista aparar com sucesso enquanto tem a vantagem, ele contra-ataca. Um Acompanhante não pode usar a mesma ação duas vezes seguidas.</t>
             <t id="specialRules">Vantagens acumuladas</t>
             <t id="newRule">Vantagem adicional</t>
             <t id="duel_wait">Esperar</t>
             <t id="dialog_upset">...</t>
-            <t id="action_used_last_turn">O Companheiro já usou esta ação no último turno.</t>
+            <t id="action_used_last_turn">O Acompanhante já usou esta ação no último turno.</t>
 			<t id="captain_engaged">O Capitão da tropa já está em combate com outra unidade.</t>
         </g>
         <g id="seasnake">
             <t id="Reload1">A balista precisa estar tensionada no máximo para disparar a Lança de Belerion. Prepará-la vai demorar mais do que o esperado.</t>
             <t id="Reload2">::name:: quase terminou de carregar a balista.</t>
             <t id="Reload3">A balista está pronta para disparar!</t>
-            <t id="ShotMissed">Infelizmente, os Companheiros desperdiçaram sua única chance de derrubar a Serpente Marinha.</t>
+            <t id="ShotMissed">Infelizmente, os Acompanhantes desperdiçaram sua única chance de derrubar a Serpente Marinha.</t>
             <t id="BeatSnake">A Serpente Marinha está vulnerável. Matem-na!</t>
             <t id="SeaCrawlerSpawn">A Serpente Marinha está chamando reforços!</t>
         </g>
@@ -308,9 +298,9 @@
             <t id="title">Comboio dos Prisioneiros</t>
             <t id="description">Liberte o maior número de prisioneiros para vencer.</t>
             <t id="description1">Liberte o maior número de prisioneiros para vencer. (mortos: ::killed::, salvos: ::saved::)</t>
-            <t id="debrief_won">Os Companheiros libertaram ::prisoner:: prisioneiros.</t>
-            <t id="debrief_flee">Os Companheiros libertaram ::prisoner:: prisioneiros, mas eles foram recapturados durante a fuga.</t>
-            <t id="debrief_no_escape">Os Companheiros não libertaram nenhum prisioneiro.</t>
+            <t id="debrief_won">Os Acompanhantes libertaram ::prisoner:: prisioneiros.</t>
+            <t id="debrief_flee">Os Acompanhantes libertaram ::prisoner:: prisioneiros, mas eles foram recapturados durante a fuga.</t>
+            <t id="debrief_no_escape">Os Acompanhantes não libertaram nenhum prisioneiro.</t>
         </g>
         <g id="stealth">
             <t id="confirmStartFight">Infiltrar-se no acampamento?</t>
@@ -356,8 +346,8 @@
             <t id="passive">Passiva</t>
             <t id="injury">Ferimento</t>
             <t id="immediate">Imediato</t>
-            <t id="str_attrib"> de Força</t>
-            <t id="dex_attrib"> de Destreza</t>
+            <t id="str_attrib">de Força</t>
+            <t id="dex_attrib">de Destreza</t>
         </g>
         <g id="modeName">
             <t id="TargetUnit">Corpo a corpo</t>
@@ -394,23 +384,23 @@
         <t id="category_conditionnal">Condicionais</t>
     </g>
     <g id="gameover">
-        <t id="no_unit">O último Companheiro deixou a Tropa.</t>
-        <t id="battle_lose">Todos os Companheiros pereceram nesta batalha.</t>
+        <t id="no_unit">O último Acompanhante deixou a Tropa.</t>
+        <t id="battle_lose">Todos os Acompanhantes morreram nesta batalha.</t>
         <t id="accompany_die">::name:: morreu.</t>
         <t id="accompany_die_woman">::name:: morreu.</t>
         <t id="ruin_no_light">A Tropa não possui mais <img src="icon/RuinsLight"/><b>Luz</b>.</t>
         <t id="ironmen">A aventura da Tropa termina aqui.</t>
-        <t id="sea_snake">A Serpente Marinha destruiu o barco dos Companheiros.</t>
+        <t id="sea_snake">A Serpente Marinha destruiu o barco dos Acompanhantes.</t>
     </g>
     <g id="multiplayer">
-        <t id="creationTroop">Estes Companheiros formam o núcleo da Tropa. Novos recrutas se juntarão a você mais tarde.</t>
+        <t id="creationTroop">Estes Acompanhantes formam a Tropa principal. Mais recrutas se juntarão mais tarde.</t>
         <t id="waitingPlayers">Esperando: ::names::</t>
         <t id="holdToSkip">[LMB] Forçar <small>(segurar)</small></t>
         <t id="waitCancel">[RMB] Cancelar</t>
         <t id="wait_players">Aguardando jogadores</t>
         <t id="notOwnedUnit">Este Acompanhante pertence a ::name::.</t>
         <t id="notOwnedUnitWithUnitName">::unitName:: pertence a ::name::.</t>
-        <t id="chooseOwnedUnit">Escolha um dos Companheiros.</t>
+        <t id="chooseOwnedUnit">Escolha um dos Acompanhantes.</t>
         <t id="needOneOwnedUnit">Cada jogador deve nomear pelo menos um de seus Acompanhantes: <bad>::names::</bad></t>
         <t id="players">Jogadores</t>
         <t id="unassigned">Sem jogadores</t>
@@ -470,36 +460,14 @@ Tente mais tarde.</t>
         <t id="craft_by_troup">Feito pela Tropa</t>
         <t id="seal_name">Selo: ::skillName::</t>
         <t id="tiredness">Fadiga</t>
-        <t id="tiredness_info">Verifique a <b>Fadiga</b> da Tropa para saber quando montar acampamento e descansar.
-Use a fogueira para cozinhar uma boa refeição e dormir.</t>
+        <t id="tiredness_info">Acompanhe a <b>Fadiga</b> da Tropa para saber a hora de montar o acampamento e descansar. Use a fogueira para cozinhar uma boa refeição e dormir um pouco.</t>
         <t id="rest_not_tired">A Tropa descansou o suficiente por enquanto.</t>
-        <t id="gold_info"><b>Coroas</b> são a moeda básica. Os Companheiros esperam receber salários a cada ::nbRest:: Descansos.
-
- Descansos antes do próximo salário: <b>::nextDueDate::</b>
-
-Total atual: <gold>::gold::</gold>
-Salários: <gold>::salaries::</gold>
-Salários devidos: <gold>::dueSalaries::</gold></t>
+        <t id="gold_info">As <b>Koroas</b> são a moeda básica. Os Acompanhantes esperam receber soldos a cada ::nbRest:: Descansos. Descansos antes do próximo salário: <b>::nextDueDate::</b> Total atual: <gold>::gold::</gold> Soldos: <gold>::salaries::</gold> Soldos devidos: <gold>::dueSalaries::</gold></t>
         <t id="gold_info_coop">Total de Soldos em falta: <gold>::dueSalaries::</gold></t>
         <t id="mission_gold_cityTavern">Missões de Mercenário concluídas: <gold>::gold::</gold></t>
         <t id="mission_gold_thiefTavern">Missões de Bandido concluídas: <gold>::gold::</gold></t>
-        <t id="food_info">Alimente os Companheiros antes de cada Descanso: certifique-se de que há <b>Comida</b> suficiente em estoque.
-
-Estoque: <food>::food::</food>
-Consumo: <food>::conso::</food></t>
-        <t id="happy_info_new">
-		A <b>Felicidade</b> da Tropa evolui com o tempo.
-
-		Certifique-se de que ela permaneça positiva para que os Companheiros não deixem a Tropa.
-
-		Felicidade atual: <happy>::happy::</happy>
-
-		<::color0::><happy>::min::</happy> um Companheiro desejará deixar a Tropa!</::color0::>
-		<::color1::><happy>::bonus::</happy> ::bonus1Text::</::color1::>
-		<::color2::><happy>::max::</happy> ::bonus2Text::</::color2::>
-
-		<::color2::>Qualquer ganho acima de <happy>::max::</happy> concede à Tropa <influence><b>::infl::</b></influence> por ponto de Felicidade.</::color2::>
-        </t>
+        <t id="food_info">Alimente os Acompanhantes antes de cada Descanso: certifique-se de que há <b>Comida</b> suficiente em estoque. Estoque: <food>::food::</food> Consumo: <food>::conso::</food></t>
+        <t id="happy_info_new">A <b>Felicidade</b> da Tropa evolui com o tempo. Mantenha-a em nível positivo e os Acompanhantes não deixarão a Tropa. Felicidade atual: <happy>::happy::</happy> <::color0::><happy>::min::</happy> um Acompanhante vai querer deixar a Tropa!</::color0::> <::color1::><happy>::bonus::</happy> ::bonus1Text::</::color1::> <::color2::><happy>::max::</happy> ::bonus2Text::</::color2::> <::color2::>Qualquer ganho acima de <happy>::max::</happy> concede <influence><b>::infl::</b></influence> por ponto de Felicidade.</::color2::></t>
         <t id="repair_all">Consertar tudo por <img src="/item/RawMaterials"/>::count::</t>
         <t id="repair_one">Consertar <img src="/icon/Guard"/>::amount:: por <img src="/item/RawMaterials"/>1</t>
         <t id="repair_ctrl_all"><comment>(Ctrl - Consertar tudo)</comment></t>
@@ -542,7 +510,7 @@ Consumo: <food>::conso::</food></t>
         <t id="skill_item_usage">Usos restantes: <b>::count::</b><img src="::icon::"/></t>
         <t id="skill_item_usage_global_item">A Tropa possui: <b>::count::</b><img src="::icon::"/></t>
         <t id="cant_equip_this_item">Este item não pode ser equipado</t>
-        <t id="cant_equip_no_armor_slot">Não há espaços livres na armadura</t>
+        <t id="cant_equip_no_armor_slot">A armadura não tem espaços disponíveis</t>
         <t id="cant_equip_no_helmet">Sem capacete equipado.</t>
         <t id="cant_equip_no_helmet_seal">O selo já foi aplicado neste capacete.</t>
         <t id="cant_equip_no_weapon">Sem arma equipada.</t>
@@ -561,7 +529,7 @@ Consumo: <food>::conso::</food></t>
         <t id="clear_helmet_seal">[RMBSHIFT] Remover selo</t>
         <t id="skill_replace_seal">Esta habilidade é substituída pela habilidade do selo</t>
         <t id="cant_choose_specialization"><bad>Esta especialização requer a habilidade <img src="skill/::skill::"/>::name::</bad></t>
-        <t id="unit_salary">Salários pagos a ::name:: <gold>::daily::</gold>. A dívida em salários é <gold>::due::</gold>.</t>
+        <t id="unit_salary">Soldos pagos a ::name:: <gold>::daily::</gold>. A dívida em soldos é <gold>::due::</gold>.</t>
         <t id="unit_food">Consumo diário de comida</t>
         <t id="unit_food_trait">Preferências:</t>
         <t id="unit_badDiet_days"><bad>Requisitos alimentares não atendidos por ::count:: dias</bad>.</t>
@@ -584,15 +552,8 @@ Consumo: <food>::conso::</food></t>
 
 		[RMB] Inspecionar
         </t>
-        <t id="capture_animal">Este animal foi capturado em combate e adicionado à Tropa.
-
-[LMB] Ações
-[RMB] Inspecionar</t>
-        <t id="bury_unit">
-		Este guerreiro morreu durante a batalha. A Tropa deseja honrar seu sacrifício.
-
-		[LMB] Enterrar
-        </t>
+        <t id="capture_animal">Este animal foi capturado em combate e adicionado à Tropa. [LMB] Ações [RMB] Inspecionar</t>
+        <t id="bury_unit">Este guerreiro morreu durante a batalha. A Tropa deseja honrar seu sacrifício. [LMB] Enterrar</t>
         <t id="action_name_default">Inspecionar</t>
         <t id="action_name_talk">Conversar</t>
         <t id="element_action">[LMB] ::action::</t>
@@ -668,7 +629,7 @@ Consumo: <food>::conso::</food></t>
             <t id="inspect_action">Inspecionar</t>
             <t id="choose_job_action">Escolha uma profissão</t>
             <t id="default_action">Selecionar</t>
-            <t id="title_multiple">Selecione os <font color="#FFF">Companheiros</font></t>
+            <t id="title_multiple">Selecione os <font color="#FFF">Acompanhantes</font></t>
             <t id="title_tent">Gestão da tenda</t>
             <t id="title">Escolha 1 <font color="#FFF">::traitName::</font></t>
             <t id="name_unit">Assistente</t>
@@ -693,11 +654,8 @@ Consumo: <food>::conso::</food></t>
 			 <t id="wrong_prison">Esta unidade precisa ser entregue em ::prison_name::</t>
             <t id="types_separator">ou</t>
         </g>
-        <t id="inventory_weight">Capacidade de Carga: <img src="icon/Weight"/><good>::transport::</good>
-		Peso no inventário: <img src="icon/Weight"/><bad>::inv::</bad>
-		Peso do Acampamento: <img src="icon/Weight"/><bad>::camp::</bad></t>
-        <t id="inventory_weight_over"><bad>A Tropa está carregando peso demais!</bad>
-		Melhore a carroça ou descarregue itens pesados.</t>
+        <t id="inventory_weight">Capacidade de Carga: <img src="icon/Weight"/><good>::transport::</good> Peso no inventário: <img src="icon/Weight"/><bad>::inv::</bad> Peso do Acampamento: <img src="icon/Weight"/><bad>::camp::</bad></t>
+        <t id="inventory_weight_over"><bad>A Tropa está carregando peso demais!</bad> Melhore a carruagem ou descarregue itens pesados.</t>
         <t id="inventory_full">O inventário está cheio</t>
         <g id="inventory_sort">
             <t _id="type">Tipo</t>
@@ -737,7 +695,7 @@ Consumo: <food>::conso::</food></t>
         <t id="wanted_title">Procurado</t>
         <t id="wanted_status_progress">Nível de Procurado atual: <b>::current::/::max::</b></t>
         <t id="wanted_status_active"><bad>A Tropa é procurada pelos seguintes motivos:</bad></t>
-        <t id="wanted_status_desc"><good>A Tropa não é atualmente Procurada pela Guarda.</good></t>
+        <t id="wanted_status_desc"><good>A Guarda não está procurando a Tropa no momento.</good></t>
         <t id="wanted_stolen_fine">Itens roubados em posse</t>
 		<t id="wanted_singer">Canções Proibidas</t>
         <t id="wanted_stolen_used_fine">Itens roubados descartados</t>
@@ -764,47 +722,47 @@ Consumo: <food>::conso::</food></t>
         <t id="item_food_bonus"><disable> (dura até o próximo Descanso)</disable></t>
 		<t id="bonus_permanent"><disable> (permanente)</disable></t>
 		<t id="select">[LMB] Selecionar</t>
-        <t id="mission_board_cant_accept_quest">A Tropa deve completar os contratos ativos antes de aceitar novos.</t>
+        <t id="mission_board_cant_accept_quest">A Tropa precisa concluir os contratos ativos antes de aceitar novos contratos.</t>
         <t id="gameinfo_toggle_units">Mostrar/Ocultar lista de Acompanhantes</t>
         <t id="action_skill_upgrade">[RMB] Aprimorar a habilidade <img src="item/::item::"/></t>
         <t id="skill_upgrade_no_unit">Visualize um <idesc>Acompanhante</idesc> e escolha a habilidade a ser melhorada.</t>
-		<t id="skill_upgrade_no_werewolf">Inspecione um [Werewolf] <idesc>Companheiro</idesc> e escolha a habilidade para aprimorar.</t>
+		<t id="skill_upgrade_no_werewolf">Inspecione um [Werewolf] <idesc>Acompanhante</idesc> e escolha a habilidade para aprimorar.</t>
         <t id="skill_upgradable">Escolha a habilidade a ser melhorada.</t>
-        <t id="skill_no_skill_upgradable"><bad>O <idesc>Companheiro</idesc> não possui habilidades aprimoráveis.</bad></t>
+        <t id="skill_no_skill_upgradable"><bad>O <idesc>Acompanhante</idesc> não possui habilidades melhoráveis.</bad></t>
         <t id="unlock_class">Aprender a especialização <b>::name::</b></t>
         <t id="preview_unlock_class">Prévia da especialização</t>
-        <t id="codex_need_restored">Este códice dos Antigos está danificado. A Tropa pode usar o <img src="item/Lectern"/><b>Púlpito</b> para restaurá-lo.</t>
+        <t id="codex_need_restored">Este códice dos Anciões está danificado. A Tropa pode usar o <img src="item/Lectern"/><b>Atril</b> para restaurá-lo.</t>
         <t id="codex_locked_desc">Este códice dos Anciões só pode ser decifrado se as seguintes <b>runas</b> forem aprendidas:</t>
         <t id="codex_can_be_unlocked">Este códice dos Anciões pode ser decifrado no <img src="item/Lectern"/><b>Atril</b>.</t>
-        <t id="codex_unlocked_desc">A Tropa decifrou o seguinte trecho do códice dos Antigos:</t>
-        <t id="page_need_restored">Este diário está danificado. A Tropa pode usar o <img src="item/Lectern"/><b>Púlpito</b> para restaurá-lo.</t>
+        <t id="codex_unlocked_desc">A Tropa decifrou o seguinte trecho do códice dos Anciões:</t>
+        <t id="page_need_restored">Este diário está danificado. A Tropa pode usar o <img src="item/Lectern"/><b>Atril</b> para restaurá-lo.</t>
         <t id="page_locked_desc">Este diário só pode ser decifrado se as seguintes <b>runas</b> forem aprendidas:</t>
         <t id="page_can_be_unlocked">Este diário pode ser decifrado no <img src="item/Lectern"/><b>Atril</b>.</t>
         <t id="page_unlocked_desc">A Tropa decifrou o seguinte trecho do diário:</t>
-        <t id="rune_desc">A Tropa aprofundou seu conhecimento das runas dos Antigos. Esta runa simboliza a palavra <b>::word::</b>”</t>
+        <t id="rune_desc">A Tropa aumentou seu conhecimento das runas dos Anciões. Esta runa simboliza a palavra <b>::word::</b>”</t>
         <t id="recipe_food">Receita: ::name::</t>
-        <t id="recipe_food_desc">Ensina a Tropa a cozinhar: ::name::</t>
+        <t id="recipe_food_desc">Ensina a cozinhar: ::name::</t>
         <t id="recipe_alchemist">Receita: ::name::</t>
-        <t id="recipe_alchemist_desc">Ensina a Tropa a preparar: ::name::</t>
-        <t id="recipe_forge_desc">Ensina a Companhia a forjar: ::name::</t>
+        <t id="recipe_alchemist_desc">Ensina a preparar: ::name::</t>
+        <t id="recipe_forge_desc">Ensina a forjar: ::name::</t>
         <t id="recipe_other">Projeto: ::name::</t>
-        <t id="recipe_other_desc">Ensina a Companhia a fabricar: ::name::</t>
+        <t id="recipe_other_desc">Ensina a fabricar: ::name::</t>
         <t id="manual_name">Manual: ::skillName::</t>
-        <t id="manual_desc">Contém conhecimento que permitirá a um dos Companheiros aprender uma nova perícia.</t>
+        <t id="manual_desc">Contém conhecimento que permitirá a um dos Acompanhantes aprender uma nova habilidade.</t>
         <t id="manual_requires_unit">Visualize um <idesc>Acompanhante</idesc> para aprender esta habilidade.</t>
 		<t id="mutation_requires_werwolf">Inspecione um [Werewolf] <idesc>Acompanhante</idesc> para aprender esta habilidade.</t>
-        <t id="manual_already_learnt">O <idesc>Companheiro</idesc> já aprendeu esta perícia.</t>
+        <t id="manual_already_learnt">O <idesc>Acompanhante</idesc> já aprendeu esta habilidade.</t>
         <t id="strategy_name">Estratégia: ::strategyName::</t>
-        <t id="strategy_desc">Leia isto para aprender uma nova estratégia para a Mesa de Estratégia.</t>
+        <t id="strategy_desc">Leia isto para aprender uma nova estratégia para o Quadro de Estratégia.</t>
         <t id="job_assigned"><b><img src="/trait/::icon::"/> (::kind::) Atribuído: </b></t>
         <t id="rank_assigned"><b> (::kind::) Atribuído: </b></t>
         <t id="ranked_assigned"><b>Acompanhante de nível alto atribuído: </b></t>
         <t id="map_defended_by">Defendido por: <b>::name::</b></t>
         <t id="probabilitySuccess">Taxa de sucesso: ::value::%</t>
         <g id="bonuses">
-            <t id="title">+ Tropa e bônus</t>
+            <t id="title">+ Tropa e Bônus</t>
             <t id="gameTitle">::troopName::</t>
-            <t id="count">Há <img src="icon/Companions"/><b>::count::</b> Companheiros na Companhia.</t>
+            <t id="count">Há <img src="icon/Companions"/><b>::count::</b> Acompanhantes na Tropa.</t>
             <t id="bonus_global">Bônus Gerais</t>
             <t id="bonus_equip">Bônus de Equipamento</t>
             <t id="bonus_path">Bônus de Caminho</t>
@@ -816,12 +774,12 @@ Consumo: <food>::conso::</food></t>
             <t id="skill_temporary">Bônus passivos até o próximo descanso</t>
             <t id="see_more">Clique em <img src="icon/TroopBonus"/> para saber mais</t>
         </g>
-        <t id="dialog_rest">Descanse para que a Companhia possa se recuperar e restaurar <ap>::ap::</ap></t>
+        <t id="dialog_rest">Descanse para que a Tropa possa relaxar e recuperar <ap>::ap::</ap>.</t>
         <t id="dialog_sing">Cante uma canção para deixar o Bardo brilhar.</t>
         <t id="recruit_announce">Publique um aviso de vaga para recrutar alguém.</t>
-        <t id="dialog_heal_injuries">Cure todas as feridas leves dos Companheiros.</t>
-        <t id="dialog_heal_prisoners_injuries">Cure todas as feridas leves dos Prisioneiros.</t>
-		<t id="dialog_heal_beast_influence">Cure os animais da Influência da Besta.</t>
+        <t id="dialog_heal_injuries">Curar todos os ferimentos leves dos Acompanhantes.</t>
+        <t id="dialog_heal_prisoners_injuries">Curar todos os ferimentos leves dos Prisioneiros.</t>
+		<t id="dialog_heal_beast_influence">Cura os animais da Influência da Besta.</t>
         <t id="orient_map">[RMB] Colocar marcador de posição</t>
         <t id="stickers_map">[LMB] Colocar um adesivo</t>
         <t id="map_goal_default">Vá até lá para saber mais.</t>
@@ -829,8 +787,8 @@ Consumo: <food>::conso::</food></t>
         <t id="map_goal_need_mission_nonpc">Assuma uma missão lá.</t>
         <t id="map_goal_unknown">Fale com alguém ou olhe ao redor da área para saber mais.</t>
         <t id="map_goal_done"><good>Concluído!</good></t>
-		<t id="map_a2_dark_light_info">A Companhia está no escuro: o cursor está oculto e o mapa não é revelado.</t>
-        <t id="map_a2_base_light_info">A Companhia tem uma fonte de luz, mas não é brilhante o suficiente: o mapa não é revelado.</t>
+		<t id="map_a2_dark_light_info">A Tropa está na escuridão. O cursor está escondido e o mapa ocultado.</t>
+        <t id="map_a2_base_light_info">A Tropa tem uma luz, mas não é forte o suficiente. O mapa está ocultado.</t>
         <t id="open_gold_purse">Abrir</t>
         <t id="use_hidden_item">Usar</t>
 		<t id="use">Usar</t>
@@ -838,32 +796,32 @@ Consumo: <food>::conso::</food></t>
         <t id="refill_alazar_lantern">Encher o Lampião</t>
 		<t id="mission_refill_tip">O Inventário de <b>::merchant_name::</b>, o Comerciante será reabastecido com itens dos seguintes tipos:</t>
         <g id="escape">
-            <t id="other_prisoners">Prisioneiro na Companhia</t>
+            <t id="other_prisoners">Prisioneiro na Tropa</t>
             <t id="ally_around">Acompanhantes perto</t>
             <t id="watchstool_assign">Acampamento sob guarda</t>
         </g>
         <g id="relation">
             <t id="gain_with">::value:: Relacionamento com ::name::.</t>
-            <t id="gain_group">::value:: Relacionamento com todo o grupo.</t>
+            <t id="gain_group">::value:: Relacionamento com todo a Tropa.</t>
             <t id="gain_group_percent">::value:: Relacionamento com Acompanhantes próximos.</t>
             <t id="gain_group_best">::value:: Relacionamento com Acompanhantes estimados.</t>
             <t id="gain_companion">::value:: Relacionamento com um Acompanhante.</t>
             <t id="gain_random_with">Afetará o relacionamento com ::name::.</t>
-            <t id="gain_random_group">Afetará o relacionamento com todo o grupo.</t>
-            <t id="gain_random_group_percent">Afetará o relacionamento com Companheiros próximos.</t>
-            <t id="gain_random_group_best">Afetará o relacionamento com os Companheiros favoritos.</t>
-            <t id="gain_random_companion">Afetará o relacionamento com um Companheiro.</t>
+            <t id="gain_random_group">Afetará o relacionamento com todo a Tropa.</t>
+            <t id="gain_random_group_percent">Afetará o relacionamento com Acompanhantes próximos.</t>
+            <t id="gain_random_group_best">Afetará o relacionamento com os Acompanhantes preferidos.</t>
+            <t id="gain_random_companion">Afetará o relacionamento com um Acompanhante.</t>
         </g>
         <g id="trust">
-            <t id="gain">Aumenta a confiança de ::name:: na Companhia.</t>
-            <t id="lose">Reduz a confiança de ::name:: na Companhia.</t>
+            <t id="gain">Aumenta a confiança de ::name:: na Tropa.</t>
+            <t id="lose">Reduz a confiança de ::name:: na Tropa.</t>
         </g>
 		<g id="xp">
             <t id="gain_self">::value:: exp</t>
             <t id="gain_target">::value:: exp para ::name::</t>
 			<t id="gain_group">::value:: EXP para Acompanhantes.</t>
-            <t id="gain_group_percent">::value:: xp com Companheiros próximos.</t>
-			<t id="gain_all">::value:: xp para toda a Companhia.</t>
+            <t id="gain_group_percent">::value:: xp com Acompanhantes próximos.</t>
+			<t id="gain_all">::value:: xp para toda a Tropa.</t>
         </g>
         <t id="gain_injury">Risco de Ferimento</t>
         <t id="gain_status">::name:: ganhará o status <b>::status::</b></t>
@@ -876,7 +834,7 @@ Consumo: <food>::conso::</food></t>
         </g>
         <g id="confession">
             <t id="suggested_by">Sugerido por ::name::.</t>
-            <t id="leaver">::name:: deixará a Companhia.</t>
+            <t id="leaver">::name:: vai abandonar a Tropa.</t>
             <t id="kill">::name:: vai morrer.</t>
             <t id="surrender">::name:: vai para a cadeia.</t>
         </g>
@@ -913,7 +871,7 @@ Consumo: <food>::conso::</food></t>
             <t id="damaged_equipment"><bad>Esta parte do navio está danificada e inoperante. Conserte-a em uma Doca.</bad></t>
             <t id="repair">Consertos</t>
             <t id="ballista_damaged"><bad>A balista está danificada</bad></t>
-            <t id="equipment_unknown">A Companhia ainda não encontrou os projetos para construir este equipamento.</t>
+            <t id="equipment_unknown">A Tropa ainda não encontrou os projetos para construir este equipamento.</t>
         </g>
         <g id="watchman">
             <t id="animal_try_telling_something">**(Sons estranhos vindo do mastro do vigia)**</t>
@@ -989,7 +947,7 @@ Consumo: <food>::conso::</food></t>
                 </g>
             </g>
             <g id="counter_description">
-                <t id="alignment">Representa a identidade e os valores centrais do Feudo. Cada nível desbloqueia certos <b>Governos</b> ou <b>Atribuições</b>. Muda quando você <b>constrói</b> ou aprimora um edifício, ou como resultado das escolhas durante as <b>Audiências</b>.</t>
+                <t id="alignment">Representa a identidade e os valores centrais do Feudo. Cada grau desbloqueia certos <b>Governos</b> ou <b>Serviços</b>. Muda quando a Tropa <b>constrói</b> ou aprimora um edifício, ou como resultado das escolhas durante as <b>Audiências</b>.</t>
                 <t id="level">Aumenta ao atingir determinado marco <b>populacional</b>. A cada nível, você pode construir um novo <b>distrito</b>, e mais conteúdo será liberado.</t>
             </g>
             <g id="goals">
@@ -997,10 +955,10 @@ Consumo: <food>::conso::</food></t>
                 <t id="remove"><b>[LMB] Remover</b></t>
                 <t id="reward"><b>[LMB] Obter recompensa</b></t>
                 <t id="mission">A missão <b>::mission::</b> está disponível no quadro de prêmios na Taberna dos Mercenários por ::rests:: Descansos.</t>
-                <t id="quest">A localização da missão <b>::mission::</b> está marcada no mapa.</t>
+                <t id="quest">A local da missão <b>::mission::</b> está marcada no mapa.</t>
             </g>
             <t id="no_resume">Descanse pelo menos uma vez para ver o relatório do Feudo.</t>
-            <t id="mandates_lvl_locked">Suba o nível do Feudo para realizar mais Atribuições de uma vez.</t>
+            <t id="mandates_lvl_locked">Melhore o nível do Feudo para designar mais serviços ao mesmo tempo.</t>
             <g id="level">
                 <t id="Unlocked">Liberado:</t>
                 <t id="NextLevel">Próximo nível:</t>
@@ -1016,7 +974,7 @@ Consumo: <food>::conso::</food></t>
         </g>
         <g id="a2sanity">
             <t id="title">Sanidade</t>
-            <t id="desc">Quanto menor a Saúde Mental da Companhia, mais frouxo o controle sobre a realidade...</t>
+            <t id="desc">Quanto pior a Sanidade da Tropa, menos eles sabem distinguir a realidade...</t>
         </g>
 		 <g id="e3chaos">
             <t id="chaos_level">Nível de Caos:</t>
@@ -1059,7 +1017,7 @@ Consumo: <food>::conso::</food></t>
         </g>
     </g>
     <g id="items">
-        <t id="hideoutmap_defender_killed_desc">::name:: foi destruído. Este mapa não é de utilidade para a Companhia.</t>
+        <t id="hideoutmap_defender_killed_desc">Destruíram ::name::. Este mapa não serve para a Tropa.</t>
         <t id="raw_materials">Pontos de Armadura restaurados: <b>::qty::</b></t>
     </g>
     <g id="confirm">
@@ -1086,7 +1044,7 @@ Consumo: <food>::conso::</food></t>
         <t id="heal_action">Curar a totalidade de <img src="/item/Remedy"/>::count::</t>
         <t id="heal_title">Tratar um ferimento</t>
         <t id="heal_injury">Usar <img src="/item/::icon::"/><b>::remedy::</b> para curar <b>::name::</b>?</t>
-        <t id="heal_remedy_none">A Companhia não tem nenhum remédio para esta lesão. Visite um Boticário para comprar ou fazer alguns.</t>
+        <t id="heal_remedy_none">A Tropa não tem nenhum remédio para este ferimento. Visite um Boticário para comprar ou fazer alguns.</t>
 		 <t id="heal_beast_influence_none">Você não tem remédio para curar este ferimento. Obtenha um remédio com o caçador Redane ou beba a água do Espelho dos Anciões.</t>
         <t id="choose_remedy">Escolha um remédio</t>
         <t id="choose_injury">Escolha um ferimento</t>
@@ -1094,19 +1052,17 @@ Consumo: <food>::conso::</food></t>
         <t id="replace_prev_injection"><bad><b><img src="/item/::icon::"/>::injection::</b> - efeitos serão perdidos</bad>.</t>
         <t id="skill_up">Melhorar <b>::name::</b>?</t>
         <t id="attribute_up">Melhorar <b>::name::</b>?</t>
-        <t id="nothing_found_here">A Patrulha não encontrou nada aqui.</t>
+        <t id="nothing_found_here">A Tropa não encontrou nada aqui.</t>
         <t id="recruit_unit">Recrutar ::name:: por ::cost::?</t>
         <t id="recruit_unit_free">Você quer recrutar <b>::name::</b>?</t>
-        <t id="element_empty">A Patrulha não encontrou nada aqui.</t>
+        <t id="element_empty">A Tropa não encontrou nada aqui.</t>
         <t id="npc_no_dialog">::name:: está ignorando você.</t>
-        <t id="salary_cost">A Patrulha recebe <gold>::v::</gold> como salário durante este Descanso.</t>
-        <t id="salary_partially_paid_cost">A Patrulha recebe: <gold>::v::</gold>/::total:: como parte do salário durante este Descanso.
-
-Alguns Companheiros ficarão infelizes por não terem sido pagos a tempo.</t>
-        <t id="salary_will_be_paid_good">Receber os salários hoje deixará os Companheiros felizes.</t>
-        <t id="salary_will_be_paid_bad">Receber os salários hoje acabará com o descontentamento dos Companheiros.</t>
-        <t id="salary_will_be_not_paid">Não pagar os salários hoje deixará os Companheiros infelizes.</t>
-        <t id="salary_paid">A Patrulha recebeu <gold>::v::</gold> .</t>
+        <t id="salary_cost">A Tropa recebe <gold>::v::</gold> como salário durante este Descanso.</t>
+        <t id="salary_partially_paid_cost">A Tropa recebe: <gold>::v::</gold>/::total:: como parte do soldo durante este Descanso. Alguns Acompanhantes ficarão infelizes com o pagamento atrasado.</t>
+        <t id="salary_will_be_paid_good">Pagar os soldo hoje fará abandonar os Acompanhantes felizes.</t>
+        <t id="salary_will_be_paid_bad">Pagar o soldo hoje acabará com o descontentamento dos Acompanhantes.</t>
+        <t id="salary_will_be_not_paid">Deixar de pagar o soldo hoje deixará os Acompanhantes infelizes.</t>
+        <t id="salary_paid">A Tropa recebeu <gold>::v::</gold> .</t>
         <t id="salary_paid_perfect">O soldo foi pago na data devida.</t>
         <t id="salary_paid_good">O soldo foi pago com leve atraso.</t>
         <t id="salary_paid_bad">O soldo foi pago com grande atraso.</t>
@@ -1114,61 +1070,58 @@ Alguns Companheiros ficarão infelizes por não terem sido pagos a tempo.</t>
         <t id="mission_accept">Aceitar o contrato "<b>::name::</b>"?</t>
         <t id="mission_cancel">Cancelar o contrato "<b>::name::</b>"?</t>
         <t id="upgrade_to_class">Você quer que <b>::name::</b> se torne <b>::cl::?</b></t>
-        <t id="add_skill">Você quer que a Patrulha aprenda <b>::name::?</b></t>
-        <t id="craft_done">A Patrulha fabricou:</t>
+        <t id="add_skill">Você quer que a Tropa aprenda <b>::name::?</b></t>
+        <t id="craft_done">A Tropa fabricou:</t>
         <t id="craft_bonus">Bônus de primeira fabricação:</t>
         <t id="craft_bonuses">Produção adicional:</t>
         <t id="craft_saved">Recursos devolvidos:</t>
-        <t id="missing_cost">A Patrulha não tem recursos suficientes para esta ação.</t>
+        <t id="missing_cost">A Tropa não tem recursos suficientes para esta ação.</t>
         <t id="add_armor_slot">Adicionar a camada nesta armadura?</t>
         <t id="add_helmet_seal">Colocar o selo neste capacete?</t>
-        <t id="retrieve_helmet_seal">A Patrulha irá recuperar <good>::seal_name::</good></t>
+        <t id="retrieve_helmet_seal">A Tropa vai recuperar <good>::seal_name::</good></t>
         <t id="clear_armor_slots">Remover camadas desta armadura?</t>
         <t id="clear_helmet_seal">Remover o selo deste capacete?</t>
         <t id="destroy_armor_slots_warning">Perde-se no processo.</t>
         <t id="item_cost">Usar <img src="item/::item::"/><font color="#ffffff">::cost::</font>?</t>
         <t id="dialog_cost">Usar ::cost::?</t>
         <t id="dialog_action">Confirmar <img src="icon/::act::"/>::text::?</t>
-        <t id="exit_ruin_no_light">A Patrulha não tem <img src="icon/RuinsLight"/><b>Luz</b>. Eles precisarão de Luz para continuar explorando!</t>
-        <t id="ruins_tired_warning"><bad>Os Companheiros estão cansados!</bad>
-Seria aconselhável descansar antes de prosseguir.</t>
-        <t id="ratmare"><b>::name::</b> tem medo de ratos e deixará a Patrulha se você aceitar esta missão.</t>
-        <t id="battle_let_runaway">Os oponentes estão desmoralizados e fogem!
-Você quer deixá-los ir e vencer a batalha?</t>
+        <t id="exit_ruin_no_light">A Tropa não tem <img src="icon/RuinsLight"/><b>Luz</b>. Eles precisarão de Luz para continuar explorando!</t>
+        <t id="ruins_tired_warning"><bad>Os Acompanhantes estão cansados!</bad> É melhor descansar antes de seguir em frente.</t>
+        <t id="ratmare"><b>::name::</b> tem medo de ratazanas e vai abandonar a Tropa se aceitar esta missão.</t>
+        <t id="battle_let_runaway">Os oponentes estão desmoralizados e fugiram! A Tropa demonstrará misericórdia para vencer a batalha pacificamente?</t>
         <t id="battle_end_turn_without_playing">Você quer mesmo terminar o turno de <b>::name::</b> sem agir?</t>
         <t id="battle_end_turn_cancel_skill">Isso vai finalizar a habilidade: <b>::skillName::</b>.</t>
-        <t id="battle_dying_unit_retreat"><b>::name::</b> está morrendo. A Patrulha será <bad>derrotada</bad> se morrer!
- Você quer <b>recuar imediatamente</b>?</t>
+        <t id="battle_dying_unit_retreat"><b>::name::</b> está morrendo. A Tropa sofrerá uma<bad>derrota</bad> caso essa unidade morra! Gostaria de <b>recuar imediatamente</b>?</t>
         <t id="item_convert_action">::action:: ::item::?</t>
         <t id="rename_unit">Qual apelido você dará para ::unitName::?</t>
-        <t id="rename_troop">Como você gostaria de nomear a Patrulha?</t>
-        <t id="rename_boat">Como você gostaria de nomear o navio?</t>
-		<t id="rename_tavern">Como você gostaria de nomear a Taverna?</t>
+        <t id="rename_troop">Como você gostaria de nomear a Tropa?</t>
+        <t id="rename_boat">Como a você gostaria de nomear o navio?</t>
+		<t id="rename_tavern">Qual será o nome da Taverna?</t>
 		<t id="rename_fiefPlace">Qual será o nome da estrutura: ::placeName::?</t>
         <t id="frescos_not_explored">Você não terminou de explorar ::ruinName::.</t>
         <g id="message_recruit_add">
-            <t _id="voscompagnonssontsatisfaits">Os Companheiros estão felizes.</t>
-            <t _id="voscompagnonsletrouventsympatique">Os Companheiros o acham amigável.</t>
-            <t _id="voscompagnonsdoutentquilfasselaffaire">Os Companheiros duvidam que ele esteja à altura da tarefa.</t>
-            <t _id="voscompagnonslaccueillentavecjoie">Os Companheiros o recebem com alegria.</t>
+            <t _id="voscompagnonssontsatisfaits">Os Acompanhantes estão felizes.</t>
+            <t _id="voscompagnonsletrouventsympatique">Os Acompanhantes o acham amigável.</t>
+            <t _id="voscompagnonsdoutentquilfasselaffaire">Os Acompanhantes duvidam que ele esteja à altura da tarefa.</t>
+            <t _id="voscompagnonslaccueillentavecjoie">Os Acompanhantes o recebem de braços abertos.</t>
         </g>
         <g id="message_recruit_add_fem">
-            <t _id="voscompagnonssontsatisfaits">Os Companheiros estão felizes.</t>
-            <t _id="voscompagnonslatrouventsympatique">Os Companheiros a acham amigável.</t>
-            <t _id="voscompagnonsdoutentquellefasselaffaire">Os Companheiros duvidam que ela esteja à altura da tarefa.</t>
-            <t _id="voscompagnonslaccueillentavecjoie">Os Companheiros a recebem com alegria.</t>
+            <t _id="voscompagnonssontsatisfaits">Os Acompanhantes estão felizes.</t>
+            <t _id="voscompagnonslatrouventsympatique">Os Acompanhantes a acham amigável.</t>
+            <t _id="voscompagnonsdoutentquellefasselaffaire">Os Acompanhantes duvidam que ela esteja à altura da tarefa.</t>
+            <t _id="voscompagnonslaccueillentavecjoie">Os Acompanhantes a recebem de braços abertos.</t>
         </g>
         <g id="message_recruit_add_animal">
-            <t _id="voscompagnonssedemandentjustepourquoi">Os Companheiros estão se perguntando... por quê?</t>
-            <t _id="voscompagnonstrouventquecestuneexcellenteide">Os Companheiros acham que é uma ótima ideia.</t>
-            <t _id="voscompagnonsapprouvent">Os Companheiros aprovam.</t>
-            <t _id="voscompagnonsnontaucunavissurcechoix">Os Companheiros não têm opinião sobre esta escolha.</t>
+            <t _id="voscompagnonssedemandentjustepourquoi">Os Acompanhantes estão se perguntando... por quê?</t>
+            <t _id="voscompagnonstrouventquecestuneexcellenteide">Os Acompanhantes acham uma ótima ideia.</t>
+            <t _id="voscompagnonsapprouvent">Os Acompanhantes aprovam.</t>
+            <t _id="voscompagnonsnontaucunavissurcechoix">Os Acompanhantes não têm opinião sobre esta escolha.</t>
         </g>
         <t id="place_piton_here">Colocar um <b>Pitão</b> aqui?</t>
         <t id="place_tomb_here">Place the <b>Tomb</b> here?</t>
-        <t id="upgrade_skill">Usar ::item:: para aprimorar a perícia do Companheiro?</t>
+        <t id="upgrade_skill">Usar ::item:: para melhorar a habilidade do Acompanhante?</t>
         <t id="skill_upgraded">A habilidade <good>::name::</good> foi melhorada!</t>
-        <t id="unlocked_class">A Patrulha aprendeu a especialização <good>::name::</good>!</t>
+        <t id="unlocked_class">A Tropa aprendeu a especialização <good>::name::</good>!</t>
         <t id="use_oil">Aplicar este efeito à arma <good>::weapon::</good>?</t>
         <t id="replace_prev_oil">O efeito atual será <bad>perdido</bad>.</t>
         <t id="oil_choose_replace">Escolha o efeito a ser substituído em <good>::weapon::</good>:</t>
@@ -1176,10 +1129,7 @@ Você quer deixá-los ir e vencer a batalha?</t>
         <t id="use_respecialization_manual">Você deseja usar <img src="item/::item::"/><b>::name::</b> on <b>::unit::</b>?</t>
         <t id="name_to_rank">Conceder a posição de <b>::rank::</b> a ::name::?</t>
         <t id="loosing_rank"><bad>::name:: perderá o nível de <b>::rank::</b></bad></t>
-        <t id="cannot_drop_unique_item">
-		A Patrulha não pode descartar este item único.
-		Ele permanecerá com a Patrulha até o fim, ou até que aprendam a usá-lo.
-        </t>
+        <t id="cannot_drop_unique_item">A Patrulha não pode descartar este item único. Ele permanecerá com a Patrulha até o fim, ou até que aprendam a usá-lo.</t>
         <t id="travel_to">Ir para ::place::?</t>
 		<t id="sanity_depleted">Os Companheiros caíram na loucura e fugiram do Weald como puderam.</t>
         <t id="epitaph">Do you want to leave an epitaph?</t>
@@ -1245,10 +1195,7 @@ Você quer deixá-los ir e vencer a batalha?</t>
         <t id="camp_rotate">Pressione [KEY_CampRotation] ou deslize a roda do mouse para virar</t>
         <t id="camp_rotate_pad">Pressione <img src="icon/Pad_LB"/> ou <img src="icon/Pad_RB"/> para girar</t>
 		<t id="camp_reserve">Reserva</t>
-        <t id="reserve_info">A <b>Reserva</b> guarda os Companheiros que você não deseja ter no acampamento.
- Eles não podem ser designados para tarefas, mas devem ser alimentados e pagos normalmente.
-
- <b>[RMBSHIFT] em um Companheiro no acampamento para designá-lo à Reserva.</b></t>
+        <t id="reserve_info">A <b>Reserva</b> guarda os Companheiros que você não deseja ter no acampamento. Eles não podem ser designados para tarefas, mas devem ser alimentados e pagos normalmente. <b>[RMBSHIFT] em um Companheiro no acampamento para designá-lo à Reserva.</b></t>
         <t id="mission_name">Contratos</t>
         <t id="mission_board_quest_list">Contrato aceito: ::value::/::max::</t>
         <t id="mission_next_in">Próximo contrato em ::time::.</t>
@@ -1449,8 +1396,7 @@ Apenas algumas armas especiais podem ser melhoradas.</t>
             <t id="remove_action">Remover um item para pesquisar</t>
             <t id="assign_remaining_time">[JOBASSIGN] A pesquisa atual terminará em ::count:: Descansos.</t>
             <t id="unassign_remaining_time"><bad><b>Nenhum Acompanhante atribuído.</b></bad> Nenhuma descoberta será feita no próximo Descanso.</t>
-            <t id="confirm_cancel">Você quer parar a pesquisa atual?
- A Companhia perderá o trabalho feito neste item.</t>
+            <t id="confirm_cancel">Você quer parar a pesquisa atual? A Companhia perderá o trabalho feito neste item.</t>
         </g>
         <g id="codex">
             <t id="need_assigned_codex">Você deve designar: <img src="/trait/::icon::"/>::kind::.</t>
@@ -1462,9 +1408,7 @@ Apenas algumas armas especiais podem ser melhoradas.</t>
             <t id="one_good">Estamos na direção certa. Uma das runas está correta.</t>
             <t id="one_left">Estamos chegando perto, mas falta uma runa...</t>
             <t id="all_good">Perfeito! As 3 runas estão corretas!</t>
-            <t id="help">Restaurar códices danificados para descobrir quais runas eles contêm.
-
-Uma vez restaurados, eles permanecem ininteligíveis até que A Companhia aprenda todas as runas correspondentes.</t>
+            <t id="help">Restaurar códices danificados para descobrir quais runas eles contêm. Uma vez restaurados, eles permanecem ininteligíveis até que A Companhia aprenda todas as runas correspondentes.</t>
             <t id="symbolFound">Pista encontrada</t>
         </g>
         <g id="workshop">
@@ -1577,10 +1521,7 @@ Você quer mesmo chicoteá-las novamente?</t>
             <t id="logo_title">Design</t>
             <t id="border_title">Moldura</t>
             <t id="titles_title">Títulos</t>
-            <t id="resolution_desc"><b>Resoluções</b> podem ser usadas para motivar a Companhia até o próximo Descanso.
- É possível ativar diferentes resoluções durante o mesmo dia.
- Cada uso de uma resolução aumenta seu custo.
- Cada Descanso reduz o custo de todas as resoluções não utilizadas.</t>
+            <t id="resolution_desc"><b>Resoluções</b> podem ser usadas para motivar a Companhia até o próximo Descanso. É possível ativar diferentes resoluções durante o mesmo dia. Cada uso de uma resolução aumenta seu custo. Cada Descanso reduz o custo de todas as resoluções não utilizadas.</t>
             <t id="resolution_tip">[LMB] Motivar por ::value::</t>
             <t id="resolution_confirm">Você quer habilitar <b>::name::</b> para <influence>::value::</influence>?</t>
             <t id="resolution_confirm_warning">Aviso: A Companhia está ficando cansada. As Resoluções duram até o próximo Descanso.</t>
@@ -1727,8 +1668,7 @@ Você quer mesmo chicoteá-las novamente?</t>
         <t id="path_xp">PC</t>
         <t id="path_challenge">Desafiados</t>
         <t id="path_knowledge">Conhecimento</t>
-        <t id="path_troop">Desafio Especial :
-<b>::troop::</b></t>
+        <t id="path_troop">Desafio Especial : <b>::troop::</b></t>
         <t id="path_lvl">nv</t>
         <t id="path_counter_gain">Ganhe ::value:: PC</t>
         <t id="path_levelup">Próximo nível desbloqueado!</t>
@@ -1745,8 +1685,7 @@ Você quer mesmo chicoteá-las novamente?</t>
             <t id="choose_destination">Escolha um destino</t>
             <t id="provisions">Suprimentos</t>
             <t id="travel_time">A viagem levará ::time::</t>
-            <t id="cant_travel_help"><bad>Nenhum destino disponível.</bad>
-<bad>A Patrulha precisa construir outro Posto de Viagem para viajar até lá.</bad></t>
+            <t id="cant_travel_help"><bad>Nenhum destino disponível.</bad> <bad>A Patrulha precisa construir outro Posto de Viagem para viajar até lá.</bad></t>
             <t id="no_travel_post">A Patrulha precisa construir um Posto de Viagem nesta região para viajar até lá.</t>
             <t id="current_region">Região Atual</t>
             <t id="travelWithTradeGoods">Imposto sobre mercadoria:</t>
@@ -1866,8 +1805,7 @@ Você quer mesmo chicoteá-las novamente?</t>
                 <t id="warning_prestige_tavern"><bad>Você não conseguirá aumentar o Prestígio até se mudar para uma Taverna maior.</bad></t>
                 <t id="no_valid_faction"><bad>Nenhuma das facções estão presentes na Taberna.</bad></t>
                 <t id="sell_failed">Vendas perdidas: <bad>::value::</bad></t>
-                <t id="reward_faction_require">Boas-vindas a ::nb_reward:: ::faction_name:: na Taverna para receber uma recompensa.
- ::faction_name:: recebidos: ::value::</t>
+                <t id="reward_faction_require">Boas-vindas a ::nb_reward:: ::faction_name:: na Taverna para receber uma recompensa. ::faction_name:: recebidos: ::value::</t>
                 <t id="reward_faction_valid">Você cumpriu os requisitos para receber a recompensa dessa facção.</t>
                 <t id="reward_faction_noReward">Esta facção não oferece uma recompensa.</t>
                 <t id="tavernBonus">Arranjo: +::value::</t>
@@ -1888,12 +1826,8 @@ Você quer mesmo chicoteá-las novamente?</t>
                 <t id="already_produced">Já está no cardápio</t>
                 <t id="slot_required">Requer lugares: ::value::</t>
                 <t id="sold_item">Vendas do dia anterior: ::value::</t>
-                <t id="change_menu">[LMB] Modificar menu
-
- As opções disponíveis dependem do nível do Ajudante de Cozinha e das receitas que a Patrulha aprendeu.</t>
-                <t id="change_drink">[LMB] Selecionar bebida
-
- As opções disponíveis dependem do nível do Vinhateiro e das receitas que a Patrulha aprendeu.</t>
+                <t id="change_menu">[LMB] Modificar menu As opções disponíveis dependem do nível do Ajudante de Cozinha e das receitas que a Patrulha aprendeu.</t>
+                <t id="change_drink">[LMB] Selecionar bebida As opções disponíveis dependem do nível do Vinhateiro e das receitas que a Patrulha aprendeu.</t>
                 <t id="food_locked_tip">A quantidade de pratos disponíveis depende do nível e das características do ajudante de cozinha.</t>
                 <t id="add_dish">[RMB] Adicionar prato</t>
                 <t id="remove_dish">[RMB] Remover prato</t>
@@ -1901,8 +1835,7 @@ Você quer mesmo chicoteá-las novamente?</t>
                 <t id="change_price"><img src="icon/Pad_DpadLeft"/>/<img src="icon/Pad_DpadRight"/> Alterar preço</t>
                 <t id="choose_alcohol">Você quer fazer <b>::item::?</b></t>
                 <t id="need_unit">Atribua um Vinhateiro para produzir álcool.</t>
-                <t id="replace_alcohol">Deseja substituir <b>::previous::</b> por <b>::next::</b>?
- <bad>O estoque atual será perdido.</bad></t>
+                <t id="replace_alcohol">Deseja substituir <b>::previous::</b> por <b>::next::</b>? <bad>O estoque atual será perdido.</bad></t>
                 <t id="promo_updated">Os itens de promoção foram alterados (o menu pode ser atualizado).</t>
                 <t id="promo_updated_notif">Os itens de promoção foram alterados.</t>
                 <t id="food_production">::name:: pode fazer até ::value:: de cada prato por turno. Todos os pratos serão feitos sob encomenda. A produção, portanto, depende da Chance de Venda.</t>
@@ -1924,9 +1857,7 @@ Você quer mesmo chicoteá-las novamente?</t>
 
  Esta quantidade será subtraída do preço das vendas a cada porção produzida. Cuidado: alta produtividade pode custar caro.</t>
                 <t id="aging_not_sold">Bebidas na reserva não podem ser vendidas.</t>
-                <t id="tip_filling">Enchendo o barril
-
- Se um Vinhateiro for atribuído e o barril ainda não estiver cheio, o álcool será produzido a cada Turno. A produção de álcool requer ingredientes e, portanto, custa dinheiro.</t>
+                <t id="tip_filling">Enchendo o barril Se um Vinhateiro for atribuído e o barril ainda não estiver cheio, o álcool será produzido a cada Turno. A produção de álcool requer ingredientes e, portanto, custa dinheiro.</t>
                 <t id="tip_aging">Envelhecimento do barril
 
  Toda vez que este medidor sobe, a bebida alcoólica no barril ganha um ponto de envelhecimento <img src="icon/QualityStar"/>, o que aumenta seu valor.
@@ -1934,9 +1865,7 @@ Você quer mesmo chicoteá-las novamente?</t>
  Ainda é possível produzir bebidas em um barril envelhecido, mas a produtividade cai a cada <img src="icon/QualityStar"/>, dependendo do tipo de álcool.
 
  Nenhuma bebida alcoólica pode passar de duas <img src="icon/QualityStar"/>.</t>
-                <t id="tip_state_selection">Quando um barril está à venda, o Vinhateiro atribuído a ele produzirá álcool para repor a quantidade vendida. Quando um barril é colocado em reserva, ele se encherá mais rapidamente e poderá então ser envelhecido.
-
- Cada ponto de envelhecimento <img src="icon/QualityStar"/> aumenta o preço de venda do álcool. O envelhecimento não custa recursos.</t>
+                <t id="tip_state_selection">Quando um barril está à venda, o Vinhateiro atribuído a ele produzirá álcool para repor a quantidade vendida. Quando um barril é colocado em reserva, ele se encherá mais rapidamente e poderá então ser envelhecido. Cada ponto de envelhecimento <img src="icon/QualityStar"/> aumenta o preço de venda do álcool. O envelhecimento não custa recursos.</t>
                 <t id="upgrade_tavern">Aprimore a Taverna para atribuir um Ajudante de Cozinha adicional.</t>
                 <t id="buy_barrel">Aprimore a Taverna para atribuir um Vinhateiro adicional.</t>
                 <t id="upgrade_cave">Aprimore a Taverna para comprar barris adicionais.</t>
@@ -2090,9 +2019,7 @@ Você quer mesmo chicoteá-las novamente?</t>
                 <t id="withdraw_money">Retirar ::amount:: <img src="/icon/TavernSilver"/></t>
                 <t id="deposit_money">Reabastecer</t>
                 <t id="liquidation">Fechar a Taberna</t>
-                <t id="liquidation_confirm">Deseja fechar a Taverna?
-
- <bad>Aviso: Isso apagará todo o progresso com a Taverna. Companheiros atribuídos à Taverna retornarão à Patrulha. Você pode recomeçar o desenvolvimento da sua Taverna indo para Tiltren.</bad></t>
+                <t id="liquidation_confirm">Deseja fechar a Taverna? <bad>Aviso: Isso apagará todo o progresso com a Taverna. Companheiros atribuídos à Taverna retornarão à Patrulha. Você pode recomeçar o desenvolvimento da sua Taverna indo para Tiltren.</bad></t>
                 <t id="deposit_warning">Só é possível recompor o orçamento da Taberna se o saldo estiver negativo.</t>
                 <t id="deposit_gold_warning">Você não tem Koroas suficientes para o resgate da Taberna.</t>
                 <t id="conversion_fee">Taxa de conversão:</t>
@@ -2162,9 +2089,7 @@ Você quer mesmo chicoteá-las novamente?</t>
             <g id="liquidation">
                 <t id="actionName">Destruir o Feudo</t>
                 <t id="title">Destruição do Feudo</t>
-                <t id="desc">Deseja destruir o Feudo?
-
- <bad>Aviso: Isso cancelará todo o progresso feito no Feudo. O Feudo reverterá para o Nível 1. Todos os edifícios, exceto a Sala do Trono, serão destruídos, e você não terá mais acesso aos serviços desbloqueados. Companheiros estacionados na guarnição do Feudo retornarão à Patrulha, e itens armazenados no baú do Feudo serão devolvidos a você. Você poderá reconstruir o Feudo do zero.</bad></t>
+                <t id="desc">Deseja destruir o Feudo? <bad>Aviso: Isso cancelará todo o progresso feito no Feudo. O Feudo reverterá para o Nível 1. Todos os edifícios, exceto a Sala do Trono, serão destruídos, e você não terá mais acesso aos serviços desbloqueados. Companheiros estacionados na guarnição do Feudo retornarão à Patrulha, e itens armazenados no baú do Feudo serão devolvidos a você. Você poderá reconstruir o Feudo do zero.</bad></t>
             </g>
             <g id="production">
                 <t id="productionTitle">Produção</t>
@@ -2184,9 +2109,7 @@ Você quer mesmo chicoteá-las novamente?</t>
                 <g id="itemInfo">
                     <t id="usedByGoal">Em uma missão</t>
                     <t id="sentToTroup">Enviado à tropa</t>
-                    <t id="sentTip">Uma cópia deste item será enviada à Patrulha a cada Descanso.
-
- Penalidade de Produção: ::value_percent::</t>
+                    <t id="sentTip">Uma cópia deste item será enviada à Patrulha a cada Descanso. Penalidade de Produção: ::value_percent::</t>
                 </g>
             </g>
             <g id="upgrade">
@@ -2595,16 +2518,11 @@ Explore ruínas para ver os afrescos novamente.</b></t>
         <t id="first_wanted">A Patrulha será <bad>procurada</bad> pela Guarda por este roubo. Prosseguir?</t>
         <t id="sell_stolen">Vender itens roubados aumentará o <bad>Nível de Procurado</bad> junto à Guarda. Prosseguir?</t>
         <t id="reason_sell_stolen">Revenda de itens roubados</t>
-        <t id="cannot_because_wanted">A notícia dos atos ilícitos se espalhou.
- Agora é impossível para a Patrulha roubar qualquer coisa sem atrair atenção.</t>
+        <t id="cannot_because_wanted">A notícia dos atos ilícitos se espalhou. Agora é impossível para a Patrulha roubar qualquer coisa sem atrair atenção.</t>
         <t id="sell_stolen_wanted">A origem duvidosa dos itens levantou suspeitas, e a Patrulha não poderá vendê-los aqui enquanto estiver <bad>Procurada</bad>.</t>
-        <t id="sell_stolen_fail">A origem duvidosa dos itens levantou suspeitas, e a Patrulha não conseguiu vendê-los.
-A Patrulha agora está <bad>Procurada</bad>. Eles devem deixar a área o mais rápido possível!</t>
-        <t id="unit_busted"><b>::name::</b> foi pego(a) cometendo roubo!
-O(A) Companheiro(a) foi entregue à Guarda e enviado(a) para "<b>::where::</b>".
-A Patrulha agora está <bad>Procurada</bad>. Eles devem deixar a área o mais rápido possível!</t>
-        <t id="unit_busted_no_prison"><b>::name::</b> foi avistado(a) enquanto tentava cometer um roubo!
-A Patrulha agora está <bad>Procurada</bad>. Eles devem deixar a área o mais rápido possível!</t>
+        <t id="sell_stolen_fail">A origem duvidosa dos itens levantou suspeitas, e a Patrulha não conseguiu vendê-los. A Patrulha agora está <bad>Procurada</bad>. Eles devem deixar a área o mais rápido possível!</t>
+        <t id="unit_busted"><b>::name::</b> foi pego(a) cometendo roubo! O(A) Companheiro(a) foi entregue à Guarda e enviado(a) para "<b>::where::</b>". A Patrulha agora está <bad>Procurada</bad>. Eles devem deixar a área o mais rápido possível!</t>
+        <t id="unit_busted_no_prison"><b>::name::</b> foi avistado(a) enquanto tentava cometer um roubo! A Patrulha agora está <bad>Procurada</bad>. Eles devem deixar a área o mais rápido possível!</t>
         <t id="unit_accused"><b>::name::</b> foi entregue à Guarda e enviado para "<b>::where::</b>".</t>
         <t id="unit_accused_extreme"><b>::name::</b> foi entregue à Guarda e enviado para "<b>::where::</b>" pelo resto da vida dele.</t>
         <t id="unit_accused_heretic"><b>::name::</b> foi entregue à Inquisição e enviado para "<b>::where::</b>".</t>
@@ -2783,10 +2701,8 @@ A Patrulha agora está <bad>Procurada</bad>. Eles devem deixar a área o mais r�
         <t id="pause_save">Salvar</t>
         <t id="pause_save_override">Sobrescrever</t>
         <t id="pause_save_create_new">Criar novo jogo salvo</t>
-        <t id="pause_exit_confirm">Voltar ao menu principal?
-<bad>Todo o progresso não salvo será perdido.</bad></t>
-        <t id="pause_load_confirm">Carregar este jogo salvo?
-<bad>Todo o progresso a partir deste ponto será perdido.</bad></t>
+        <t id="pause_exit_confirm">Voltar ao menu principal? <bad>Todo o progresso não salvo será perdido.</bad></t>
+        <t id="pause_load_confirm">Carregar este jogo salvo? <bad>Todo o progresso a partir deste ponto será perdido.</bad></t>
         <t id="pause_load_battlebegin">Recomeçar a batalha</t>
         <t id="pause_load_lastvillage">Voltar à última aldeia</t>
         <t id="pause_load_ruinsenter">Reentrar na tumba</t>
@@ -2912,7 +2828,7 @@ A Patrulha agora está <bad>Procurada</bad>. Eles devem deixar a área o mais r�
     <g id="start">
         <t id="choose_troop">Os Companheiros estão...</t>
         <t id="troop_tip">Bônus</t>
-        <t id="troop_tip_malus">Desafiados</t>
+        <t id="troop_tip_malus">Desafios</t>
         <t id="tip_bonus">Começa com:</t>
         <t id="tip_units">Acompanhantes iniciais</t>
         <t id="choose_bonus">Os Companheiros...</t>
@@ -2949,19 +2865,13 @@ A Patrulha agora está <bad>Procurada</bad>. Eles devem deixar a área o mais r�
             <t _id="unedifficultdegestioncalibrepourtresoupleetpeuintrusive">O gerenciamento será flexível e sem grandes incômodos.</t>
             <t _id="auquotidienvousdevrezgrerlafaimlafatigueetlessoldesdevoscompagnons">Você precisará gerenciar a fome, a fadiga e os salários dos Companheiros diariamente.</t>
             <t _id="survivreetfairedesconomiessavreronttredestchesdouloureuses">Sobreviver e poupar dinheiro será um equilíbrio penoso.</t>
-            <t _id="vousdevrezsubsisterdansdesconditionsimpitoyableslebonheurbaisseplusvitelespeinesdeprisonsontdfinitivescertainsmtierssontdangereuxlesmarchandssapprovisionnentlentementladifficultgnraleestsonmaximum">A Patrulha terá que sobreviver em condições impiedosas.
-
-- A Felicidade diminui mais rapidamente.
- - As sentenças de prisão são finais e irrevogáveis.
- - Certas profissões são perigosas.
- - Mercadores reabastecem lentamente.
- - A dificuldade geral está no nível máximo.</t>
+            <t _id="vousdevrezsubsisterdansdesconditionsimpitoyableslebonheurbaisseplusvitelespeinesdeprisonsontdfinitivescertainsmtierssontdangereuxlesmarchandssapprovisionnentlentementladifficultgnraleestsonmaximum">A Patrulha terá que sobreviver em condições impiedosas. - A Felicidade diminui mais rapidamente. - As sentenças de prisão são finais e irrevogáveis. - Certas profissões são perigosas. - Mercadores reabastecem lentamente. - A dificuldade geral está no nível máximo.</t>
         </g>
         <t id="save_mode">Número de Salves</t>
         <g id="save_modes">
             <t _id="limit">Com limite</t>
             <t _id="libre">Ilimitado</t>
-            <t _id="ironmen">Uma</t>
+            <t _id="ironmen">Um</t>
         </g>
         <g id="save_modes_desc">
             <t _id="uneseulesauvegardeparpartiemaisvouspouvezrevenirtoutmomentcertainspointsderetourtelsquelederniervillagevisitledbutduncombatetc">Apenas um jogo salvo por partida, mas é possível voltar a qualquer hora para certos pontos do jogo, como a última aldeia que visitou, o início de uma batalha, etc.</t>
@@ -2986,11 +2896,7 @@ A Patrulha agora está <bad>Procurada</bad>. Eles devem deixar a área o mais r�
             <t _id="lesrgionsdumondeontunedifficultquisadaptedynamiquementlatailledevotregroupeetlapuissancedevosunitslejeuvousproposeraenpermanenceunchallengeadaptvotrequipe">A dificuldade de todas as regiões se adapta dinamicamente ao tamanho do grupo e ao poder das unidades. O jogo sempre oferecerá um desafio adequado à Patrulha.</t>
             <t _id="ladifficultdesrgionsdumondeestfixedsledpartetnvoluepasilvousfaudraagrandiretamliorervotretroupeavantdepouvoirexplorerlesrecoinslesplusdangereuxetaffronterlesennemislespluspuissants">Cada região do mundo tem uma dificuldade definida desde o início. Você terá que expandir e melhorar a Patrulha antes de poder explorar áreas mais perigosas e lutar contra inimigos mais poderosos.</t>
         </g>
-        <t id="scale_mode_help">Você pode explorar o mundo de Wartales de duas maneiras diferentes:
-
- - <inf>Livre</inf>: Percorra o mundo com total liberdade. Os inimigos se adaptarão à sua força à medida que ela aumenta, garantindo um nível de dificuldade adaptado às habilidades da equipe.
-
- - <inf>Região Fixa</inf>: Cada região do mundo tem uma dificuldade definida desde o início. Você terá que expandir e melhorar a Patrulha antes de poder explorar áreas mais perigosas e lutar contra inimigos mais poderosos.</t>
+        <t id="scale_mode_help">Você pode explorar o mundo de Wartales de duas maneiras diferentes: - <inf>Livre</inf>: Percorra o mundo com total liberdade. Os inimigos se adaptarão à sua força à medida que ela aumenta, garantindo um nível de dificuldade adaptado às habilidades da equipe. - <inf>Região Fixa</inf>: Cada região do mundo tem uma dificuldade definida desde o início. Você terá que expandir e melhorar a Patrulha antes de poder explorar áreas mais perigosas e lutar contra inimigos mais poderosos.</t>
     </g>
     <g id="padKeyInfo">
         <t id="show_cursor">Cursor <small>(segurar)</small></t>

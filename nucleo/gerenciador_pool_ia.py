@@ -17,6 +17,7 @@ import os
 import re
 import json
 import time
+import hashlib
 import logging
 import sqlite3
 import threading
@@ -380,6 +381,162 @@ class AdaptadorGemini(AdaptadorProvedorIA):
         }
 
 
+# Provedores com API compatível com OpenAI (/chat/completions).
+PROVEDORES_COMPATIVEIS_OPENAI: Dict[str, Dict[str, str]] = {
+    "openai": {"nome": "OpenAI (ChatGPT)", "url": "https://api.openai.com/v1/chat/completions"},
+    "deepseek": {"nome": "DeepSeek", "url": "https://api.deepseek.com/chat/completions"},
+    "groq": {"nome": "Groq", "url": "https://api.groq.com/openai/v1/chat/completions"},
+    "openrouter": {"nome": "OpenRouter", "url": "https://openrouter.ai/api/v1/chat/completions"},
+    "mistral": {"nome": "Mistral AI", "url": "https://api.mistral.ai/v1/chat/completions"},
+    "cerebras": {"nome": "Cerebras", "url": "https://api.cerebras.ai/v1/chat/completions"},
+    "together": {"nome": "Together AI", "url": "https://api.together.xyz/v1/chat/completions"},
+    "xai": {"nome": "xAI (Grok)", "url": "https://api.x.ai/v1/chat/completions"},
+}
+
+
+class AdaptadorOpenAICompativel(AdaptadorProvedorIA):
+    """Adaptador genérico para APIs no formato OpenAI Chat Completions."""
+
+    def __init__(
+        self,
+        provedor: str,
+        timeout_padrao: float = 45.0,
+        transportador_http: Optional[Callable] = None
+    ):
+        if provedor not in PROVEDORES_COMPATIVEIS_OPENAI:
+            raise ValueError(f"Provedor compatível com OpenAI '{provedor}' desconhecido.")
+        self.provedor = provedor
+        self.nome_amigavel = PROVEDORES_COMPATIVEIS_OPENAI[provedor]["nome"]
+        self.url = PROVEDORES_COMPATIVEIS_OPENAI[provedor]["url"]
+        self.timeout_padrao = timeout_padrao
+        self._transportador_http = transportador_http
+
+    @staticmethod
+    def _extrair_traducao(texto: str) -> str:
+        texto_limpo = (texto or "").strip()
+        if texto_limpo.startswith("```"):
+            linhas = texto_limpo.splitlines()
+            if len(linhas) >= 2:
+                fim = -1 if linhas[-1].startswith("```") else len(linhas)
+                texto_limpo = "\n".join(linhas[1:fim]).strip()
+        try:
+            dados = json.loads(texto_limpo)
+            if isinstance(dados, dict):
+                return str(dados.get("pt", "")).strip()
+        except Exception:
+            pass
+        match_json = re.search(r'"pt"\s*:\s*"((?:[^"\\]|\\.)*)"', texto_limpo)
+        if match_json:
+            return match_json.group(1).replace(r'\"', '"').replace(r'\n', '\n').strip()
+        return texto_limpo
+
+    @staticmethod
+    def _classificar_erro(codigo: Optional[int], corpo: str) -> str:
+        corpo_min = (corpo or "").lower()
+        if codigo == 429 or "rate_limit" in corpo_min or "quota" in corpo_min:
+            return "limite_taxa"
+        if codigo in (401, 403) or "invalid_api_key" in corpo_min or "incorrect api key" in corpo_min:
+            return "chave_invalida"
+        return "desconhecido"
+
+    def traduzir(
+        self,
+        chave: str,
+        modelo: str,
+        texto_en: str,
+        instrucoes_sistema: Optional[str] = None
+    ) -> Dict[str, Any]:
+        if not texto_en or not texto_en.strip():
+            return {"sucesso": True, "traducao": "", "tempo_segundos": 0.0, "erro": ""}
+
+        prompt_sistema = instrucoes_sistema or PROMPT_SISTEMA_WARTALES_PADRAO
+        payload_bytes = json.dumps({
+            "model": (modelo or "").strip(),
+            "messages": [
+                {"role": "system", "content": prompt_sistema},
+                {"role": "user", "content": f"Texto a traduzir:\n{texto_en.strip()}"}
+            ],
+            "temperature": 0.1
+        }).encode("utf-8")
+        cabecalhos = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {(chave or '').strip()}",
+            "User-Agent": "WartalesCatStudio/1.0"
+        }
+        t0 = time.time()
+
+        try:
+            if self._transportador_http is not None:
+                resposta_bytes, codigo_status = self._transportador_http(self.url, payload_bytes, cabecalhos)
+            else:
+                requisicao = urllib.request.Request(self.url, data=payload_bytes, headers=cabecalhos)
+                with urllib.request.urlopen(requisicao, timeout=self.timeout_padrao) as resposta:
+                    resposta_bytes = resposta.read()
+                    codigo_status = resposta.status if hasattr(resposta, "status") else 200
+
+            tempo = round(time.time() - t0, 2)
+            dados = json.loads(resposta_bytes.decode("utf-8"))
+            escolhas = dados.get("choices") or []
+            conteudo = ((escolhas[0].get("message") or {}).get("content") or "") if escolhas else ""
+            if not conteudo.strip():
+                return {
+                    "sucesso": False, "traducao": "", "codigo_status": codigo_status,
+                    "tipo_erro": "resposta_vazia", "tempo_segundos": tempo,
+                    "erro": f"Resposta vazia do provedor {self.nome_amigavel}."
+                }
+            return {
+                "sucesso": True, "traducao": self._extrair_traducao(conteudo),
+                "codigo_status": codigo_status, "tempo_segundos": tempo, "erro": ""
+            }
+
+        except urllib.error.HTTPError as erro_http:
+            tempo = round(time.time() - t0, 2)
+            try:
+                corpo = erro_http.read().decode("utf-8", errors="replace")
+            except Exception:
+                corpo = str(erro_http)
+            codigo = getattr(erro_http, "code", 500)
+            return {
+                "sucesso": False, "traducao": "", "codigo_status": codigo,
+                "tipo_erro": self._classificar_erro(codigo, corpo), "tempo_segundos": tempo,
+                "erro": f"HTTP {codigo}: {corpo}"
+            }
+        except urllib.error.URLError as erro_url:
+            return {
+                "sucesso": False, "traducao": "", "codigo_status": None,
+                "tipo_erro": "erro_conexao", "tempo_segundos": round(time.time() - t0, 2),
+                "erro": f"Erro de conexão com {self.nome_amigavel}: {erro_url}"
+            }
+        except Exception as erro_geral:
+            msg = str(erro_geral)
+            codigo = getattr(erro_geral, "code", None)
+            tipo = self._classificar_erro(codigo, msg)
+            return {
+                "sucesso": False, "traducao": "", "codigo_status": codigo,
+                "tipo_erro": "erro_interno" if tipo == "desconhecido" else tipo,
+                "tempo_segundos": round(time.time() - t0, 2),
+                "erro": f"Falha na execução da tradução: {msg}"
+            }
+
+    def testar_conexao(self, chave: str, modelo: str) -> Dict[str, Any]:
+        resultado = self.traduzir(
+            chave=chave, modelo=modelo, texto_en="Hello",
+            instrucoes_sistema="Traduza para pt-BR em JSON: {\"pt\": \"...\"}"
+        )
+        if resultado["sucesso"]:
+            return {
+                "sucesso": True,
+                "mensagem": "Chave da API validada e respondendo com sucesso!",
+                "tempo_segundos": resultado.get("tempo_segundos", 0.0)
+            }
+        return {
+            "sucesso": False,
+            "codigo_status": resultado.get("codigo_status"),
+            "tipo_erro": resultado.get("tipo_erro"),
+            "erro": resultado.get("erro", "Falha de validação desconhecida.")
+        }
+
+
 class FabricaProvedoresIA:
     """Fábrica para instanciar adaptadores de provedores de IA."""
 
@@ -391,7 +548,103 @@ class FabricaProvedoresIA:
         nome = (provedor or "").strip().lower()
         if nome in ("gemini", "google"):
             return AdaptadorGemini(transportador_http=transportador_http)
+        if nome in PROVEDORES_COMPATIVEIS_OPENAI:
+            return AdaptadorOpenAICompativel(nome, transportador_http=transportador_http)
         raise ValueError(f"Provedor de IA '{provedor}' não é suportado no momento.")
+
+
+class CatalogoModelosIA:
+    """Consulta dinamicamente os modelos disponíveis em cada provedor, com cache em memória."""
+
+    TTL_CACHE_SEGUNDOS = 3 * 3600
+    TERMOS_NAO_TEXTO = (
+        "embed", "whisper", "tts", "transcribe", "moderation", "guard", "dall-e",
+        "image", "imagen", "audio", "realtime", "aqa", "veo", "safeguard", "rerank"
+    )
+    URL_GEMINI = "https://generativelanguage.googleapis.com/v1beta/models"
+
+    def __init__(self, transportador_http: Optional[Callable] = None):
+        # transportador_http(url, cabecalhos) -> (bytes, status); injetável para testes.
+        self._transportador_http = transportador_http
+        self._cache: Dict[tuple, tuple] = {}
+        self._lock = threading.Lock()
+
+    def _requisitar(self, url: str, cabecalhos: Dict[str, str]) -> Any:
+        if self._transportador_http is not None:
+            corpo, _ = self._transportador_http(url, cabecalhos)
+        else:
+            requisicao = urllib.request.Request(url, headers={"User-Agent": "WartalesCatStudio/1.0", **cabecalhos})
+            with urllib.request.urlopen(requisicao, timeout=15) as resposta:
+                corpo = resposta.read()
+        return json.loads(corpo.decode("utf-8"))
+
+    @classmethod
+    def _eh_modelo_de_texto(cls, identificador: str) -> bool:
+        minusculo = identificador.lower()
+        return not any(termo in minusculo for termo in cls.TERMOS_NAO_TEXTO)
+
+    def _listar_gemini(self, chave: str) -> List[Dict[str, Any]]:
+        dados = self._requisitar(f"{self.URL_GEMINI}?pageSize=200&key={chave}", {})
+        modelos = []
+        for item in dados.get("models", []):
+            if "generateContent" not in item.get("supportedGenerationMethods", []):
+                continue
+            identificador = item.get("name", "").replace("models/", "", 1)
+            if identificador.startswith("gemini") and self._eh_modelo_de_texto(identificador):
+                modelos.append({"id": identificador, "nome": item.get("displayName") or identificador, "gratuito": None})
+        return modelos
+
+    def _listar_openrouter(self) -> List[Dict[str, Any]]:
+        dados = self._requisitar("https://openrouter.ai/api/v1/models", {})
+        modelos = [{"id": "openrouter/free", "nome": "openrouter/free (roteador automático)", "gratuito": True}]
+        for item in dados.get("data", []):
+            preco = item.get("pricing") or {}
+            saida = (item.get("architecture") or {}).get("output_modalities") or ["text"]
+            gratuito = str(preco.get("prompt")) == "0" and str(preco.get("completion")) == "0"
+            if gratuito and saida == ["text"] and self._eh_modelo_de_texto(item.get("id", "")):
+                modelos.append({"id": item["id"], "nome": item.get("name") or item["id"], "gratuito": True})
+        return modelos
+
+    def _listar_openai_compativel(self, provedor: str, chave: str) -> List[Dict[str, Any]]:
+        url_chat = PROVEDORES_COMPATIVEIS_OPENAI[provedor]["url"]
+        url_modelos = url_chat.rsplit("/chat/completions", 1)[0] + "/models"
+        dados = self._requisitar(url_modelos, {"Authorization": f"Bearer {chave}"})
+        itens = dados.get("data", []) if isinstance(dados, dict) else dados
+        return [
+            {"id": item["id"], "nome": item["id"], "gratuito": None}
+            for item in itens
+            if isinstance(item, dict) and item.get("id") and self._eh_modelo_de_texto(item["id"])
+        ]
+
+    def listar_modelos(self, provedor: str, chave: str = "", forcar_atualizacao: bool = False) -> List[Dict[str, Any]]:
+        """Retorna os modelos de texto do provedor. Levanta exceção se a consulta falhar."""
+        nome = (provedor or "").strip().lower()
+        if nome == "google":
+            nome = "gemini"
+        if nome != "gemini" and nome not in PROVEDORES_COMPATIVEIS_OPENAI:
+            raise ValueError(f"Provedor de IA '{provedor}' não é suportado.")
+        chave = (chave or "").strip()
+        if nome != "openrouter" and not chave:
+            raise ValueError("Informe a chave de API para listar os modelos deste provedor.")
+
+        impressao = hashlib.sha256(chave.encode("utf-8")).hexdigest()[:16] if nome != "openrouter" else ""
+        chave_cache = (nome, impressao)
+        with self._lock:
+            em_cache = self._cache.get(chave_cache)
+            if em_cache and not forcar_atualizacao and time.time() - em_cache[0] < self.TTL_CACHE_SEGUNDOS:
+                return em_cache[1]
+
+        if nome == "gemini":
+            modelos = self._listar_gemini(chave)
+        elif nome == "openrouter":
+            modelos = self._listar_openrouter()
+        else:
+            modelos = self._listar_openai_compativel(nome, chave)
+
+        modelos.sort(key=lambda m: m["id"])
+        with self._lock:
+            self._cache[chave_cache] = (time.time(), modelos)
+        return modelos
 
 
 # ==============================================================================

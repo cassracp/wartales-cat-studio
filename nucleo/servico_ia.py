@@ -15,13 +15,14 @@ import time
 import urllib.request
 import urllib.error
 import logging
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 
 from nucleo.gerenciador_pool_ia import (
     GerenciadorPoolIA,
     obter_instancia_pool_ia,
     PROMPT_SISTEMA_WARTALES_PADRAO
 )
+from nucleo.aplicador_glossario_ia import AplicadorGlossarioIA
 
 logger = logging.getLogger("cat_wartales.ia")
 
@@ -36,14 +37,48 @@ class ServicoIA:
     def __init__(
         self,
         chave_api: Optional[str] = None,
-        modelo: str = MODELO_PADRAO,
-        gerenciador_pool: Optional[GerenciadorPoolIA] = None
+        modelo: Optional[str] = None,
+        gerenciador_pool: Optional[GerenciadorPoolIA] = None,
+        aplicador_glossario: Optional[AplicadorGlossarioIA] = None
     ):
+        self.aplicador_glossario = aplicador_glossario
         self.chave_api = chave_api
+        # Sem modelo explícito, cada chave do pool usa o modelo cadastrado nela.
         self.modelo = modelo
         self.gerenciador_pool = gerenciador_pool
 
     def traduzir_texto(self, texto_en: str) -> Dict[str, Any]:
+        """Traduz respeitando o glossário (se configurado), com 1 retentativa corretiva."""
+        if not texto_en or not texto_en.strip() or self.aplicador_glossario is None:
+            return self._enviar(texto_en, None)
+
+        termos = self.aplicador_glossario.selecionar_termos(texto_en)
+        if not termos:
+            return self._enviar(texto_en, None)
+
+        resultado = self._enviar(texto_en, self.aplicador_glossario.montar_instrucoes(termos))
+        if not resultado.get("sucesso"):
+            return resultado
+
+        verificacao = self.aplicador_glossario.verificar(resultado["traducao"], termos)
+        if not verificacao.conforme:
+            logger.info(f"Tradução fora do glossário, refazendo: {verificacao.violacoes}")
+            correcao = self.aplicador_glossario.montar_instrucoes_correcao(
+                termos, verificacao.violacoes, resultado["traducao"]
+            )
+            segunda = self._enviar(texto_en, correcao)
+            if segunda.get("sucesso"):
+                resultado = segunda
+                verificacao = self.aplicador_glossario.verificar(resultado["traducao"], termos)
+
+        resultado["glossario"] = {
+            "termos_aplicados": [t["termo_en"] for t in termos],
+            "violacoes": verificacao.violacoes,
+            "conforme": verificacao.conforme,
+        }
+        return resultado
+
+    def _enviar(self, texto_en: str, instrucoes: Optional[str]) -> Dict[str, Any]:
         """
         Envia um texto individual em inglês para ser traduzido pela IA.
         Se um GerenciadorPoolIA estiver configurado ou disponível com chaves ativas,
@@ -57,6 +92,7 @@ class ServicoIA:
         if self.gerenciador_pool is not None:
             return self.gerenciador_pool.executar_traducao(
                 texto_en=texto_en,
+                instrucoes_sistema=instrucoes,
                 modelo_override=self.modelo
             )
 
@@ -67,6 +103,7 @@ class ServicoIA:
                 if pool_global and pool_global.possui_chaves_cadastradas():
                     return pool_global.executar_traducao(
                         texto_en=texto_en,
+                        instrucoes_sistema=instrucoes,
                         modelo_override=self.modelo
                     )
             except Exception as erro_pool:
@@ -82,14 +119,14 @@ class ServicoIA:
             }
 
         prompt_usuario = f"Texto a traduzir:\n{texto_en.strip()}"
-        prompt_completo = f"{PROMPT_SISTEMA_WARTALES}\n\n{prompt_usuario}"
+        prompt_completo = f"{instrucoes or PROMPT_SISTEMA_WARTALES}\n\n{prompt_usuario}"
 
         payload = json.dumps({
             "contents": [{"parts": [{"text": prompt_completo}]}],
             "generationConfig": {"temperature": 0.1, "responseMimeType": "application/json"}
         }).encode("utf-8")
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.modelo}:generateContent?key={chave_utilizar}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.modelo or MODELO_PADRAO}:generateContent?key={chave_utilizar}"
         requisicao = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
 
         tentativas = 0
@@ -125,3 +162,4 @@ class ServicoIA:
                 time.sleep(1)
 
         return {"sucesso": False, "traducao": "", "erro": "Limite de tentativas excedido"}
+

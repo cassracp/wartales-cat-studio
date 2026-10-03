@@ -274,6 +274,13 @@ const ApiCat = {
     });
   },
 
+  async listarModelosPoolIa(dados) {
+    return await this.requisicao("/api/ia/pool/modelos", {
+      method: "POST",
+      body: JSON.stringify(dados)
+    });
+  },
+
   async obterConfigPoolIa() {
     return await this.requisicao("/api/ia/pool/configuracao");
   },

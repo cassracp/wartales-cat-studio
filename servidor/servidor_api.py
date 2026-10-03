@@ -5,6 +5,7 @@ sem necessidade de dependências externas como Flask ou FastAPI.
 """
 
 import json
+import logging
 import mimetypes
 import os
 import sys
@@ -26,7 +27,8 @@ from nucleo.empacotador_pak import EmpacotadorPakHeaps
 from nucleo.gerenciador_projetos import GerenciadorProjetos
 from nucleo.memoria_global import MemoriaTraducaoGlobal
 from nucleo.tradutor_lote_ia import MotorTraducaoLoteIA
-from nucleo.gerenciador_pool_ia import GerenciadorPoolIA, obter_instancia_pool_ia
+from nucleo.gerenciador_pool_ia import GerenciadorPoolIA, obter_instancia_pool_ia, CatalogoModelosIA
+from nucleo.aplicador_glossario_ia import AplicadorGlossarioIA
 from nucleo.servico_ia import ServicoIA, CHAVE_PADRAO_GEMINI
 from exportadores.gerador_distribuicao import GeradorDistribuicao
 from nucleo.servico_relatorio import ServicoRelatorio
@@ -40,7 +42,9 @@ SERVICO_PROPAGACAO = ServicoAutoPropagacao(GERENCIADOR_BANCO)
 SERVICO_SINCRONIZADOR = SincronizadorXml(GERENCIADOR_BANCO)
 MEMORIA_GLOBAL = MemoriaTraducaoGlobal()
 GERENCIADOR_POOL_IA = obter_instancia_pool_ia()
-MOTOR_IA_LOTE = MotorTraducaoLoteIA(MEMORIA_GLOBAL, gerenciador_pool=GERENCIADOR_POOL_IA)
+CATALOGO_MODELOS_IA = CatalogoModelosIA()
+APLICADOR_GLOSSARIO_IA = AplicadorGlossarioIA(lambda: GERENCIADOR_BANCO.listar_glossario())
+MOTOR_IA_LOTE = MotorTraducaoLoteIA(MEMORIA_GLOBAL, gerenciador_pool=GERENCIADOR_POOL_IA, aplicador_glossario=APLICADOR_GLOSSARIO_IA)
 SERVICO_RELATORIO = ServicoRelatorio()
 
 CHAVE_CONFIGURADA = GERENCIADOR_PROJETOS.config.get("chave_api_gemini", "")
@@ -52,7 +56,7 @@ if CHAVE_CONFIGURADA:
         )
     except Exception as _e_sync:
         print(f"[AVISO] Falha ao sincronizar chave de IA inicial com o pool: {_e_sync}")
-SERVICO_IA = ServicoIA(gerenciador_pool=GERENCIADOR_POOL_IA)
+SERVICO_IA = ServicoIA(gerenciador_pool=GERENCIADOR_POOL_IA, aplicador_glossario=APLICADOR_GLOSSARIO_IA)
 GERADOR_DISTRIBUICAO = GeradorDistribuicao(GERENCIADOR_BANCO)
 
 # Inicializar glossário padrão caso esteja vazio
@@ -653,6 +657,26 @@ class ManipuladorRequisicaoCat(SimpleHTTPRequestHandler):
             })
             return
 
+        if caminho == "/api/ia/pool/modelos":
+            provedor = payload.get("provedor", "gemini").strip()
+            chave_avulsa = payload.get("chave", "").strip()
+            id_chave = payload.get("id")
+            if not chave_avulsa and id_chave is not None:
+                entidade = GERENCIADOR_POOL_IA.obter_chave_por_id(int(id_chave))
+                if entidade:
+                    chave_avulsa = entidade.chave
+            try:
+                modelos = CATALOGO_MODELOS_IA.listar_modelos(
+                    provedor, chave_avulsa, bool(payload.get("forcar_atualizacao", False))
+                )
+                self._responder_json({"sucesso": True, "modelos": modelos})
+            except ValueError as erro_valor:
+                self._responder_json({"erro": str(erro_valor)}, 400)
+            except Exception as erro_consulta:
+                logging.getLogger(__name__).warning("Falha ao listar modelos de %s: %s", provedor, erro_consulta)
+                self._responder_json({"erro": f"Não foi possível consultar os modelos do provedor: {erro_consulta}"}, 502)
+            return
+
         if caminho == "/api/ia/pool/chaves/testar":
             id_chave = payload.get("id")
             chave_avulsa = payload.get("chave", "").strip()
@@ -883,3 +907,4 @@ def iniciar_servidor() -> None:
 
 if __name__ == "__main__":
     iniciar_servidor()
+

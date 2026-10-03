@@ -45,7 +45,7 @@ class TesteServicoQA(unittest.TestCase):
             {
                 "termo_en": "Troop",
                 "termo_pt_padrao": "Tropa",
-                "sinonimos_proibidos": "Bando, Grupo",
+                "sinonimos_proibidos": "bando, Grupo",
                 "categoria": "Mecânica"
             }
         ]
@@ -70,7 +70,7 @@ class TesteServicoQA(unittest.TestCase):
             banco.salvar_termo_glossario(
                 termo_en="Troop",
                 termo_pt_padrao="Tropa",
-                sinonimos_proibidos="Bando, Grupo",
+                sinonimos_proibidos="bando, Grupo",
                 categoria="Mecânica"
             )
 
@@ -113,8 +113,8 @@ class TesteServicoQA(unittest.TestCase):
                 vanilla_en="Troop",
                 vanilla_pt="Tropa",
                 mod_en="Elite troop.",
-                traducao_atual="Bando de elite.",
-                traducao_revisada="Bando de elite.",
+                traducao_atual="O bando de elite.",
+                traducao_revisada="O bando de elite.",
                 status="revisado",
                 tem_inconsistencia=1,
                 aviso_qa="Detectado uso do sinônimo não padronizado 'bando'"

@@ -3471,3 +3471,21 @@ body.modal-aberto {
   display: none !important;
 }
 
+
+.lote-ia-metricas { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.5rem; }
+.lote-ia-metrica { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--cor-borda); border-radius: var(--raio-medio); padding: 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
+.lote-ia-metrica strong { font-size: 1.1rem; }
+.lote-ia-metrica span { font-size: 0.7rem; color: #8a97ad; text-align: center; }
+.lote-ia-metrica.com-alerta strong { color: #ff6b6b; }
+.lote-ia-provedores { display: flex; flex-wrap: wrap; gap: 0.4rem; font-size: 0.75rem; }
+.lote-ia-provedores span { background: rgba(0, 170, 255, 0.1); border: 1px solid var(--cor-borda); border-radius: 999px; padding: 0.15rem 0.6rem; }
+.lote-ia-aguardando { background: rgba(255, 170, 0, 0.12); border: 1px solid rgba(255, 170, 0, 0.4); color: #ffb84d; border-radius: var(--raio-medio); padding: 0.4rem 0.7rem; font-size: 0.8rem; font-weight: 600; }
+.lote-ia-log-cabecalho { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 600; }
+.lote-ia-filtro { font-weight: 400; display: flex; gap: 0.35rem; align-items: center; cursor: pointer; }
+.lote-ia-log { max-height: 260px; overflow-y: auto; background: #070b14; border: 1px solid var(--cor-borda); border-radius: var(--raio-medio); padding: 0.5rem; font-family: Consolas, monospace; font-size: 0.75rem; line-height: 1.5; }
+.lote-ia-log div { white-space: pre-wrap; word-break: break-word; }
+.lote-ia-log .log-hora { color: #6b7a90; margin-right: 0.4rem; }
+.lote-ia-log .log-ok { color: #4ade80; }
+.lote-ia-log .log-aviso { color: #fbbf24; }
+.lote-ia-log .log-erro { color: #f87171; }
+.lote-ia-log .log-info { color: #7dd3fc; }

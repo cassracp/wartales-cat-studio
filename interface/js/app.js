@@ -981,6 +981,13 @@
     }
   }
 
+  // Prioriza a retradução feita nesta sessão (com glossário) sobre a tradução base antiga.
+  function obterTextoIaAtual() {
+    const seg = estado.segmentoAtual;
+    if (!seg) return "";
+    return seg.traducao_ia_regerada ?? seg.traducao_atual;
+  }
+
   function copiarTextoParaEditor(texto, rotuloOrigem) {
     if (texto === undefined || texto === null) return;
     el.campoTraducaoHumana.value = texto;
@@ -1002,6 +1009,7 @@
     try {
       const res = await ApiCat.traduzirIa(textoMod);
       if (res.sucesso && res.traducao) {
+        estado.segmentoAtual.traducao_ia_regerada = res.traducao;
         el.conteudoIaPt.innerHTML = destacarTagsCastleDB(res.traducao);
         copiarTextoParaEditor(res.traducao, "IA Gemini");
         mostrarToast("Tradução gerada com sucesso pela IA!", "✨");
@@ -1894,7 +1902,7 @@
     });
 
     el.btnCopiarIaPt.addEventListener("click", () => {
-      if (estado.segmentoAtual) copiarTextoParaEditor(estado.segmentoAtual.traducao_atual, "IA / TM");
+      if (estado.segmentoAtual) copiarTextoParaEditor(obterTextoIaAtual(), "IA / TM");
     });
 
     el.btnGerarIaAgora.addEventListener("click", traduzirComIaAtual);
@@ -1939,7 +1947,7 @@
     });
 
     el.btnAtalhoCopiarIa.addEventListener("click", () => {
-      if (estado.segmentoAtual) copiarTextoParaEditor(estado.segmentoAtual.traducao_atual, "IA Gemini");
+      if (estado.segmentoAtual) copiarTextoParaEditor(obterTextoIaAtual(), "IA Gemini");
     });
 
     el.btnAtalhoCopiarMod.addEventListener("click", () => {
@@ -2358,7 +2366,7 @@
         if (estado.segmentoAtual) copiarTextoParaEditor(estado.segmentoAtual.vanilla_pt, "Oficial Shiro");
       } else if (e.key === "2") {
         e.preventDefault();
-        if (estado.segmentoAtual) copiarTextoParaEditor(estado.segmentoAtual.traducao_atual, "IA Gemini");
+        if (estado.segmentoAtual) copiarTextoParaEditor(obterTextoIaAtual(), "IA Gemini");
       } else if (e.key === "3") {
         e.preventDefault();
         if (estado.segmentoAtual) copiarTextoParaEditor(estado.segmentoAtual.mod_en, "Mod EN");

@@ -57,15 +57,15 @@ class ServicoGarantiaQualidade:
 
         # 4. Checagem de Sinônimos Proibidos do Glossário
         if termos_glossario:
-            texto_pt_lower = f" {texto_traducao_pt.lower()} "
+            texto_pt_lower = f" {texto_traducao_pt} "
             for termo in termos_glossario:
                 sinonimos_str = termo.get("sinonimos_proibidos", "")
                 if not sinonimos_str:
                     continue
-                sinonimos = [s.strip().lower() for s in sinonimos_str.split(",") if s.strip()]
+                sinonimos = [s.strip() for s in sinonimos_str.split(",") if s.strip()]
                 for sin in sinonimos:
                     # Busca de palavra inteira
-                    padrao_palavra = rf"\b{re.escape(sin)}\b"
+                    padrao_palavra = rf"(?<!\w){re.escape(sin)}(?!\w)"
                     if re.search(padrao_palavra, texto_pt_lower):
                         termo_padrao = termo.get("termo_pt_padrao", "")
                         termo_en = termo.get("termo_en", "")

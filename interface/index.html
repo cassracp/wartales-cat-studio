@@ -905,6 +905,20 @@
             <div class="barra-trilho">
               <div id="barra-progresso-ia-lote" class="barra-preenchimento" style="width: 0%;"></div>
             </div>
+            <div class="lote-ia-metricas">
+              <div class="lote-ia-metrica"><strong id="lote-ia-reaproveitados">0</strong><span>Reaproveitados</span></div>
+              <div class="lote-ia-metrica"><strong id="lote-ia-traduzidas" class="texto-sucesso">0</strong><span>Traduzidas pela IA</span></div>
+              <div class="lote-ia-metrica"><strong id="lote-ia-falhas">0</strong><span>Falhas</span></div>
+              <div class="lote-ia-metrica"><strong id="lote-ia-glossario">0</strong><span>Fora do glossário</span></div>
+              <div class="lote-ia-metrica"><strong id="lote-ia-tempo">0s</strong><span id="lote-ia-estimativa">Decorrido</span></div>
+            </div>
+            <div id="lote-ia-provedores" class="lote-ia-provedores"></div>
+            <div id="lote-ia-aguardando" class="lote-ia-aguardando oculto"></div>
+            <div class="lote-ia-log-cabecalho">
+              <span>📜 Log em tempo real</span>
+              <label class="lote-ia-filtro"><input type="checkbox" id="lote-ia-somente-problemas"> Somente avisos/erros</label>
+            </div>
+            <div id="lote-ia-log" class="lote-ia-log" aria-live="polite"></div>
           </div>
         </div>
 
@@ -1439,6 +1453,14 @@
               <label for="select-chave-pool-provedor" class="campo-rotulo">Provedor *</label>
               <select id="select-chave-pool-provedor" name="provedor" class="campo-entrada">
                 <option value="gemini">Google Gemini</option>
+                <option value="groq">Groq (Gratuito)</option>
+                <option value="openrouter">OpenRouter (Modelos gratuitos)</option>
+                <option value="cerebras">Cerebras (Gratuito)</option>
+                <option value="mistral">Mistral AI</option>
+                <option value="deepseek">DeepSeek</option>
+                <option value="openai">OpenAI (ChatGPT)</option>
+                <option value="together">Together AI</option>
+                <option value="xai">xAI (Grok)</option>
               </select>
             </div>
             <div>
@@ -1448,8 +1470,8 @@
                 <option value="gemini-2.5-flash">gemini-2.5-flash (Alta Velocidade)</option>
                 <option value="gemini-2.0-flash">gemini-2.0-flash</option>
                 <option value="gemini-1.5-flash">gemini-1.5-flash</option>
-                <option value="gemini-1.5-pro">gemini-1.5-pro (Fidelidade Máxima)</option>
               </select>
+              <small class="dica-campo" id="dica-chave-pool-modelos">Lista atualizada automaticamente a partir do provedor.</small>
             </div>
           </div>
 

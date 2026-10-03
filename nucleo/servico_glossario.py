@@ -131,7 +131,7 @@ class ServicoGlossario:
     ) -> int:
         """
         Substitui em lote ocorrências de um sinônimo proibido pelo termo padronizado.
-        Preserva capitalização inicial (maiúscula/minúscula).
+        Diferencia maiúsculas de minúsculas e aplica o termo exatamente como cadastrado.
         """
         sinonimo_limpo = sinonimo_proibido.strip()
         termo_limpo = termo_padrao.strip()
@@ -139,16 +139,11 @@ class ServicoGlossario:
         if not sinonimo_limpo or not termo_limpo:
             return 0
 
-        padrao_re = re.compile(rf"\b{re.escape(sinonimo_limpo)}\b", re.IGNORECASE)
+        # Case-sensitive: "The Troop" e "the troop" são entradas distintas do glossário.
+        padrao_re = re.compile(rf"(?<!\w){re.escape(sinonimo_limpo)}(?!\w)")
 
         def substituir_com_caixa(match: re.Match) -> str:
-            texto_encontrado = match.group(0)
-            if texto_encontrado.isupper():
-                return termo_limpo.upper()
-            elif texto_encontrado[0].isupper():
-                return termo_limpo.capitalize()
-            return termo_limpo.lower()
-
+            return termo_limpo
         modificados = 0
         glossario = self.banco.listar_glossario()
 
